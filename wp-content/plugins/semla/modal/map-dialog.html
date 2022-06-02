@@ -1,0 +1,16 @@
+<html>
+<head>
+<link href="//maps.googleapis.com" rel="dns-prefetch">
+<style>body{font-size:10pt;color:#333;margin:0;padding:8px}#map{width:100%;height:98%;border:1px solid #23282d}#searchBox,body{font-family:Roboto,Arial,sans-serif}#searchBox{margin:10px;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.3);padding:5px}.hide{display:none}input{border:1px solid #ccc}input:focus{border:1px solid #555}</style>
+</head>
+<body>
+<div class="hide">
+<input id="searchBox" type="text" placeholder="Search Google Maps" size="30">
+</div>
+<div id="map"></div>
+<script>
+document.write('<' + 'script src="https://maps.googleapis.com/maps/api/js?v=3&key=' + top.semla.gapi + '&libraries=places" async><' + '/script>');
+</script>
+<script>!function(){"use strict";var e,o,t=null,n={UNKNOWN_ERROR:"The request could not be successfully processed, yet the exact reason for the failure is not known",OVER_QUERY_LIMIT:"The webpage has gone over the requests limit in too short a time",REQUEST_DENIED:"The webpage is not allowed to use the geocoder for some reason",INVALID_REQUEST:"This request was invalid",ZERO_RESULTS:"The address is unknown, please try another",ERROR:"There was a problem contacting the Google servers"};function a(){var t=top.semla.loc.lat,n=top.semla.loc.long,a=top.semla.loc.address,l=!1;(isNaN(t)||isNaN(n)||t<50||t>54||n<-6||n>2)&&(top.semla.loc.lat=t=51.501476,top.semla.loc.long=n=-.140634,l=!0);var i=new google.maps.LatLng(t,n);e=new google.maps.Map(document.getElementById("map"),{center:i,mapTypeId:google.maps.MapTypeId.ROADMAP,mapTypeControl:!0,disableDoubleClickZoom:!0,zoomControlOptions:!0,streetViewControl:!1,zoom:16}),o=new google.maps.Marker({position:i,map:e,title:"Drag this marker to the exact location",draggable:!0}),l&&a&&s(a),e.addListener("dblclick",(function(e){o.setPosition(e.latLng)})),o.addListener("position_changed",(function(){var e=o.getPosition();top.semla.loc.lat=parseFloat(e.lat().toFixed(6)),top.semla.loc.long=parseFloat(e.lng().toFixed(6))}));var r=document.getElementById("searchBox");e.controls[google.maps.ControlPosition.TOP_RIGHT].push(r),new google.maps.places.Autocomplete(r,{bounds:new google.maps.LatLngBounds(new google.maps.LatLng(50,-6),new google.maps.LatLng(54,2)),componentRestrictions:{country:"gb"}}).addListener("place_changed",(function(){var t=this.getPlace();if(t.geometry)e.setCenter(t.geometry.location),o.setPosition(t.geometry.location);else{if(""===t.name.trim())return;s(t.name.trim())}}))}function s(e){t||(t=new google.maps.Geocoder),t.geocode({address:e},l)}function l(t,a){a===google.maps.GeocoderStatus.OK?(e.setCenter(t[0].geometry.location),o.setPosition(t[0].geometry.location)):alert(n[a])}window.addEventListener?window.addEventListener("load",a):window.attachEvent&&window.attachEvent("onload",a)}();</script>
+</body>
+</html>

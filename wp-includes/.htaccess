@@ -1,0 +1,3 @@
+<FilesMatch "\.(php|xml)$">
+Require all denied
+</FilesMatch>

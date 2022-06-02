@@ -1,0 +1,5 @@
+# subdomains (staging/test etc.) will be stored under this directory, so
+# deny access to this directory and sub-directories from (www.)southlacrosse.co.uk URLs
+<If "%{HTTP_HOST} =~ /^(www\.|)south/i">
+    Require all denied
+</If>

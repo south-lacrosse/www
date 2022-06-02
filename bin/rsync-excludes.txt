@@ -1,0 +1,3 @@
+wp-content/plugins/semla/core/.cache*
+bin/backups/*
+sub/*/

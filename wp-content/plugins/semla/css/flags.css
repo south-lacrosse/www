@@ -1,0 +1,206 @@
+
+/* *********  IMPORTANT ************
+    If you make changes to this file then make sure you bump the version number
+    in the plugin. Just search for "css/flags"
+ */
+
+/*--------------- Flags -----------------*/
+.flags, .flags > li > ul {
+    margin: 0;
+    padding: 0;
+    white-space: nowrap;
+    list-style: none;
+}
+.flags {
+    /* force font size so that we know widths and heights below will work */
+    font-size: 14px;
+}
+.flags li {
+    margin: 0;
+    padding: 0;
+}
+.flags > li {
+    display: inline-block;
+    vertical-align: top;
+    width: 188px;
+}
+.flags > li:last-child {
+    width: 168px;
+}
+.flags h3 {
+    font-size: 1em;
+    margin: 0;
+}
+.round-title {
+    width: 168px;
+    text-align: center;
+    margin-bottom: 0.25em;
+}
+.flags > li > ul > li {
+    position: relative;
+}
+.match-panel {
+    height: 48px;
+    width: 168px;
+    padding: 2px 5px;
+    border: 1px solid #404040;
+}
+.match-panel > div {
+    position: relative;
+}
+.match-panel > div > span {
+    position: absolute;
+    right: 0;
+}
+/* laying out 
+
+    go for 68px high for match in 1st round (48px match, 10px padding ablove & below
+    
+r1 68 - 48 = 20/2 = 10
+r2 (136 - 48) / 2= 44
+r3 (272 - 48) / 2 = 112
+r4 (544 - 48) / 2 = 248
+r5 (1088 - 48) / 2 = 520
+ */
+
+/* don't have any extraneous space on the bottom */
+
+.flags > li > ul > li:last-child {
+    padding-bottom: 0;
+}
+/* also remove extra r1 default padding from first match of all rounds
+    - subtract .r1 padding from each padding value for :first-child */
+.empty {
+    height: 68px;
+}
+.empty:first-child {
+    height: 56px;
+}
+.r1 > li {
+    padding: 10px 0;
+}
+.r1 > li:first-child {
+    padding-top: 0;
+}
+.r2 > li {
+    padding: 44px 0;
+}
+.r2 > li:first-child {
+    padding-top: 34px;
+}
+.r3 > li {
+    padding: 112px 0;
+}
+.r3 > li:first-child {
+    padding-top: 102px;
+}
+.r4 > li {
+    padding: 248px 0;
+}
+.r4 > li:first-child {
+    padding-top: 238px;
+}
+.r5 > li {
+    padding-top: 510px;
+    /* only 1 r5, so just remove default r1 padding, so 520 - 10 */
+}
+/* class empty-match1 is when round1 match1 is empty, so remove empty space at top 
+    - subtract .r2 padding from normal padding value */
+.empty-match1.r1 > li:first-child {
+    height: 24px;
+}
+.empty-match1.r2 > li:first-child {
+    padding-top: 0px;
+}
+.empty-match1.r3 > li:first-child {
+    padding-top: 68px;
+}
+.empty-match1.r4 > li:first-child {
+    padding-top: 204px;
+}
+.empty-match1.r5 > li {
+    padding-top: 476px;
+}
+/* lines to join to next round */
+.line1 {
+    width: 10px;
+    position: absolute;
+    right: 10px;
+}
+.line1.across {
+    width: 20px;
+    right: 0;
+    border-bottom: 1px solid #404040;
+    top: 0;
+}
+.r1 > li:first-child > .across {
+    height: 24px;
+}
+.down {
+    border-top: 1px solid #404040;
+    bottom: 0;
+}
+.up {
+    border-bottom: 1px solid #404040;
+    top: 0;
+}
+.down, .up {
+    border-right: 1px solid #404040
+}
+.line2 {
+    width: 10px;
+    border-top: 1px solid #404040;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+/* height of line to connect round: is padding + 1/2 .match-panel height (48/2=24px) */
+.r1 > li > .line1 {
+    height: 34px;
+}
+.r2 > li > .line1 {
+    height: 68px;
+}
+.r3 > li > .line1 {
+    height: 136px;
+}
+.r4 > li > .line1 {
+    height: 272px;
+}
+@media screen and (max-width: 679px) {
+    /* IF we want each competition to scroll individually */
+    .flags {
+        overflow-x: auto;
+        padding-bottom: 0.5em;
+    }
+}
+@media screen and (min-width: 680px) {
+    /* final round is 168, other rounds 188 */
+    .rounds-1 {
+        min-width: 193px;
+        /* 168 + 25 for padding */
+    }
+    .rounds-2 {
+        min-width: 381px;
+        /* 188*1 + 168 + 25 for padding */
+    }
+    .rounds-3 {
+        min-width: 569px;
+        /* 188*2 + 168 + 25 for padding */
+    }
+    .rounds-4 {
+        min-width: 782px;
+        /* 188*3 + 168 + 50 for padding */
+    }
+    .rounds-5 {
+        min-width: 970px;
+        /* 188*4 + 168 + 50 for padding */
+    }
+    .rounds-6 {
+        min-width: 1178px;
+        /* 188*5 + 168 + 50 for padding */
+    }
+    .rounds-6 #banner, .rounds-6 #menu, .rounds-6 #page {
+        max-width: 1178px;
+    }
+}
