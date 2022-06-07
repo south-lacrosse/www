@@ -1,6 +1,5 @@
 <?php
 namespace Semla\Data_Access;
-use stdClass;
 /**
  * Data access for History
  */

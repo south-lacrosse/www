@@ -74,12 +74,12 @@ class Fixtures_Gateway {
 			unset($row['sort']);
 			unset($row['sort2']);
 			$values[] = $wpdb->prepare( '(%s,%s,%d,%d,%s,%s,%s,', array_slice($row,0,7))
-				. ($row[7] == null ? 'null' : $row[7]) . ','
-				. ($row[8] == null ? 'null' : $row[8]) . ','
-				. ($row[9] == null ? 'null' : $wpdb->prepare( '%s', $row[9]))
+				. ($row[7] === null ? 'null' : $row[7]) . ','
+				. ($row[8] === null ? 'null' : $row[8]) . ','
+				. ($row[9] === null ? 'null' : $wpdb->prepare( '%s', $row[9]))
 				. $wpdb->prepare( ',%s,', $row[10])
-				. ($row[11] == null ? 'null' : $row[11]) . ','
-				. ($row[12] == null ? 'null' : $row[12])
+				. ($row[11] === null ? 'null' : $row[11]) . ','
+				. ($row[12] === null ? 'null' : $row[12])
 				. ",$row[13])";
         }
         $query = 'INSERT INTO new_fixture (match_date, match_time, comp_id, comp_id2, competition, home, away,

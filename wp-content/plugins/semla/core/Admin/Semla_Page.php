@@ -3,9 +3,11 @@ namespace Semla\Admin;
 
 use Semla\Data_Access\Cup_Draw_Gateway;
 use Semla\Data_Access\Fixtures_Sheet_Gateway;
+use Semla\Data_Access\Tiebreaker_Gateway;
 
 /**
- * Update Fixtures admin page
+ * Update Fixtures admin page.
+ * 3 tabs - update, tiebreakers, flags fixtures formulas
  */
 class Semla_Page {
 
@@ -17,6 +19,11 @@ class Semla_Page {
 <div class="wrap">
 	<h1>SEMLA Admin Menu</h1>
 <?php
+		$fixtures_sheet_id = get_option('semla_fixtures_sheet_id');
+		if (!$fixtures_sheet_id) {
+			Admin_Menu::dismissible_error_message('No Google Fixtures Sheet specified yet.');
+		}
+
 		if (isset( $_GET[ 'action' ] )) {
 			switch ($_GET[ 'action' ]) {
 				case 'update':
@@ -46,28 +53,22 @@ class Semla_Page {
 			}
 		}
 		$active_tab = Admin_Menu::render_tabs('semla',
-			['update' => 'Update Fixtures', 'format'=> 'Spreadsheet Format Help'
-			,'formulas' => 'Flags Fixtures Formulas']);
+			['update' => 'Update Fixtures', 'tiebreaker' => 'Tiebreakers','formulas' => 'Flags Fixtures Formulas']);
 		$page_and_tab = "?page=semla&tab=$active_tab";
 ?>
 	<div id="poststuff">
 		<?php
 			switch ($active_tab) {
+				case 'tiebreaker':
+					Tiebreaker_Gateway::show_tiebreakers();
+					break;
 				case 'update':
 					require __DIR__ . '/views/semla-update-tab.php';
 					break;
-				case 'format':
-					require __DIR__ . '/views/semla-fixtures-help-tab.php';
-					break;
-				case 'formulas':
-					$fixtures_sheet_id = get_option('semla_fixtures_sheet_id');
-					if (!$fixtures_sheet_id) {
-						Admin_Menu::dismissible_error_message('No Google Sheet specified yet.');
-						$rows = false;
-					} else {
-						$rows = Cup_Draw_Gateway::get_cup_fixtures_for_sheet();
-					}
+				case 'formulas': 
+					$rows = $fixtures_sheet_id ? Cup_Draw_Gateway::get_cup_fixtures_for_sheet() : false;
 					require __DIR__ . '/views/semla-formulas-tab.php';
+					break;
 			}
 		?>
 	</div>

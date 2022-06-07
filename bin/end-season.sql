@@ -40,8 +40,15 @@ FROM `slc_fixture` ORDER BY `id`;
 SELECT 'Inserting league tables' as '';
 INSERT INTO `slh_table`
 SELECT @end_year, `comp_id`, `position`, `team`, `played`, `won`, `drawn`, `lost`,
-	`goals_for`, `goals_against`, `goal_avg`, `points_deducted`, `points`, NULL, `divider`
+	`goals_for`, `goals_against`, `goal_avg`, `points_deducted`, `points`, NULL,
+	`divider`, `tiebreaker`
 FROM `slc_table`;
+
+SELECT 'Inserting deductions' as '';
+INSERT INTO `slh_deduction`
+(`year`, `comp_id`, `team`, `penalty`, `deduct_date`, `reason`)
+SELECT @end_year, `comp_id`, `team`, `penalty`, `deduct_date`, `reason`
+from `slc_deduction`;
 
 -- League winners
 SELECT 'Inserting league winners' as '';

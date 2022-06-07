@@ -118,11 +118,12 @@ class Club_Team_Gateway {
 		
 		$result = DB_Util::create_table('new_club',
 			'`name` CHAR(50) NOT NULL,
+			`team_count` SMALLINT NOT NULL,
 			PRIMARY KEY (`name`)');
 	   	if ($result === false) return false;
-		$result = $wpdb->query('INSERT INTO `new_club` (`name`)
-			SELECT DISTINCT club FROM new_team
-			ORDER BY club');
+		$result = $wpdb->query('INSERT INTO new_club (name, team_count)
+			SELECT club, COUNT(*) FROM new_team
+			GROUP BY club ORDER BY club');
 		if ($result === false) return false;
 		DB_Util::add_table_to_rename('club');
 		return true;

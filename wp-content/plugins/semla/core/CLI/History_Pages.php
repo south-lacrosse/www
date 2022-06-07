@@ -4,8 +4,8 @@ namespace Semla\CLI;
  * Create history pages for all tables/flags draws/results. Will overwrite page if already
  * exists.
  * 
- * This should only be need to run if the format of any of the HTML has changed, e.g.
- * if Cup_Draw_Renderer.php changes.
+ * This should only be need to run as part of the end of season process, or if the format
+ * of any of the HTML has changed, e.g. if Cup_Draw_Renderer.php changes.
  */
 
 use Semla\Cache;
@@ -17,6 +17,7 @@ use Semla\Data_Access\Fixtures_Results_Gateway;
 use Semla\Data_Access\Table_Gateway;
 use Semla\Data_Access\Winner_Gateway;
 use WP_CLI;
+use function WP_CLI\Utils\make_progress_bar;
 
 class History_Pages {
 	private static $updated = 0;
@@ -61,7 +62,7 @@ class History_Pages {
 			$name = $league->id === '1' ? "League" : "$league->name League";
 			$years = Table_Gateway::get_tables_years($league->id);
 			self::db_check();
-			$progress = \WP_CLI\Utils\make_progress_bar( "$name Tables", count($years) );
+			$progress = make_progress_bar( "$name Tables", count($years) );
 			foreach ( $years as $year ) {
 				$year = intval($year);
 				$tables_page = "$league->page-$year";
@@ -98,7 +99,7 @@ class History_Pages {
 		$years = $gateway->get_results_years();
 		self::db_check();
 		$html = '';
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Results', count($years) + 1 );
+		$progress = make_progress_bar( 'Results', count($years) + 1 );
 		foreach ( $years as $year ) {
 			self::insert_post([
 				'post_title'    => "$year Results",
@@ -122,7 +123,7 @@ class History_Pages {
 	private static function cup_draws() {
 		$years = Cup_Draw_Gateway::get_cup_years();
 		self::db_check();
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Cup draws', count($years) );
+		$progress = make_progress_bar( 'Cup draws', count($years) );
 		foreach ( $years as $year ) {
 			if ($year->breadcrumbs) {
 				$name = $year->history_group_page ? "$year->name Winners" : $year->name;
@@ -153,7 +154,7 @@ class History_Pages {
 	private static function winners() {
 		$competitions = Competition_Gateway::get_history_competitions();
 		self::db_check();
-		$progress = \WP_CLI\Utils\make_progress_bar( 'Competition winners', count($competitions) );
+		$progress = make_progress_bar( 'Competition winners', count($competitions) );
 		foreach ( $competitions as $competition ) {
 			$breadcrumbs = false;
 			if ($competition->history_group_page) {
@@ -174,7 +175,7 @@ class History_Pages {
 	private static function group_winners() {
 		$competitions = Competition_Group_Gateway::get_history_competition_groups();
 		self::db_check();
-		$progress = \WP_CLI\Utils\make_progress_bar( 'League/groups winners', count($competitions) );
+		$progress = make_progress_bar( 'League/groups winners', count($competitions) );
 		foreach ( $competitions as $competition ) {
 			if ($competition->type === 'league') {
 				$name = $competition->id === '1' ? "League Champions"

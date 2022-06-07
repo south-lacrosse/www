@@ -1,29 +1,15 @@
 <?php
 namespace Semla\Data_Access;
-
+/**
+ * Update current database tables from the Fixtures Google Sheet.
+ */
 use Semla\Cache;
 use Semla\Data_Access\Competition_Gateway;
 use Semla\Data_Access\Cup_Draw_Gateway;
 use Semla\Utils\Net_Util;
 use WP_Error;
 
-/**
- * Handle update from Fixtures Google Sheet.
- * Info on how to restrict values/columns etc. can be found at
- *    https://developers.google.com/chart/interactive/docs/querylanguage
- */
 class Fixtures_Sheet_Gateway {
-	// fixtures columns on sheet
-	const COMPETITION = 0;
-	const DATE=1;
-	const TIME=2;
-	const HOME=3;
-	const HOME_GOALS=4;
-	const V=5;
-	const AWAY_GOALS=6;
-	const AWAY=7;
-	const MULTIPLIER=8;
-	const VENUE=9;
 	// Divisions columns from sheet
 	const LEAGUE=0;
 	const DIVISION=1;
@@ -33,14 +19,20 @@ class Fixtures_Sheet_Gateway {
 	const SORT_ORDER=5;
 	const TEAMS=6;
 	// Teams page
+	const TEAM_NAME=0;
 	const TEAM_MINIMAL=4;
 	const TEAM_SHORT=5;
+	// Deductions
+	const DEDUCT_COMPETITION = 0;
+	const DEDUCT_POINTS = 2;
 
-	private $url_base;
+	private $xlsx;
+	private $sheet_names;
 	private $tables_file;
 	private $error;
 	private $status = [];
 	private $competitions;
+	private $competition_by_id = null;
 	private $divisions;
 	private $max_flags_rounds = 0;
 	private	$have_ladder = false;
@@ -59,12 +51,15 @@ class Fixtures_Sheet_Gateway {
 		if (! flock($fp, LOCK_EX|LOCK_NB)) {
 			return new WP_Error('fixtures_lock', 'Someone else is currently updating the fixtures!');
 		}
-		$this->url_base = 'https://docs.google.com/spreadsheets/d/'
-			. $fixtures_sheet_id . '/gviz/tq?tqx=out:csv&sheet=';
+
+		$res = $this->fetch_google_sheet($fixtures_sheet_id);
+		if (is_wp_error($res)) return $res;
+
 		$this->competitions = Competition_Gateway::get_competitions();
 		if ($this->competitions === false) {
 			return self::db_error('Failed to load competitions');
 		}
+
 		$this->error = new WP_Error();
 		$this->tables_file = __DIR__.'/empty-tables.txt';
 		if ($type === 'update-all') {
@@ -105,10 +100,10 @@ class Fixtures_Sheet_Gateway {
 
 	private function load_divisions_and_teams() {
 		$division_rows = $this->get_rows('Divisions');
-		$team_rows = $this->get_rows('Teams');
 		if (!$division_rows) {
 			$this->error->add('fixtures', 'No Divisions');
 		}
+		$team_rows = $this->get_rows('Teams');
 		if (!$team_rows) {
 			$this->error->add('fixtures', 'No Teams');
 		}
@@ -116,9 +111,9 @@ class Fixtures_Sheet_Gateway {
 		$team_minimals = [];
 		$team_abbrevs = [];
 		foreach ($team_rows as $key => $row) {
-			$team_minimals[] = [$row[0],$row[self::TEAM_MINIMAL]];
+			$team_minimals[] = [$row[self::TEAM_NAME],$row[self::TEAM_MINIMAL]];
 			if (!empty($row[self::TEAM_SHORT])) {
-				$team_abbrevs[] = [$row[0],$row[self::TEAM_SHORT]];
+				$team_abbrevs[] = [$row[self::TEAM_NAME],$row[self::TEAM_SHORT]];
 			}
 			$team_rows[$key] = array_splice($row,0,4);
 		}
@@ -136,7 +131,7 @@ class Fixtures_Sheet_Gateway {
 				$team->team = $row[$i];
 				$team->won=0; $team->drawn=0; $team->lost=0;
 				$team->goals_for=0; $team->goals_against=0; $team->points_deducted = 0;
-				$team->points=0; $team->divider=0; $team->form='';
+				$team->points=0; $team->divider=0; $team->form=''; $team->tiebreaker = 0;
 				$table[$team->team] = $team;
 			}
 			$tables[$comp_id] = $table;
@@ -147,7 +142,7 @@ class Fixtures_Sheet_Gateway {
 				$relegated_after = 0;
 			}
 
-			$divisions[] = [$comp_id, $row[self::SORT_ORDER], (int) $row[self::PROMOTED],
+			$divisions[] = [$comp_id, $row[self::SORT_ORDER][0], (int) $row[self::PROMOTED],
 				$relegated_after];
 		}
 		if ($this->error->has_errors()) return;
@@ -168,16 +163,19 @@ class Fixtures_Sheet_Gateway {
 			$this->add_db_error('Failed to save team minimal names');
 			return;
 		}
-		if ($affected) {
+		if ($affected) { // $affected is 2 per update, 1 per insert - so don't put in message
 			$this->status[] = 'Team minimal names updated';
 		}
-		$affected = Club_Team_Gateway::save_team_abbrevs($team_abbrevs);
-		if ($affected === false) {
-			$this->add_db_error('Failed to save team abbreviations');
-			return;
-		}
-		if ($affected) {
-			$this->status[] = 'Team name abbreviations updated';
+
+		if (count($team_abbrevs) > 0) {
+			$affected = Club_Team_Gateway::save_team_abbrevs($team_abbrevs);
+			if ($affected === false) {
+				$this->add_db_error('Failed to save team abbreviations');
+				return;
+			}
+			if ($affected) { // $affected is 2 per update, 1 per insert - so don't put in message
+				$this->status[] = 'Team name abbreviations updated';
+			}
 		}
 
 		file_put_contents($this->tables_file, serialize($tables));
@@ -189,20 +187,29 @@ class Fixtures_Sheet_Gateway {
 		if ($rows === null) {
 			return;
 		}
-		// next 3 lines for testing
 		$deductions=[];
 		foreach($rows as $row) {
-			$comp = $row[0];
+			$comp = $row[self::DEDUCT_COMPETITION];
 			if (empty($this->competitions[$comp])) {
-				$this->error[] = "Error: Unknown league/division '$comp' in Deductions";
-			} else {
-				$comp_id = $this->competitions[$comp]->id;
-				$deductions[] = [ $comp_id,$row[1],$row[2],$row[3],$row[4]];
-				$points_deducted = $row[2];
-				$team = $this->tables[$comp_id][$row[1]];
-				$team->points -= $points_deducted;
-				$team->points_deducted += $points_deducted;
+				$this->error->add('fixtures_deduct', "Unknown league/division '$comp' in Deductions");
+				continue;
 			}
+			$comp_id = $this->competitions[$comp]->id;
+			$points_deducted = trim($row[self::DEDUCT_POINTS]);
+			if (!is_numeric($points_deducted)) {
+				$this->error->add('fixtures_deduct', "Deduction $points_deducted is not numeric");
+				continue;
+			}
+			$points_deducted = (float)$points_deducted;
+			if ($points_deducted <= 0 || $points_deducted > 10
+			|| $points_deducted !== round($points_deducted,1)) {
+				$this->error->add('fixtures_deduct', "Deduction $points_deducted is invalid (must be > 0, <= 10, max 1 decimal place)");
+				continue;
+			}
+			$deductions[] = [$comp_id,$row[1],$points_deducted,$row[3],$row[4]];
+			$team = $this->tables[$comp_id][$row[1]];
+			$team->points -= $points_deducted;
+			$team->points_deducted += $points_deducted;
 		}
 		if ($this->error->has_errors()) return;
 		if (!Table_Gateway::save_deductions($deductions)) {
@@ -211,8 +218,27 @@ class Fixtures_Sheet_Gateway {
 		}
 		$this->status[] = 'Loaded ' . count($rows) . ' deductions';
 
-		$rows = $this->get_rows("Fixtures&tq=select+C,D,E,F,G,H,I,J,K,M+where+(H='v'+or+H='C'+or+H='c'+or+H='C24'+or+H='c24')+and+F!='Bye'+and+J!='Bye'+and+(F!=''+or+J!='')");
-		if (!$rows) {
+		$rows = $this->get_rows('Fixtures', false);
+		if (!$rows || count($rows) === 1) {
+			return;
+		}
+
+		$row0 = $rows[0];
+		unset($rows[0]);
+		$headings = ['Competition' => 1, 'Date' => 1, 'Time' => 1, 'Home' => 1,
+			'Home Goals' => 1, 'v' => 1, 'Away Goals' => 1, 'Away' => 1, 'X' => 1,
+			'Venue' => 1];
+		// find all the headings and set _col variables accordingly
+		for ($i = count($row0) - 1; $i >= 0; $i--) {
+			if (isset($headings[$row0[$i]])) {
+				$var = str_replace(' ', '_',strtolower($row0[$i])) . '_col';
+				$$var = $i;
+				unset($headings[$row0[$i]]);
+			}
+		}
+		if (count($headings) > 0) {
+			$this->error->add('fixtures', 'Missing headings on Fixtures sheet: '
+				. implode(', ', array_keys($headings)));
 			return;
 		}
 
@@ -222,7 +248,7 @@ class Fixtures_Sheet_Gateway {
 		}
 		$unknown_seq++;
 		$this->competitions['Friendly'] = (object)
-			 ['id'=>0,'abbrev'=>'Friendly','type'=>'Fr','seq'=>$unknown_seq++];
+			 ['id'=>0,'name'=>'Friendly','abbrev'=>'Friendly','type'=>'Fr','seq'=>$unknown_seq++];
 
 		$this->points = get_option('semla_points');
 		if (!$this->points) {
@@ -239,35 +265,65 @@ class Fixtures_Sheet_Gateway {
 		// make sure we have increasing dates, otherwise someone has forgotten to change
 		// the date when copying a row
 		$last_date = '';
-		$fixtures = $indexed_fixtures = [];
-		foreach ($rows as $row) {
-			for ($i = 9; $i >= 0; $i-- ) {
-				$row[$i] = trim($row[$i]);
+		$fixtures = $division_fixtures = [];
+		foreach ($rows as $row_no => $row) {
+			$row_no++;
+			$v = trim($row[$v_col]);
+			if ($v === '') continue;
+			$date = $row[$date_col];
+			if (is_int($date)) {
+				$this->error->add('fixtures', "Date is parsed as an integer. Format issues? Fixtures row $row_no: $date");
+				continue;
 			}
-			$date = $this->convert_date($row[self::DATE]);
-			$competition = $row[self::COMPETITION];
+			if ($date === '') continue;
+			if (strlen($date) !== 19) {
+				$this->error->add('fixtures', "Invalid date format on Fixtures row $row_no: $date");
+				continue;
+			}
 
-			$time = $row[self::TIME] ? date('H:i:s', strtotime($row[self::TIME])) : '14:00:00';
-			$home = empty($row[self::HOME]) ? 'TBD' : $row[self::HOME];
-			$away = empty($row[self::AWAY]) ? 'TBD' : $row[self::AWAY];
+			$home = trim($row[$home_col]);
+			$away = trim($row[$away_col]);
+			if ( ($home === '' && $away === '') || $home === 'Bye' || $away === 'Bye') {
+				continue;
+			}
+
+			// flags games may have only 1 team into the round, so mark the team as TBD
+			if ($home === '') $home = 'TBD';
+			if ($away === '') $away = 'TBD';
+
+			$date = substr($date, 0, 10); // cell will have date/time, so need to remove time part
+			$competition = trim($row[$competition_col]);
+
+			$time = $row[$time_col];
+			if (is_int($time)) {
+				$this->error->add('fixtures', "Time is parsed as an integer. Format issues? Fixtures row $row_no: $time");
+				continue;
+			}
+			if ($time === '') {
+				$time = '14:00:00';
+			} else {
+				if (strlen($time) !== 19) {
+					$this->error->add('fixtures', "Invalid time format on Fixtures row $row_no: $time");
+					continue;
+				}
+				$time = substr($time, 11); // cell will have date/time
+			}
 			if ($date < $last_date) {
-				$this->error->add('fixtures', "$date $home v $away, date is out of sequence, last date was $last_date");
+				$this->error->add('fixtures', "Fixtures row $row_no is out of sequence, date is $date, last date was $last_date");
 				continue;
 			}
 			$last_date = $date;
 
-			if (empty($row[self::VENUE])
-			|| preg_match('/' . $row[self::VENUE] . '/',$row[self::HOME])) {
+			$venue = trim($row[$venue_col]);
+			if ($venue === '' || preg_match('/' . $venue . '/', $home)) {
 				$venue = null;
-			} else {
-				$venue = $row[self::VENUE];
 			}
-			$multi = empty($row[self::MULTIPLIER]) ? 1 : $row[self::MULTIPLIER];
+			$multi = empty($row[$x_col]) ? 1 : $row[$x_col];
 			$seq = $unknown_seq;
 			$comps = explode('/',$competition);
 			$comps_count = count($comps);
 			if ($comps_count > 2) {
-				$this->error->add('fixtures', "More than 2 competitions on 1 line '$competition' in fixtures");
+				$this->error->add('fixtures', "More than 2 competitions on 1 line '$competition' in fixtures row $row_no");
 			} elseif ($comps_count === 2) {
 				$this->have_ladder = true;
 			}
@@ -289,14 +345,14 @@ class Fixtures_Sheet_Gateway {
 				} else {
 					$temp = explode(' ', $comp);
 					if (count($temp) < 2) {
-						$this->status[] = "Warning: Unknown competition '$comp' in fixtures";
+						$this->status[] = "Warning: Unknown competition '$comp' in fixtures row $row_no";
 						$comp_short .= ($comp_short ? '/' : '') . $comp;
 						continue;
 					}
 					$round = array_pop($temp); // get rid of flags round
 					$comp2 = implode(' ', $temp);
 					if (empty($this->competitions[$comp2])) {
-						$this->status[] = "Warning: Unknown competition '$comp' in fixtures";
+						$this->status[] = "Warning: Unknown competition '$comp' in fixtures row $row_no";
 						$comp_short .= ($comp_short ? '/' : '') . $comp;
 						continue;
 					}
@@ -312,12 +368,13 @@ class Fixtures_Sheet_Gateway {
 					if ($c->type === 'league' || $c->type === 'league-prelim') $is_league = true;
 				}
 			}
-			$h_goals = $row[self::HOME_GOALS] == '' ? null : $row[self::HOME_GOALS];
-			$a_goals = $row[self::AWAY_GOALS] == '' ? null : $row[self::AWAY_GOALS];
+
+			$h_goals = $this->parse_goals($row[$home_goals_col]);
+			$a_goals = $this->parse_goals($row[$away_goals_col]);
 			$result = '';
 			$h_points = $a_points = null;
-			if (is_numeric($h_goals) && is_numeric($a_goals)) {
-				$penalty = $row[self::V][0] == 'C';
+			if (is_int($h_goals) && is_int($a_goals)) {
+				$penalty = $v[0] === 'C';
 				$result = sprintf('%d - %d', $h_goals, $a_goals)
 					. ($penalty ? ' w/o' : '');
 				if ($is_league) {
@@ -332,11 +389,11 @@ class Fixtures_Sheet_Gateway {
 						$a_comp_id = $comp_id;
 					}
 					if (!isset($this->tables[$h_comp_id][$home])) {
-						$this->error->add('fixtures', "$date $home v $away, $home is not in division $competition");
+						$this->error->add('fixtures', "$date $home v $away, $home is not in division $competition, row $row_no");
 						continue;
 					}
 					if (!isset($this->tables[$a_comp_id][$away])) {
-						$this->error->add('fixtures', "$date $home v $away, $away is not in division $competition");
+						$this->error->add('fixtures', "$date $home v $away, $away is not in division $competition,  row $row_no");
 						continue;
 					}
 					$h = $this->tables[$h_comp_id][$home];
@@ -352,14 +409,18 @@ class Fixtures_Sheet_Gateway {
 							$a->lost += $multi;
 							$a->form .= 'L';
 							$h_points = $this->points['W'];
-							$a_points = $this->points[$row[self::V]];
+							$a_points = $this->points[$v];
+							$h_win = $multi;
+							$a_win = 0;
 						} else {
 							$h->lost += $multi;
 							$h->form .= 'L';
 							$a->won += $multi;
 							$a->form .= 'W';
-							$h_points = $this->points[$row[self::V]];
+							$h_points = $this->points[$v];
 							$a_points = $this->points['W'];
+							$h_win = 0;
+							$a_win = $multi;
 						}
 					} else {
 						if ($h_goals > $a_goals) {
@@ -369,6 +430,8 @@ class Fixtures_Sheet_Gateway {
 							$a->form .= 'L';
 							$h_points = $this->points['W'];
 							$a_points = $this->points['L'];
+							$h_win = $multi;
+							$a_win = 0;
 						} elseif ($h_goals < $a_goals) {
 							$h->lost += $multi;
 							$h->form .= 'L';
@@ -376,6 +439,8 @@ class Fixtures_Sheet_Gateway {
 							$a->form .= 'W';
 							$h_points = $this->points['L'];
 							$a_points = $this->points['W'];
+							$h_win = 0;
+							$a_win = $multi;
 						} else {
 							$h->drawn += $multi;
 							$h->form .='D';
@@ -383,14 +448,18 @@ class Fixtures_Sheet_Gateway {
 							$a->form .= 'D';
 							$h_points = $this->points['D'];
 							$a_points = $this->points['D'];
+							$h_win = $a_win = 0;
 						}
 					}
 					$h->points += ($h_points * $multi);
 					$a->points += ($a_points * $multi);
-					// don't store ladder fixtures in indexed array as that is used to check winners/promotion/relegation
-					// by record between teams
+					// don't store ladder fixtures in division fixtures as that is used to check winners/promotion/relegation
+					// by record between teams inside a division
 					if ($h_comp_id === $a_comp_id) {
-						$indexed_fixtures["$comp_id|$home|$away"] = [$h_points, $a_points, $h_goals, $a_goals];
+						$division_fixtures[$comp_id][] = ['h' => $home, 'a' => $away,
+							'h_data' => ['points' => $h_points, 'goal_diff'=> $h_goals - $a_goals, 'win' => $h_win],
+							'a_data' => ['points' => $a_points, 'goal_diff'=> $a_goals - $h_goals, 'win' => $a_win],
+						];
 					}
 				}
 			} else {
@@ -419,7 +488,7 @@ class Fixtures_Sheet_Gateway {
 		}
 		if ($this->error->has_errors()) return;
 
-		uasort($fixtures, function($a, $b) {
+		usort($fixtures, function($a, $b) {
 			$cmp = strcmp($a[0],$b[0]); // date
 			if ($cmp) return $cmp;
 			$cmp = $a['sort'] - $b['sort']; // competition sequence #
@@ -440,6 +509,10 @@ class Fixtures_Sheet_Gateway {
 			. ($this->have_ladder ? ' - ladder fixtures found' : '');
 
 		// Now to tables
+		if (!Tiebreaker_Gateway::create_table()) {
+			$this->add_db_error('Failed to create tiebreaker table');
+			return;
+		}
 		foreach ($this->divisions as $division) {
 			$comp_id = $division[0];
 			$promoted = $division[2];
@@ -460,12 +533,28 @@ class Fixtures_Sheet_Gateway {
 					$team->goal_avg = 99;
 				}
 			}
-			uasort($table, [$this, 'cmp_tables']);
-			// TODO reorder!
-			$table = array_values($table);
-			$pos = 1;
-			foreach ($table as $team) {
-				$team->position = $pos++;
+			usort($table, [$this, 'cmp_tables']);
+			
+			if ($table[0]->played > 0) {
+				if ($table[0]->points === $table[1]->points) {
+					// top = 2nd, order by head-to-head
+					$this->tiebreaker_reorder($comp_id, $table, 0, $division_fixtures[$comp_id]);
+					if ($this->error->has_errors()) return;
+				}
+				if ($promoted != 0 && $table[$promoted]->points > 0
+				&& $table[$promoted]->points === $table[$promoted-1]->points
+				// check we haven't already done a tie-break for champions
+				&& $table[$promoted]->points !== $table[0]->points) {
+					$this->tiebreaker_reorder($comp_id, $table, $promoted - 1, $division_fixtures[$comp_id]);
+					if ($this->error->has_errors()) return;
+				}
+				if ($relegated_after != 0 && $table[$relegated_after]->points > 0
+				&& $table[$relegated_after]->points === $table[$relegated_after-1]->points
+				// check we haven't already done a tie-break which could have gone this far
+				&& $table[$relegated_after]->points !== $table[$promoted]->points) {
+					$this->tiebreaker_reorder($comp_id, $table, $relegated_after - 1, $division_fixtures[$comp_id]);
+					if ($this->error->has_errors()) return;
+				}
 			}
 			if ($promoted != 0) {
 				$table[$promoted - 1]->divider = 1;
@@ -483,18 +572,101 @@ class Fixtures_Sheet_Gateway {
 	}
 
 	/**
+	 * Goals could be int, text, or an int as a text field, so coerce into correct format
+	 */
+	private function parse_goals($goals) {
+		if (is_int($goals)) return $goals;
+		$goals = trim($goals);
+		if ($goals === '') return null;
+		if (is_numeric($goals)) return (int)$goals;
+		return $goals;
+	}
+
+	/**
+	 * Reorder table for those equal on points into head to head order
+	 * Also flag if teams have same points etc.
+	 */
+	private function tiebreaker_reorder($comp_id, &$table, $row, $fixtures) {
+		$tiebreakers = [];
+		$size = count($table);
+		$points = $table[$row]->points;
+		$start = $row;
+		for ($i = $row - 1; $i >= 0 && $table[$i]->points === $points; $i--) {
+			$start = $i;
+		}
+		for ($i = $start; $i < $size && $table[$i]->points === $points; $i++) {
+			$tiebreakers[$table[$i]->team] =
+				['points' => 0, 'goal_diff' => 0, 'wins' => 0, 'position' => $i + 1, 'row' => $table[$i]];
+		}
+		// calculate the head2head record for all teams on the same points
+		foreach ($fixtures as $fixture) {
+			if (array_key_exists($fixture['h'], $tiebreakers) && array_key_exists($fixture['a'], $tiebreakers)) {
+				$this->add_h2h($tiebreakers[$fixture['h']], $fixture['h_data']);
+				$this->add_h2h($tiebreakers[$fixture['a']], $fixture['a_data']);
+			}
+		}
+		// uasort to keep the key for team
+		uasort($tiebreakers, [$this, 'cmp_tiebreaker']);
+
+		$i = $start;
+		$order_changed = false;
+		foreach ($tiebreakers as $team => $tiebreaker) {
+			if ($table[$i]->team !== $team) {
+				$order_changed = true;
+				$table[$i] = $tiebreaker['row'];
+				$table[$i]->tiebreaker = 1;
+			}
+			$i++;
+		}
+		if (!Tiebreaker_Gateway::save($comp_id, $start + 1, $points, $tiebreakers)) {
+			$this->add_db_error('Failed to save tiebreakers table');
+			return;
+		}
+		$this->status[] = 'A tie-break occurred for ' . $this->get_competition_name($comp_id)
+			. ', start position ' . ($start + 1)
+			. ', positions ' . ($order_changed ? 'WERE ' : 'were NOT ') . 'changed';
+	}
+
+	private function add_h2h(&$h2h_row, $data) {
+		$h2h_row['points'] += $data['points'];
+		$h2h_row['goal_diff'] += $data['goal_diff'];
+		$h2h_row['wins'] += $data['win'];
+	}
+
+	/**
 	 * Compare 2 rows in league tables tables
 	 */
 	private function cmp_tables($a, $b) {
 		$cmp = $b->points - $a->points;
 		if ($cmp) return $cmp;
-		$cmp = $b->goal_avg - $a->goal_avg;
+		if ($b->goal_avg !== $a->goal_avg)
+			return ($a->goal_avg > $b->goal_avg) ? -1 : 1;
+		return strcmp($a->team, $b->team);
+	}
+
+	/**
+	 * Compare 2 rows in tiebreaker
+	 */
+	private function cmp_tiebreaker($a, $b) {
+		$cmp = $b['points'] - $a['points'];
 		if ($cmp) return $cmp;
-		$cmp = strcmp($a->team, $b->team);
+		$cmp = $b['goal_diff'] - $a['goal_diff'];
+		if ($cmp) return $cmp;
+		$cmp = $b['wins'] - $a['wins'];
+		if ($cmp) return $cmp;
+		return strcmp($a['row']->team, $b['row']->team);
+	}
+
+	private function get_competition_name($comp_id) {
+		if ($this->competition_by_id == null) {
+			// lazy load array
+			$this->competition_by_id = array_column($this->competitions, 'name', 'id');
+		}
+		return $this->competition_by_id[$comp_id];
 	}
 
 	private function load_flags() {
-		$rows = $this->get_rows('Flags', true, false);
+		$rows = $this->get_rows('Flags', false);
 		if (!$rows) return;
 
 		$row_count = count($rows);
@@ -522,8 +694,15 @@ class Fixtures_Sheet_Gateway {
 			$col = 2;
 			$round_cnt = 0;
 			while (!empty($cur_row[$col])) {
-				$round_cnt++;
-                $round_dates[] = [ $comp_id, $round_cnt, $this->convert_date($cur_row[$col]) ];
+				$date = $cur_row[$col];
+				if (is_int($date)) {
+					$this->error->add('flags', "Date is parsed as an integer. Format issues? Flags row $row col $col: $date");
+				} elseif (strlen($date) !== 19) {
+					$this->error->add('flags', "Invalid date format on Flags row $row col $col: $date");
+				} else {
+					$round_cnt++;
+					$round_dates[] = [ $comp_id, $round_cnt, substr($date, 0, 10) ];
+				}
 				$col += 5;
             }
 			if ($round_cnt > $this->max_flags_rounds) {
@@ -575,7 +754,7 @@ class Fixtures_Sheet_Gateway {
 			}
 			$matches[] = [$comp_id, $round, 1,
 				$team1, $team2, $team1_goals, $team2_goals, 0 ];
-			$row = $end_row + 1;
+			$row = $end_row + 3;
 			$count++;
 		}
 		if ($this->error->has_errors()) return;
@@ -587,36 +766,48 @@ class Fixtures_Sheet_Gateway {
 	}
 
 	/**
-	 * retrieve rows from spreadsheet sheet, ignoring header row
-	 * 
-	 * @param string $sheet sheet to return rows from, may include query params 
-	 * @param boolean $parse_csv if true will parse the rows into an array of elements,
-	 * 		otherwise just return the rows
-	 * @return array of rows as a string or parses csv
+	 * Fetch the Google Sheet, and parse it into a SimpleXLSX object
+	 * @return bool true on success, false otherwise
 	 */
-	private function get_rows($sheet, $parse_csv = true, $remove_header = true) {
-		$csv = Net_Util::get_url($this->url_base . $sheet, false);
-		if (is_wp_error(($csv))) {
-			$this->error->add( $csv->get_error_code(),
-				 $csv->get_error_message() . ' (check the Google Sheet is shared so everyone can view)');
-			return null;
+	private function fetch_google_sheet($fixtures_sheet_id) {
+		$xlsx = Net_Util::get_url("https://docs.google.com/spreadsheets/d/$fixtures_sheet_id/export?format=xlsx",
+		// expect an Excel sheet. If something went wrong, e.g. the sheet is not shared, then
+		// we get an html page
+			'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+		if (is_wp_error($xlsx)) {
+			if ($xlsx->get_error_code() === 'curl_unexpected_response_type') {
+				$xlsx->add('fixtures', 'Check the Google Sheet is shared');
+			}
+			return $xlsx;
 		}
-		$rows = explode( "\n", $csv );
-		if ($remove_header) {
-			array_shift($rows); // get rid of header
+		$this->xlsx = SimpleXLSX::parseData($xlsx);
+
+		// testing
+		// $this->xlsx = SimpleXLSX::parse(dirname(__DIR__,5) . '/Test.xlsx');
+		if (!$this->xlsx) {
+			return new WP_Error('xlsx_parse', 'Error parsing xlsx file: '. SimpleXLSX::parseError());
 		}
-		if (!$parse_csv) return $rows;
-		return array_map('str_getcsv', $rows );
+		$this->sheet_names = array_flip($this->xlsx->sheetNames());
+		return true;
 	}
 
-	private function convert_date($in_date) {
-		$date = explode('/',$in_date);
-		if (count($date) < 3) {
-			$this->error->add('fixtures', "invalid date found $in_date");
-			return $in_date;
+	/**
+	 * retrieve rows from sheet, ignoring header row
+	 * @param string $sheet sheet to return rows from
+	 * @return array|null array of rows, or null on failure
+	 */
+	private function get_rows($sheet, $remove_header = true) {
+		if (!array_key_exists($sheet,$this->sheet_names)) {
+			$this->error->add('fixtures', "Unknown sheet $sheet");
+			return null;
 		}
-        return $date[2] .'-' . str_pad($date[1],2,'0',STR_PAD_LEFT) . '-' . str_pad($date[0],2,'0',STR_PAD_LEFT);
-    }
+
+		$rows = $this->xlsx->rows($this->sheet_names[$sheet]);
+		if ($remove_header) {
+			unset($rows[0]); // get rid of header
+		}
+		return $rows;
+	}
 
 	/**
 	 * Revert the last fixtures update to the backup tables.

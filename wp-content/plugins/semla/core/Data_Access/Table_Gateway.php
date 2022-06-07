@@ -7,7 +7,6 @@ use Semla\Rest\Rest_Util;
  * Data access for league tables
  */
 class Table_Gateway {
-
 	/**
 	 * Return html for tables for a year
 	 * @param int $year year from history, or 0 for current
@@ -123,6 +122,8 @@ class Table_Gateway {
 			unset($row->comp_id);
 			unset($row->name);
 			$teams[] = $row;
+			$row->points = floatval($row->points);
+			$row->points_deducted = floatval($row->points_deducted);
 			if ($row->points_deducted) {
 				$has_points_deducted = true;
 			}
@@ -205,22 +206,25 @@ class Table_Gateway {
 			`goals_for` SMALLINT NOT NULL,
 			`goals_against` SMALLINT NOT NULL,
 			`goal_avg` DECIMAL (5,2) NOT NULL,
-			`points_deducted` SMALLINT NOT NULL,
-			`points` SMALLINT NOT NULL,
+			`points_deducted` decimal(4,1) NOT NULL,
+			`points` decimal(4,1) NOT NULL,
 			`divider` BOOLEAN NOT NULL,
 			`form` VARCHAR(40) NOT NULL,
+			`tiebreaker` BOOLEAN NOT NULL,
 			PRIMARY KEY (`comp_id`, `position`),
 			UNIQUE KEY `team_comp` (`team`,`comp_id`)');
         if ($result === false) return false;
 
 		$query = 'INSERT INTO new_table (comp_id, position, team, played, won, drawn, lost, goals_for,
-			goals_against, goal_avg, points_deducted, points, divider, form) VALUES ';
+			goals_against, goal_avg, points_deducted, points, divider, form, tiebreaker) VALUES ';
 		foreach ($tables as $comp_id => $table) {
+			$pos = 1;
 			foreach ($table as $team) {
 				$played = $team->won + $team->drawn + $team->lost;
-				$values[] = $wpdb->prepare("($comp_id,$team->position,%s,$played, $team->won, $team->drawn,"
+				$values[] = $wpdb->prepare("($comp_id,$pos,%s,$played, $team->won, $team->drawn,"
 					."$team->lost, $team->goals_for, $team->goals_against, $team->goal_avg, $team->points_deducted,"
-					."$team->points,$team->divider,'$team->form')",$team->team);
+					."$team->points,$team->divider,'$team->form',$team->tiebreaker)",$team->team);
+				$pos++;
 			}
 		}
         $query .= implode( ",\n", $values );

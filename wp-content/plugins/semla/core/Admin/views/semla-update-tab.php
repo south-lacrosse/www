@@ -4,17 +4,14 @@ season's data has been archived by running the <a href="https://github.com/south
 </div>
 <?php
 
-use Semla\Admin\Admin_Menu;
 use Semla\Utils\Util;
 
-$fixtures_sheet_id = get_option('semla_fixtures_sheet_id');
-if ($fixtures_sheet_id) { ?>
-<p>The fixtures will be loaded from <a href="<?= Util::get_fixtures_sheet_url($fixtures_sheet_id) ?>edit">the Fixtures Google Sheet</a>.<p>
+$fixtures_sheet_id = get_option('semla_fixtures_sheet_id'); ?>
+<p><?php if ($fixtures_sheet_id) { ?>
+The fixtures will be loaded from <a href="<?= Util::get_fixtures_sheet_url($fixtures_sheet_id) ?>edit">the Fixtures Google Sheet</a>.
+<?php } ?>
+See also <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/fixtures-sheet-format.md">Information on the Format of the Google Sheet</a>.</p>
 <?php
-} else {
-	Admin_Menu::dismissible_error_message('No Google Sheet specified yet.');
-}
-
 if (current_user_can('manage_semla'))  : ?>
 <p>To set the Google Sheet to use go to the <a href="?page=semla_settings">Settings Page</a>.</p>
 <?php else : ?>
