@@ -76,7 +76,7 @@ class App_Public {
 		remove_action('wp_print_styles', 'print_emoji_styles');
 		add_filter('emoji_svg_url', '__return_false'); // stops prefetch being added
 		remove_filter('the_content_feed', 'wp_staticize_emoji');
-		// remove_filter('comment_text_rss', 'wp_staticize_emoji');    
+		// remove_filter('comment_text_rss', 'wp_staticize_emoji');	
 		remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 
 		add_action('wp_head', function() {
@@ -165,8 +165,8 @@ class App_Public {
 		}
 	}
 
-    public static function history_breadcrumbs() {
-    	global $post;
+	public static function history_breadcrumbs() {
+		global $post;
 		// for fixtures grid enqueue the colhover javascript. Can do here
 		// as it's added in the footer
 		if (str_ends_with(get_the_title($post), ' Results Grid')) {
@@ -178,16 +178,16 @@ class App_Public {
 <nav><ul class="breadcrumbs nav-list">
 <li><a href="/history">History</a></li>
 <?php
-        $breadcrumbs = get_post_meta($post->ID, '_semla_breadcrumbs', true);
-        if ($breadcrumbs) {
-            foreach ( $breadcrumbs as $breadcrumb ) {
-                echo "<li><a href=\"/history/$breadcrumb[0]\">$breadcrumb[1]</a></li>";
-            }
-        }
+		$breadcrumbs = get_post_meta($post->ID, '_semla_breadcrumbs', true);
+		if ($breadcrumbs) {
+			foreach ( $breadcrumbs as $breadcrumb ) {
+				echo "<li><a href=\"/history/$breadcrumb[0]\">$breadcrumb[1]</a></li>";
+			}
+		}
 		echo '<li>';
-        add_filter('semla_change_the_title', '__return_false');
+		add_filter('semla_change_the_title', '__return_false');
 		the_title();
-        remove_filter('semla_change_the_title', '__return_false');
+		remove_filter('semla_change_the_title', '__return_false');
 		echo '</li></ul></nav>';
-    }
+	}
 }

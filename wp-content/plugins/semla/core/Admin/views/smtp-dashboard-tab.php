@@ -8,16 +8,16 @@ display the SMTP configuration.</p>
 <?php else : ?>
 <h2>Send a Test Email</h2>
 <form method="post">
-    <table class="form-table" role="presentation"><tbody>
-    <tr>
-        <th scope="row"><label for="send_to">Send To</label></th>
-        <td><input name="send_to" type="email" id="send_to" value="<?= esc_attr($send_to) ?>" required class="regular-text">
-    </tr>
-    </tbody></table>
-    <p class="submit">
-        <?php wp_nonce_field('semla_smtp') ?>
-        <input type="submit" class="button-primary" name="semla_send_test_email" value="Send Test Email" />
-    </p>
+	<table class="form-table" role="presentation"><tbody>
+	<tr>
+		<th scope="row"><label for="send_to">Send To</label></th>
+		<td><input name="send_to" type="email" id="send_to" value="<?= esc_attr($send_to) ?>" required class="regular-text">
+	</tr>
+	</tbody></table>
+	<p class="submit">
+		<?php wp_nonce_field('semla_smtp') ?>
+		<input type="submit" class="button-primary" name="semla_send_test_email" value="Send Test Email" />
+	</p>
 </form>
 <h2>SMTP Configuration</h2>
 <p>Note: this can only be changed by editing the <code>wp-config.php</code> file. See

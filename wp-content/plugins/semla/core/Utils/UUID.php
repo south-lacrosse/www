@@ -26,11 +26,11 @@
 namespace Semla\Utils;
 class UUID
 {
-    const NS_DNS     = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'; // FQDN
-    const NS_URL     = '6ba7b811-9dad-11d1-80b4-00c04fd430c8'; // URL
-    const NS_ISO_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8'; // ISO OID
+	const NS_DNS     = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'; // FQDN
+	const NS_URL     = '6ba7b811-9dad-11d1-80b4-00c04fd430c8'; // URL
+	const NS_ISO_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8'; // ISO OID
     const NS_X500_DN = '6ba7b814-9dad-11d1-80b4-00c04fd430c8'; // X.500 DN (in DER or a text output format)
-    
+	
 	/**
 	 * Generate v3 UUID
 	 *
@@ -165,6 +165,6 @@ class UUID
 
 	public static function is_valid($uuid) {
 		return preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?'.
-                      '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
+					  '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
 	}
 }

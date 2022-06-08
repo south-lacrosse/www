@@ -10,7 +10,7 @@ class Fixtures_Renderer {
 		'<abbr title="September">Sep</abbr>', '<abbr title="October">Oct</abbr>',
 		'<abbr title="November">Nov</abbr>', '<abbr title="December">Dec</abbr>'];
 
-    public function fixtures($year, $rows, $type, $arg, $is_cup, $options) {
+	public function fixtures($year, $rows, $type, $arg, $is_cup, $options) {
 		$keys = [];
 		$this->query_type = $type;
 		$this->options = $options;
@@ -104,7 +104,7 @@ class Fixtures_Renderer {
 				echo '<p class="no-print">Go to <a href="clubs/'.$options['club'][$arg]->club_page.'">club page</a></p>'."\n";
 			}
 		}
-    }
+	}
 	/**
 	 * Checks if date has changed, and if so emits a header.
 	 * Then emits start of row with date formatted as necessary - so

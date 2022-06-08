@@ -17,7 +17,7 @@ Underscores is distributed under the terms of the GNU GPL v2 or later.
 /* *********  IMPORTANT ************
 
 	If you make changes to this file then make sure you minify it, and bump
-    the version number in functions.php to make sure browsers pick up the new version
+	the version number in functions.php to make sure browsers pick up the new version
  */
 
 /* normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
@@ -30,25 +30,25 @@ Underscores is distributed under the terms of the GNU GPL v2 or later.
  * 2. Prevent adjustments of font size after orientation changes in iOS.
   */
 html {
-    /* line-height: 1.15;  1 DS set later */
-    -webkit-text-size-adjust: 100%; /* 2 */
+	/* line-height: 1.15;  1 DS set later */
+	-webkit-text-size-adjust: 100%; /* 2 */
 }
 
 /* Sections
-    ========================================================================== */
+	========================================================================== */
 
 /**
  * Remove the margin in all browsers.
  */
 body {
-    margin: 0;
+	margin: 0;
 }
 
 /**
  * Render the `main` element consistently in IE.
  */
 main {
-    display: block;
+	display: block;
 }
 
 /**
@@ -56,22 +56,22 @@ main {
  * `article` contexts in Chrome, Firefox, and Safari.
 DS set later
 h1 {
-    font-size: 2em;
-    margin: 0.67em 0;
+	font-size: 2em;
+	margin: 0.67em 0;
 }
  */
 
 /* Grouping content
-    ========================================================================== */
+	========================================================================== */
 
 /**
  * 1. Add the correct box sizing in Firefox.
  * 2. Show the overflow in Edge and IE.
  */
 hr {
-    box-sizing: content-box; /* 1 */
-    height: 0; /* 1 */
-    overflow: visible; /* 2 */
+	box-sizing: content-box; /* 1 */
+	height: 0; /* 1 */
+	overflow: visible; /* 2 */
 }
 
 /**
@@ -79,19 +79,19 @@ hr {
  * 2. Correct the odd `em` font sizing in all browsers.
  */
 pre {
-    /* DS No need, set later
-    font-family: monospace, monospace;  1 */
-    font-size: 1em; /* 2 */
+	/* DS No need, set later
+	font-family: monospace, monospace;  1 */
+	font-size: 1em; /* 2 */
 }
 
 /* Text-level semantics
-    ========================================================================== */
+	========================================================================== */
 
 /**
  * Remove the gray background on active links in IE 10.
  */
 a {
-    background-color: transparent;
+	background-color: transparent;
 }
 
 /**
@@ -100,9 +100,9 @@ a {
  */
  /* DS overridden later
 abbr[title] {
-    border-bottom: none; * 1 *
-    text-decoration: underline; * 2 *
-    text-decoration: underline dotted; * 2 *
+	border-bottom: none; * 1 *
+	text-decoration: underline; * 2 *
+	text-decoration: underline dotted; * 2 *
 }
 */
 
@@ -110,7 +110,7 @@ abbr[title] {
  * Add the correct font weight in Chrome, Edge, and Safari.
  */
 b, strong {
-    font-weight: 600; /* DS was bolder */
+	font-weight: 600; /* DS was bolder */
 }
 
 /**
@@ -120,16 +120,16 @@ b, strong {
 code
 /* DS don't use ,kbd, samp */
 {
-    /* DS No need, set later
-    font-family: monospace, monospace;  1 */
-    font-size: 1em; /* 2 */
+	/* DS No need, set later
+	font-family: monospace, monospace;  1 */
+	font-size: 1em; /* 2 */
 }
 
 /**
  * Add the correct font size in all browsers.
  */
 small {
-    font-size: 80%;
+	font-size: 80%;
 }
 
 /**
@@ -137,40 +137,40 @@ small {
  * all browsers.
  */
 sub, sup {
-    font-size: 75%;
-    line-height: 0;
-    position: relative;
-    vertical-align: baseline;
+	font-size: 75%;
+	line-height: 0;
+	position: relative;
+	vertical-align: baseline;
 }
 sub {
-    bottom: -0.25em;
+	bottom: -0.25em;
 }
 sup {
-    top: -0.5em;
+	top: -0.5em;
 }
 
 /* Embedded content
-    ========================================================================== */
+	========================================================================== */
 
 /**
  * Remove the border on images inside links in IE 10-.
  */
 img {
-    border-style: none;
+	border-style: none;
 }
 
 /* Forms
-    ========================================================================== */
+	========================================================================== */
 
 /**
  * 1. Change the font styles in all browsers.
  * 2. Remove the margin in Firefox and Safari.
  */
 button, input, optgroup, select, textarea {
-    font-family: inherit; /* 1 */
-    font-size: 100%; /* 1 */
-    line-height: 1.15; /* 1 */
-    margin: 0; /* 2 */
+	font-family: inherit; /* 1 */
+	font-size: 100%; /* 1 */
+	line-height: 1.15; /* 1 */
+	margin: 0; /* 2 */
 }
 
 /**
@@ -178,7 +178,7 @@ button, input, optgroup, select, textarea {
  * 1. Show the overflow in Edge.
  */
 button, input { /* 1 */
-    overflow: visible;
+	overflow: visible;
 }
 
 /**
@@ -186,7 +186,7 @@ button, input { /* 1 */
  * 1. Remove the inheritance of text transform in Firefox.
  */
 button, select { /* 1 */
-    text-transform: none;
+	text-transform: none;
 }
 
 /**
@@ -195,7 +195,7 @@ button, select { /* 1 */
 button, [type="button"],
 /* [type="reset"], DS don't use */
 [type="submit"] {
-    -webkit-appearance: button;
+	-webkit-appearance: button;
 }
 
 /**
@@ -204,8 +204,8 @@ button, [type="button"],
 button::-moz-focus-inner, [type="button"]::-moz-focus-inner,
 /* [type="reset"]::-moz-focus-inner, DS don't use */
 [type="submit"]::-moz-focus-inner {
-    border-style: none;
-    padding: 0;
+	border-style: none;
+	padding: 0;
 }
 
 /**
@@ -214,14 +214,14 @@ button::-moz-focus-inner, [type="button"]::-moz-focus-inner,
 button:-moz-focusring, [type="button"]:-moz-focusring,
 /* [type="reset"]:-moz-focusring,  DS don't use */
 [type="submit"]:-moz-focusring {
-    outline: 1px dotted ButtonText;
+	outline: 1px dotted ButtonText;
 }
 
 /**
  * Correct the padding in Firefox.
 DS don't use
 fieldset {
-    padding: 0.35em 0.75em 0.625em;
+	padding: 0.35em 0.75em 0.625em;
 }
 */
 
@@ -229,15 +229,15 @@ fieldset {
  * 1. Correct the text wrapping in Edge and IE.
  * 2. Correct the color inheritance from `fieldset` elements in IE.
  * 3. Remove the padding so developers are not caught out when they zero out
- *    `fieldset` elements in all browsers.
+ *	`fieldset` elements in all browsers.
 DS don't use
 legend {
-    box-sizing: border-box; * 1 *
-    color: inherit; * 2 *
-    display: table; * 1 *
-    max-width: 100%; * 1 *
-    padding: 0; * 3 *
-    white-space: normal; * 1 *
+	box-sizing: border-box; * 1 *
+	color: inherit; * 2 *
+	display: table; * 1 *
+	max-width: 100%; * 1 *
+	padding: 0; * 3 *
+	white-space: normal; * 1 *
 }
  */
 
@@ -245,7 +245,7 @@ legend {
  * Add the correct vertical alignment in Chrome, Firefox, and Opera.
 DS don't use
 progress {
-    vertical-align: baseline;
+	vertical-align: baseline;
 }
  */
 
@@ -253,7 +253,7 @@ progress {
  * Remove the default vertical scrollbar in IE 10 + .
  */
 textarea {
-    overflow: auto;
+	overflow: auto;
 }
 
 /**
@@ -261,15 +261,15 @@ textarea {
  * 2. Remove the padding in IE 10.
  */
 [type="checkbox"], [type="radio"] {
-    box-sizing: border-box; /* 1 */
-    padding: 0; /* 2 */
+	box-sizing: border-box; /* 1 */
+	padding: 0; /* 2 */
 }
 
 /**
  * Correct the cursor style of increment and decrement buttons in Chrome.
  DS Don't use
 [type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button {
-    height: auto;
+	height: auto;
 }
  */
 
@@ -278,15 +278,15 @@ textarea {
  * 2. Correct the outline style in Safari.
  */
 [type="search"] {
-    -webkit-appearance: textfield; /* 1 */
-    outline-offset: 0; /* DS was -2px;  * 2 */
+	-webkit-appearance: textfield; /* 1 */
+	outline-offset: 0; /* DS was -2px;  * 2 */
 }
 
 /**
  * Remove the inner padding in Chrome and Safari on macOS.
  */
 [type="search"]::-webkit-search-decoration {
-    -webkit-appearance: none;
+	-webkit-appearance: none;
 }
 
 /**
@@ -294,20 +294,20 @@ textarea {
  * 2. Change font properties to `inherit` in Safari.
  DS don't use
 ::-webkit-file-upload-button {
-    -webkit-appearance: button; * 1 *
-    font: inherit; * 2 *
+	-webkit-appearance: button; * 1 *
+	font: inherit; * 2 *
 }
  */
 
 /* Interactive
-    ========================================================================== */
+	========================================================================== */
 
 /*
  * Add the correct display in Edge, IE 10 + , and Firefox.
 DS don't use 
 
 menu {
-    display: block;
+	display: block;
 } */
 
 /*
@@ -315,208 +315,208 @@ menu {
 DS don't use 
 
 summary {
-    display: list-item;
+	display: list-item;
 } */
 
 /* Misc
-    ========================================================================== */
+	========================================================================== */
 
 /**
  * Add the correct display in IE 10 + .
 DS don't use 
 
 template {
-    display: none;
+	display: none;
 } */
 
 /**
  * Add the correct display in IE 10-.
  */
 [hidden] {
-    display: none;
+	display: none;
 }
 
 /*-------------------- Now all our site specific stuff -----------------*/
 
 /* 1. Use border-box so all % sizes include border and padding */
 html {
-    box-sizing: border-box; /* 1 */
-    /* shows at bottom of page if body is not long enough */
-    background-color: #BEC3C6;
-    /* System fonts see https://booking.design/implementing-system-fonts-on-booking-com-a-lesson-learned-bdc984df627f */
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    font-size: 16px;
+	box-sizing: border-box; /* 1 */
+	/* shows at bottom of page if body is not long enough */
+	background-color: #BEC3C6;
+	/* System fonts see https://booking.design/implementing-system-fonts-on-booking-com-a-lesson-learned-bdc984df627f */
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 16px;
 }
 code, pre {
-    font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 }
 /* Allow plugins to rework box sizing - probably needed for Gmaps etc */
  *, *::before, *::after {
-    box-sizing: inherit;
+	box-sizing: inherit;
 }
 
 /*--------------------- Page areas -------------------*/
 
 body {
-    line-height: 1.5;
-    color: #333;
-    background-color: #fff;
+	line-height: 1.5;
+	color: #333;
+	background-color: #fff;
 }
 button {
-    line-height: 1.5;
+	line-height: 1.5;
 }
 .inner {
-    max-width: 980px;
-    margin: 0 auto;
+	max-width: 980px;
+	margin: 0 auto;
 }
 .middle {
-    padding-left: 0.75em;
-    padding-right: 0.75em;
+	padding-left: 0.75em;
+	padding-right: 0.75em;
 }
 #content {
-    padding-top: 0.5em;
-    /* Make sure really long text doesn't overflow the container, e.g. URLs
-        can be pretty long */
-    /* These are technically the same, but use both as older browsers use one, modern another */
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    /* Adds a hyphen where the word breaks, if supported */
-    hyphens: auto;
+	padding-top: 0.5em;
+	/* Make sure really long text doesn't overflow the container, e.g. URLs
+		can be pretty long */
+	/* These are technically the same, but use both as older browsers use one, modern another */
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	/* Adds a hyphen where the word breaks, if supported */
+	hyphens: auto;
 }
 #sidebar-mini-tables {
-    display: none;
+	display: none;
 }
 @media screen and (min-width: 680px) {
-    .middle {
-        padding-left: 1.5em;
-        padding-right: 1.5em;
-    }
-    /* #content */.with-sidebar {
-        float: left;
-        width: 66%;
-    }
-    #sidebar {
-        display: block;
-        width: 33%;
-        float: left;
-        padding-left: 1em;
-    }
-    /* We float left here as recent posts block has clear:both, so if we float left & right then
-        the block will be below the sidebar! See https://alistapart.com/article/negativemargins/ */
-    /* #content */.with-mini-tables {
-        margin-right: -14.5em;
-        float: left;
-        width: 100%;
-    }
-    .with-mini-tables-inner {
-        margin-right: 14.5em;
-        margin-bottom: 1em;
-    }
-    #sidebar-mini-tables {
-        padding-top: 0.5em;
-        padding-left: 0.75rem;
-        display: block;
-        font-size: 0.875em;
-        float: left; /* clear: right; needed if toggle-menu can be displayed at the same time as sidebar */
-        width: 14.5rem;
-    }
+	.middle {
+		padding-left: 1.5em;
+		padding-right: 1.5em;
+	}
+	/* #content */.with-sidebar {
+		float: left;
+		width: 66%;
+	}
+	#sidebar {
+		display: block;
+		width: 33%;
+		float: left;
+		padding-left: 1em;
+	}
+	/* We float left here as recent posts block has clear:both, so if we float left & right then
+		the block will be below the sidebar! See https://alistapart.com/article/negativemargins/ */
+	/* #content */.with-mini-tables {
+		margin-right: -14.5em;
+		float: left;
+		width: 100%;
+	}
+	.with-mini-tables-inner {
+		margin-right: 14.5em;
+		margin-bottom: 1em;
+	}
+	#sidebar-mini-tables {
+		padding-top: 0.5em;
+		padding-left: 0.75rem;
+		display: block;
+		font-size: 0.875em;
+		float: left; /* clear: right; needed if toggle-menu can be displayed at the same time as sidebar */
+		width: 14.5rem;
+	}
 }
 .entry-footer {
-    margin: 0.75em 0;
+	margin: 0.75em 0;
 }
 #page-footer {
-    margin-top: 1em;
-    padding: 1em;
-    background-color: #333F48;
-    color: #fff;
-    clear: both;
+	margin-top: 1em;
+	padding: 1em;
+	background-color: #333F48;
+	color: #fff;
+	clear: both;
 }
 
 /*--------------------- Banner / menu setup -------------------*/
 
 .banner {
-    padding: 5px 7px;
+	padding: 5px 7px;
 }
 .logo {
-    display: inline-block;
-    text-indent: -9999px;
+	display: inline-block;
+	text-indent: -9999px;
 }
 .front-logo {
-    padding: 10px 0;
-    border-bottom: 1px solid #333;
+	padding: 10px 0;
+	border-bottom: 1px solid #333;
 }
 .nav-popular {
-    display: inline-block;
-    font-weight: bold;
-    font-size: 1.2em;
+	display: inline-block;
+	font-weight: bold;
+	font-size: 1.2em;
 }
 .pop-a {
-    margin-left: 0.6em;
-    padding: 0.35em;
-    color: #092A56;
-    text-decoration: none;
+	margin-left: 0.6em;
+	padding: 0.35em;
+	color: #092A56;
+	text-decoration: none;
 }
 .pop-a:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 .pop-a:visited {
-    color: #092A56;
+	color: #092A56;
 }
 #search {
-    width: 2.5rem;
-    height: 2.5rem;
-    background-image: url(img/search.png);
-    background-position: 50% 50%;
-    background-repeat: no-repeat;
-    text-indent: -9999px;
-    display: block;
+	width: 2.5rem;
+	height: 2.5rem;
+	background-image: url(img/search.png);
+	background-position: 50% 50%;
+	background-repeat: no-repeat;
+	text-indent: -9999px;
+	display: block;
 }
 .svg #search {
-    background-image: url(img/search.svg);
-    background-size: 1.5rem 1.5rem;
+	background-image: url(img/search.svg);
+	background-size: 1.5rem 1.5rem;
 }
 #close-menu {
-    display: none;
+	display: none;
 }
 /* When the screen is tall enough have a sticky menu */
 @media screen and (min-height: 500px) and (min-width: 680px) {
-    .menu-nav {
-        position: sticky;
-        z-index: 1; /* keep on top of any relative positioned elements in page */
-        top: 0;
-    }
-    /* make sure we don't move the target link down for anything in the menu (see below) */
-    .menu-nav :target::before {
-        display: none;
-        content: none;
-    }
+	.menu-nav {
+		position: sticky;
+		z-index: 1; /* keep on top of any relative positioned elements in page */
+		top: 0;
+	}
+	/* make sure we don't move the target link down for anything in the menu (see below) */
+	.menu-nav :target::before {
+		display: none;
+		content: none;
+	}
 }
 @media screen and (min-height: 500px) {
-    /* Need to move the link target down 40px so as not to be obscured by the sticky menu,
-    i.e. when we have internal links such at #Referees  */
-    :target::before {
-        display: block;
-        content: " ";
-        margin-top: -40px;
-        height: 40px;
-        visibility: hidden;
-    }
+	/* Need to move the link target down 40px so as not to be obscured by the sticky menu,
+	i.e. when we have internal links such at #Referees  */
+	:target::before {
+		display: block;
+		content: " ";
+		margin-top: -40px;
+		height: 40px;
+		visibility: hidden;
+	}
 }
 @media screen and (min-height: 500px) and (max-width: 679px) {
-    body > header {
-        width: 100%;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-    }
-    .middle {
-        margin-top: 46px; /* for the fixed header */
-    }
-    :target::before {
-        margin-top: -46px;
-        height: 46px;
-    }
+	body > header {
+		width: 100%;
+		position: fixed;
+		z-index: 1;
+		top: 0;
+	}
+	.middle {
+		margin-top: 46px; /* for the fixed header */
+	}
+	:target::before {
+		margin-top: -46px;
+		height: 46px;
+	}
 }
 /* class names are short 
 mu = menu ul tag, mu0-1 = depth
@@ -525,1032 +525,1032 @@ mp = menu parent, used for dropdown menu
 mi0 = menu item + depth
 ml0-1 = menu li tag with depth */
 .mu {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+	margin: 0;
+	padding: 0;
+	list-style: none;
 }
 .ma {
-    text-decoration: none;
+	text-decoration: none;
 }
 .ma[rel]::after {
-    /* menu items with rel="nofollow" are external */
-    margin-left: 0.5em;
-    width: 1.15em;
-    height: 1.15em;
-    content: ''; /* need content or it won't display */
+	/* menu items with rel="nofollow" are external */
+	margin-left: 0.5em;
+	width: 1.15em;
+	height: 1.15em;
+	content: ''; /* need content or it won't display */
 }
 
 @media screen and (min-width: 680px) {
-    .logo {
-        background-image: url(img/logo-45.png);
-        width: 72px;
-        height: 45px;
-    }
-    .main-header {
-        background-color: #F6F6F6;
-    }
-    .banner {
-        line-height: 45px;
-    }
-    /* leave media query in as stops downloading the image for mobile */
-    .house {
-        background-image: url(img/home.png);
-        background-position: center;
-        background-repeat: no-repeat;
-        width: 2.5em;
-        text-indent: -9999px;
-    }
-    .svg .house {
-        background-image: url(img/home.svg);
-        background-size: 1.5em;
-    }
-    .menu-wrapper {
-        /* allow search to float right */
-        display: inline-block;
-    }
-    #search {
-        float: right;
-    }
-    #show-menu {
-        display: none;
-    }
-    .ma {
-        display: block;
-        padding: 0.5em 0.6em;
-    }
-    .ma, .ma:visited {
-        color: #fff;
-    }
-    /* look like it's clicked */
-    .ma:not(.mp):active, #search:active {
-        position: relative;
-        top: 1px;
-    }
-    .mp {
-        padding-right: 1.6em;
-        background-image: url(img/chevron-down.png);
-        background-position: right 0.5em center;
-        background-repeat: no-repeat;
-    }
-    .svg .mp {
-        background-image: url(img/chevron-down.svg);
-        background-size: auto 0.8em;
-    }
-    .ml0 {
-        display: inline-block;
-        position: relative;
-        border-left: 1px solid #999;
-    }
-    li.ml0:first-child {
-        border-left: 0;
-    }
-    .mu1 {
-        display: none;
-        position: absolute;
-        z-index: 3;
-        box-shadow: 4px 4px 3px rgba(0, 0, 0, 0.3);
-        width: auto;
-        white-space: nowrap;
-    }
-    li:last-child > .mu1 {
-        right: 0;
-    }
-    .menu-nav, .menu-wrapper, .mu {
-        background-color: #A91717;
-    }
-    .ma:hover, #search:hover { 
-        background-color: #d03030;
-    }
-    .mi0.open {
-        background-color: #bd2b2b; /* #760000; */
-    }
-    .ml1 {
-        border-top: 1px solid #900000;/*  #9D0A0E;*/
-    }
-    .ma[rel]::after {
-        background-image: url(img/external-link.svg);
-    }
-    /* No javascript so display menu on hover */
-    .no-js .ml0:hover > ul {
-        display: block
-    }    
-    /* level 3 if needed
-    .mu2 {
-        left: 100%;
-        top: 0;
-    }
-    .ma2 {
-        background-color: #249578;
-        border-top: 1px solid #1d7a62;
-    }
-    */
+	.logo {
+		background-image: url(img/logo-45.png);
+		width: 72px;
+		height: 45px;
+	}
+	.main-header {
+		background-color: #F6F6F6;
+	}
+	.banner {
+		line-height: 45px;
+	}
+	/* leave media query in as stops downloading the image for mobile */
+	.house {
+		background-image: url(img/home.png);
+		background-position: center;
+		background-repeat: no-repeat;
+		width: 2.5em;
+		text-indent: -9999px;
+	}
+	.svg .house {
+		background-image: url(img/home.svg);
+		background-size: 1.5em;
+	}
+	.menu-wrapper {
+		/* allow search to float right */
+		display: inline-block;
+	}
+	#search {
+		float: right;
+	}
+	#show-menu {
+		display: none;
+	}
+	.ma {
+		display: block;
+		padding: 0.5em 0.6em;
+	}
+	.ma, .ma:visited {
+		color: #fff;
+	}
+	/* look like it's clicked */
+	.ma:not(.mp):active, #search:active {
+		position: relative;
+		top: 1px;
+	}
+	.mp {
+		padding-right: 1.6em;
+		background-image: url(img/chevron-down.png);
+		background-position: right 0.5em center;
+		background-repeat: no-repeat;
+	}
+	.svg .mp {
+		background-image: url(img/chevron-down.svg);
+		background-size: auto 0.8em;
+	}
+	.ml0 {
+		display: inline-block;
+		position: relative;
+		border-left: 1px solid #999;
+	}
+	li.ml0:first-child {
+		border-left: 0;
+	}
+	.mu1 {
+		display: none;
+		position: absolute;
+		z-index: 3;
+		box-shadow: 4px 4px 3px rgba(0, 0, 0, 0.3);
+		width: auto;
+		white-space: nowrap;
+	}
+	li:last-child > .mu1 {
+		right: 0;
+	}
+	.menu-nav, .menu-wrapper, .mu {
+		background-color: #A91717;
+	}
+	.ma:hover, #search:hover { 
+		background-color: #d03030;
+	}
+	.mi0.open {
+		background-color: #bd2b2b; /* #760000; */
+	}
+	.ml1 {
+		border-top: 1px solid #900000;/*  #9D0A0E;*/
+	}
+	.ma[rel]::after {
+		background-image: url(img/external-link.svg);
+	}
+	/* No javascript so display menu on hover */
+	.no-js .ml0:hover > ul {
+		display: block
+	}	
+	/* level 3 if needed
+	.mu2 {
+		left: 100%;
+		top: 0;
+	}
+	.ma2 {
+		background-color: #249578;
+		border-top: 1px solid #1d7a62;
+	}
+	*/
 }
 @media screen and (max-width: 679px) {
-    .logo {
-        background-image: url(img/logo-36.png);
-        width: 58px;
-        height: 36px;
-    }
-    .banner {
-        text-align: center;
-        position: relative; /* allow show-menu to be absolute compared to this */
-    }
-    .nav-popular {
-        display: none;
-    }
-    /* if the user has javascript then hide the menu off-screen */
-    .js .menu-wrapper {
-        position: fixed;
-        top: 0;
-        /* left MUST be larger than the max width of the menu, but
-            if it's too big the transition won't look good */
-        left: -350px;
-        height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
-        transition: left .3s;
-        z-index: 3;
-        /* don't display:none as that ruins the animation, but need to
-         stop focus onto hidden elements, so we use visible */
-        visibility: hidden;
-    }
-    /* See main.js for reason for .visible */
-    .visible .menu-wrapper {
-        visibility: visible;
-    }
-    /* if they don't have javascript, then swap the order of the
-    menu and content area. The hamburger links to the menu, so 
-    the user can click there to access it. */
-    .no-js > body {
-        display: flex;
-        flex-direction: column;
-    }
-    .no-js header {
-        order: 1;
-    }
-    .no-js .menu-nav {
-        order: 3;
-    }
-    .no-js .middle {
-        order: 2;
-        width: 100%;
-        max-width: 100%; /* Stops div being wider than the screen if a word is longer than screen width  */
-    }
-    .no-js footer {
-        order: 4;
-    }
-    .no-js #main-menu {
-        border-top: 1px solid #555;
-        padding-top: 0.5em;
-        background-color: #f6f6f6;
-    }
-    .no-js #page-footer {
-        margin-top: 0;
-    }
-    .banner {
-        background-color: #A91717;
-    }
-    #show-menu, #close-menu {
-        background-position: 50% 50%;
-        background-repeat: no-repeat;
-    }
-    #show-menu {
-        text-indent: -9999px;
-        position: absolute;
-        top: 3px;
-        left: 5px;
-        width: 40px;
-        height: 40px;
-        background-image: url(img/menu.png);
-        z-index: 1;
-        text-indent: -9999px;
-    }
-    .svg #show-menu {
-        background-image: url(img/menu.svg);
-        background-size: 30px 30px;
-    }
-    #search {
-        position: fixed;
-        top: 3px;
-        right: 5px;
-        z-index: 1;
-    }
-    .js #close-menu {
-        display: inline-block;
-        margin: 3px 0 0 7px;
-    }
-    .svg.js #close-menu {
-        background-color: #fff;
-        cursor: pointer;
-        border: 0;
-        text-indent: -9999px;
-        width: 40px;
-        height: 40px;
-        background-image: url(img/close.svg);
-        background-size: 24px 24px;
-    }
-    #overlay {
-        z-index: 2;
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 0;
-        opacity: 0;
-        background-color: #000;
-        transition: opacity .3s;
-    }
-    .js .menu-wrapper {
-        background-color: #fff;
-        border-right: 1px solid #000;
-    }
-    .show > .menu-wrapper {
-        left: 0;
-    }
-    .show > #overlay {
-        width: 100%;
-        opacity: 0.6;
-    }
-    #main-menu {
-        padding: 0 1.5em 0.75em 0.75em;
-        line-height: 2;
-        white-space: nowrap;
-    }
-    .mp {
-        font-weight: 600;
-        padding: 0;
-        margin-top: 6px;
-        cursor: default;
-        pointer-events: none;
-    }
-    .ma:not(.mp) {
-        border-bottom: 2px solid #A91717;
-    }
-    .ma, .ma:visited {
-        color: #333;
-    }
-    .mu1 {
-        margin-left: 1.5em;
-    }
-    .ma[rel]::after {
-        background-image: url(img/external-link-black.svg);
-        margin-bottom: 3px;
-    }
+	.logo {
+		background-image: url(img/logo-36.png);
+		width: 58px;
+		height: 36px;
+	}
+	.banner {
+		text-align: center;
+		position: relative; /* allow show-menu to be absolute compared to this */
+	}
+	.nav-popular {
+		display: none;
+	}
+	/* if the user has javascript then hide the menu off-screen */
+	.js .menu-wrapper {
+		position: fixed;
+		top: 0;
+		/* left MUST be larger than the max width of the menu, but
+			if it's too big the transition won't look good */
+		left: -350px;
+		height: 100%;
+		overflow-y: auto;
+		overflow-x: hidden;
+		transition: left .3s;
+		z-index: 3;
+		/* don't display:none as that ruins the animation, but need to
+		 stop focus onto hidden elements, so we use visible */
+		visibility: hidden;
+	}
+	/* See main.js for reason for .visible */
+	.visible .menu-wrapper {
+		visibility: visible;
+	}
+	/* if they don't have javascript, then swap the order of the
+	menu and content area. The hamburger links to the menu, so 
+	the user can click there to access it. */
+	.no-js > body {
+		display: flex;
+		flex-direction: column;
+	}
+	.no-js header {
+		order: 1;
+	}
+	.no-js .menu-nav {
+		order: 3;
+	}
+	.no-js .middle {
+		order: 2;
+		width: 100%;
+		max-width: 100%; /* Stops div being wider than the screen if a word is longer than screen width  */
+	}
+	.no-js footer {
+		order: 4;
+	}
+	.no-js #main-menu {
+		border-top: 1px solid #555;
+		padding-top: 0.5em;
+		background-color: #f6f6f6;
+	}
+	.no-js #page-footer {
+		margin-top: 0;
+	}
+	.banner {
+		background-color: #A91717;
+	}
+	#show-menu, #close-menu {
+		background-position: 50% 50%;
+		background-repeat: no-repeat;
+	}
+	#show-menu {
+		text-indent: -9999px;
+		position: absolute;
+		top: 3px;
+		left: 5px;
+		width: 40px;
+		height: 40px;
+		background-image: url(img/menu.png);
+		z-index: 1;
+		text-indent: -9999px;
+	}
+	.svg #show-menu {
+		background-image: url(img/menu.svg);
+		background-size: 30px 30px;
+	}
+	#search {
+		position: fixed;
+		top: 3px;
+		right: 5px;
+		z-index: 1;
+	}
+	.js #close-menu {
+		display: inline-block;
+		margin: 3px 0 0 7px;
+	}
+	.svg.js #close-menu {
+		background-color: #fff;
+		cursor: pointer;
+		border: 0;
+		text-indent: -9999px;
+		width: 40px;
+		height: 40px;
+		background-image: url(img/close.svg);
+		background-size: 24px 24px;
+	}
+	#overlay {
+		z-index: 2;
+		position: fixed;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 0;
+		opacity: 0;
+		background-color: #000;
+		transition: opacity .3s;
+	}
+	.js .menu-wrapper {
+		background-color: #fff;
+		border-right: 1px solid #000;
+	}
+	.show > .menu-wrapper {
+		left: 0;
+	}
+	.show > #overlay {
+		width: 100%;
+		opacity: 0.6;
+	}
+	#main-menu {
+		padding: 0 1.5em 0.75em 0.75em;
+		line-height: 2;
+		white-space: nowrap;
+	}
+	.mp {
+		font-weight: 600;
+		padding: 0;
+		margin-top: 6px;
+		cursor: default;
+		pointer-events: none;
+	}
+	.ma:not(.mp) {
+		border-bottom: 2px solid #A91717;
+	}
+	.ma, .ma:visited {
+		color: #333;
+	}
+	.mu1 {
+		margin-left: 1.5em;
+	}
+	.ma[rel]::after {
+		background-image: url(img/external-link-black.svg);
+		margin-bottom: 3px;
+	}
 }
 
 /*--------------------- Footer & breadcrumbs -------------------*/
 
 .nav-list /* ul */ {
-    margin: 0.5em 0 0.67em 0;
-    padding: 0;
-    list-style-type: none;
+	margin: 0.5em 0 0.67em 0;
+	padding: 0;
+	list-style-type: none;
 }
 .breadcrumbs {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 .nav-list > li {
-    display: inline-block;
+	display: inline-block;
 }
 .copy {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 .breadcrumbs > li + li::before {
-    content: " > ";
-    padding: 0 5px;
+	content: " > ";
+	padding: 0 5px;
 }
 .soc-h {
-    color: #fff;
-    margin: 0;
-    padding-right: 5px;
-    display: inline;
-    font-size: inherit;
-    padding-bottom: 0;
-    border-bottom: none;
+	color: #fff;
+	margin: 0;
+	padding-right: 5px;
+	display: inline;
+	font-size: inherit;
+	padding-bottom: 0;
+	border-bottom: none;
 }
 .soc-a {
-    color: #fff;
-    text-decoration: none;
-    margin-left: 15px;
+	color: #fff;
+	text-decoration: none;
+	margin-left: 15px;
 }
 .soc-a:visited {
-    color: #fff;
+	color: #fff;
 }
 .soc-a:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 @media (max-width: 480px) {
-    .soc-h {
-        display: block;
-        padding: 0 0 10px 0;
-    }
-    .soc-a {
-        display: inline-block;
-        margin: 0 10px 10px 0;
-    }
+	.soc-h {
+		display: block;
+		padding: 0 0 10px 0;
+	}
+	.soc-a {
+		display: inline-block;
+		margin: 0 10px 10px 0;
+	}
 }
 
 /*--------------------- Headings -------------------*/
 
 h1 {
-    font-size: 1.75em;
-    margin: 0 0 0.67em 0;
+	font-size: 1.75em;
+	margin: 0 0 0.67em 0;
 }
 h1, h2 {
-    padding-bottom: 0.1em;
-    border-bottom: 1px solid #EEE;
+	padding-bottom: 0.1em;
+	border-bottom: 1px solid #EEE;
 }
 .with-byline {
-    margin-bottom: 0.2em;
+	margin-bottom: 0.2em;
 }
 h2 {
-    font-size: 1.5em;
-    margin: 1em 0 0.5em 0;
+	font-size: 1.5em;
+	margin: 1em 0 0.5em 0;
 }
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 600;
+	font-weight: 600;
 }
 /* h2 */.after-nav {
-    margin-top: 0.5em;
+	margin-top: 0.5em;
 }
 /* h2 */.flags-rounds {
-    margin-top: 2em;
+	margin-top: 2em;
 }
 #data-area > h2, #sidebar > h2 {
-    margin-top: 0;
+	margin-top: 0;
 }
 h3 {
-    font-size: 1.15em;
-    margin: 1.25em 0 0.67em 0;
+	font-size: 1.15em;
+	margin: 1.25em 0 0.67em 0;
 }
 h4 {
-    font-size: 1em;
-    margin: 1em 0;
+	font-size: 1em;
+	margin: 1em 0;
 }
 
 /*--------------------- Meta info -------------------*/
 
 .updated:not(.published) {
-    display: none;
+	display: none;
 }
 .entry-meta {
-    margin-bottom: 0.8em;
-    font-size: 0.875em;
+	margin-bottom: 0.8em;
+	font-size: 0.875em;
 }
 /* meta information */
 .meta {
-    color: #707070;
+	color: #707070;
 }
 
 /*--------------------- Search / results  -------------------*/
 
 /* short names, prefix s=search, form/input/label/submit */
 .sf {
-    margin: 1.5em 0;
+	margin: 1.5em 0;
 }
 .si {
-    width: 100%;
-    outline-color: #007cba;
+	width: 100%;
+	outline-color: #007cba;
 	border: 1px solid #ccc;
 	border-radius: 3px;
 	padding: 3px;
-    line-height: 1.5;
+	line-height: 1.5;
 }
 @media (max-width: 479px) {
-    .sf {
-        line-height: 2.25;
-    }
+	.sf {
+		line-height: 2.25;
+	}
 }
 @media (min-width: 480px) {
-    .sf {
-        display: table;
-        width: 100%;
-        max-width: 640px;
-    }
-    .ss, .sl {
-        display: table-cell;
-    }
-    .btn.ss {
-        vertical-align: inherit; /* undo .btn align */
-    }
-    .sl {
-        width: 100%;
-        padding-right: 0.5em;
-    }
+	.sf {
+		display: table;
+		width: 100%;
+		max-width: 640px;
+	}
+	.ss, .sl {
+		display: table-cell;
+	}
+	.btn.ss {
+		vertical-align: inherit; /* undo .btn align */
+	}
+	.sl {
+		width: 100%;
+		padding-right: 0.5em;
+	}
 }
 /* short names, prefix r=results */
 .rd {
-    font-size: 0.875em;
-    line-height: 1.4;
-    margin-bottom: 1.75em;
+	font-size: 0.875em;
+	line-height: 1.4;
+	margin-bottom: 1.75em;
 }
 .rh {
-    font-size: 1.25em;
-    font-weight: normal;
-    margin: 0 0 3px 0;
+	font-size: 1.25em;
+	font-weight: normal;
+	margin: 0 0 3px 0;
 }
 .ra {
-    text-decoration: none;
+	text-decoration: none;
 }
 .ra:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 .rd > p {
-    margin: 0;
+	margin: 0;
 }
 
 /*--------------------- Links -------------------*/
 
 a {
-    color: #003399;
+	color: #003399;
 }
 a:visited {
-    color: #551A8B;
+	color: #551A8B;
 }
 .nodecor, .no-ul {
-    text-decoration: none;
+	text-decoration: none;
 }
 .no-ul:hover {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 
 /*--------------- Paragraph -----------------------*/
 
 p, figure {
-    margin: 1em 0;
+	margin: 1em 0;
 }
 figure > table:last-child {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 /* single use - fixtures */
 .big {
-    line-height: 2.5;
+	line-height: 2.5;
 }
 
 /*--------------- Images -----------------------*/
 
 img {
-    /* fit images to container */
-    max-width: 100%;
-    height: auto;
-    border: 0;
+	/* fit images to container */
+	max-width: 100%;
+	height: auto;
+	border: 0;
 }
 #content img {
-    border: 1px solid #333;
+	border: 1px solid #333;
 }
 .border {
-    border: 1px solid #333;
-    /* Think images with borders resize if border-box */
-    box-sizing: content-box;
+	border: 1px solid #333;
+	/* Think images with borders resize if border-box */
+	box-sizing: content-box;
 }
 
 /*--------------- Forms/Buttons ----------------------*/
 
 form {
-    margin: 0;
+	margin: 0;
 }
 .selform {
-    display: inline;
-    white-space: nowrap;
+	display: inline;
+	white-space: nowrap;
 }
 .js .selform > input {
-    display: none;
+	display: none;
 }
 .btn, a.btn {
-    padding: 4px 8px;
-    margin-bottom: 0;
-    font-weight: normal;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-    border-radius: 4px;
-    text-decoration: none;
-    color: #333;
-    border: 1px solid #ccc;
-    background-color: #F1F1F1;
+	padding: 4px 8px;
+	margin-bottom: 0;
+	font-weight: normal;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	border-radius: 4px;
+	text-decoration: none;
+	color: #333;
+	border: 1px solid #ccc;
+	background-color: #F1F1F1;
 }
 .btn:hover {
-    background-color: #e6e6e6;
-    border-color: #adadad;
+	background-color: #e6e6e6;
+	border-color: #adadad;
 }
 .btn:active, .btn.active {
-    outline: 0;
-    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-    background-color: #e6e6e6;
-    border-color: #adadad;
+	outline: 0;
+	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+	background-color: #e6e6e6;
+	border-color: #adadad;
 }
 .btn.active:hover, .btn.active:focus {
-    background-color: #d4d4d4;
-    border-color: #8c8c8c;
+	background-color: #d4d4d4;
+	border-color: #8c8c8c;
 }
 /* assumes buttons with images don't have text - if that changes then add it as a class */
 .btn img {
-    vertical-align: bottom;
+	vertical-align: bottom;
 }
 
 /*--------------- Generic -----------------------*/
 
 /* next 3 from Wordpress */
 .alignleft {
-    float: left;
-    margin-right: 1.5em;
+	float: left;
+	margin-right: 1.5em;
 }
 .alignright {
-    float: right;
-    margin-left: 1.5em;
+	float: right;
+	margin-left: 1.5em;
 }
 .aligncenter {
-    clear: both;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+	clear: both;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 .left {
-    text-align: left;
+	text-align: left;
 }
 .right {
-    text-align: right;
+	text-align: right;
 }
 .center {
-    text-align: center;
+	text-align: center;
 }
 .center.left {
-    text-align: left;
+	text-align: left;
 }
 .indent {
-    margin-left: 1.5em;
+	margin-left: 1.5em;
 }
 .nowrap {
-    white-space: nowrap;
+	white-space: nowrap;
 }
 .grey {
-    background-color: #eee;
+	background-color: #eee;
 }
 
 /*--------------- Table of contents ----------------*/
 
 #semla_toc {
-    background: #fff;
+	background: #fff;
 }
 #semla_toc-nav {
-    background: #fafafa;
-    border: 1px solid #CCC;
-    margin: 0;
-    padding: 0.5em 0.75em 0 1em;
+	background: #fafafa;
+	border: 1px solid #CCC;
+	margin: 0;
+	padding: 0.5em 0.75em 0 1em;
 }
 #semla_toc-nav > h4 {
-    margin-top: 0;
-    margin-bottom: 0.5em;
-    display: inline-block;
+	margin-top: 0;
+	margin-bottom: 0.5em;
+	display: inline-block;
 }
 #semla_toc-list {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 #semla_toc-nav ul {
-    list-style-type: none;
+	list-style-type: none;
 }
 #semla_toc-list ul {
-    margin-left: 30px;
-    margin-top: 0.5em;
-    padding-left: 0;
+	margin-left: 30px;
+	margin-top: 0.5em;
+	padding-left: 0;
 }
 #semla_toc-nav a {
-    text-decoration: underline;
+	text-decoration: underline;
 }
 #semla_toc-list li {
-    margin-bottom: 0.5em;
+	margin-bottom: 0.5em;
 }
 @media (min-width: 640px) {
-    #semla_toc {
-        padding: 0 0 1em 1em;
-        float: right;
-    }
+	#semla_toc {
+		padding: 0 0 1em 1em;
+		float: right;
+	}
 }
 @media (max-width: 639px) {
-    #semla_toc {
-        display: inline-block;
-    }
-    .no-js #semla_toc {
-        display: none;
-    }
+	#semla_toc {
+		display: inline-block;
+	}
+	.no-js #semla_toc {
+		display: none;
+	}
 }
 
 /*--------------- Tables -----------------------*/
 
 table {
-    border-collapse: collapse;
-    border-spacing: 0;
-    margin-bottom: 1.25em;
+	border-collapse: collapse;
+	border-spacing: 0;
+	margin-bottom: 1.25em;
 }
 th, td {
-    padding: 0.3125em 0.75em;
+	padding: 0.3125em 0.75em;
 }
 @media screen and (max-width: 679px) {
-    th, td {
-        padding: 0.3125em 0 0.3125em 0.75em;
-    }
-    th:first-child, td:first-child {
-        padding-left: 0;
-    }
-    .is-style-boxed-striped td, .is-style-boxed-striped th {
-        padding: 0.3125em;
-    }
+	th, td {
+		padding: 0.3125em 0 0.3125em 0.75em;
+	}
+	th:first-child, td:first-child {
+		padding-left: 0;
+	}
+	.is-style-boxed-striped td, .is-style-boxed-striped th {
+		padding: 0.3125em;
+	}
 }
 /* td & th inherit */
 tbody {
-    vertical-align: top;
+	vertical-align: top;
 }
 thead {
-    vertical-align: bottom;
+	vertical-align: bottom;
 }
 th {
-    text-align: left;
+	text-align: left;
 }
 .is-style-boxed-striped td, .is-style-boxed-striped th {
-    border: 1px solid #ddd;
+	border: 1px solid #ddd;
 }
 .is-style-lined tbody th, .is-style-lined td {
-    border-top: 1px solid #ddd;
+	border-top: 1px solid #ddd;
 }
 .is-style-boxed-striped tbody tr:nth-of-type(odd) {
-    background-color: #f9f9f9;
+	background-color: #f9f9f9;
 }
 /** only 2px in table heading */
 .is-style-boxed-striped thead th,
 .is-style-lined thead th {
-    border-bottom: 2px solid #ddd;
+	border-bottom: 2px solid #ddd;
 }
 /* first one is for wordpress */
 .compact > table, .compact {
-    width: auto;
+	width: auto;
 }
 
 .table-data {
-    text-align: center;
-    width: 100%;
+	text-align: center;
+	width: 100%;
 }
 .table-data > caption {
-    font-size: 1.15em;
-    font-weight: 600;
-    text-align: left;
-    border-bottom: 1px solid #dbdbdb;
-    margin-bottom: 10px;
+	font-size: 1.15em;
+	font-weight: 600;
+	text-align: left;
+	border-bottom: 1px solid #dbdbdb;
+	margin-bottom: 10px;
 }
 .caption-text {
-    border-bottom: 4px solid #121212;
-    color: #121212;
-    /* padding-bottom: 3px; */
-    display: inline-block;
+	border-bottom: 4px solid #121212;
+	color: #121212;
+	/* padding-bottom: 3px; */
+	display: inline-block;
 }
 .table-data > caption > a {
-    color: #333;
-    text-decoration: none;
+	color: #333;
+	text-decoration: none;
 }
 .table-data > caption > a:visited, .table-data > caption > a:active {
-    color: #333;
+	color: #333;
 }
 .table-data th {
-    text-align: center;
-    background-color: #f7f7f5;
-    border-bottom: 1px solid #dbdbdb;
-    padding: 14px 3px 4px 3px;
-    vertical-align: bottom;
-    font-weight: 600;
+	text-align: center;
+	background-color: #f7f7f5;
+	border-bottom: 1px solid #dbdbdb;
+	padding: 14px 3px 4px 3px;
+	vertical-align: bottom;
+	font-weight: 600;
 }
 th.left {
-    text-align: left;
+	text-align: left;
 }
 .table-data td {
-    padding: 3px;
-    border-bottom: 1px solid #ededed;
+	padding: 3px;
+	border-bottom: 1px solid #ededed;
 }
 .table-data > tbody > tr:hover, .hover {
-    background-color: #f7f7f5;
+	background-color: #f7f7f5;
 }
 tr.divider > td {
-    border-bottom: 1px dashed #252525;
+	border-bottom: 1px dashed #252525;
 }
 /* fixtures */
 /* leave td as this ensures the same priority than .table-data td rule,
-    but these win as they appear later */
+	but these win as they appear later */
 th.min-width, col.min-width {
-    width: 1%;
+	width: 1%;
 }
 th.home, th.away, th.comp, col.home, col.away {
-    width: 30%;
+	width: 30%;
 }
 th.home, td.home {
-    padding-right: 1.5em;
-    text-align: right;
+	padding-right: 1.5em;
+	text-align: right;
 }
 th.away, td.away {
-    padding-left: 1.5em;
-    text-align: left;
+	padding-left: 1.5em;
+	text-align: left;
 }
 td.result {
-    padding: 3px 5px;
-    white-space: nowrap;
+	padding: 3px 5px;
+	white-space: nowrap;
 }
 td.comp {
-    white-space: nowrap;
+	white-space: nowrap;
 }
 /* hl = hightligh result field for non-default time/pitch */
 .hl {
-    background-color: #ffa;
+	background-color: #ffa;
 }
 tr:hover>.hl {
-    background-color: #f6f7b2;
+	background-color: #f6f7b2;
 }
 th.no-bb {
-    border-bottom: none;
+	border-bottom: none;
 }
 .grid th {
-    padding-top: 4px;
+	padding-top: 4px;
 }
 .grid th + th {
-    border-left: 1px solid #dbdbdb;
+	border-left: 1px solid #dbdbdb;
 }
 .grid td + td {
-    border-left: 1px solid #ededed;
+	border-left: 1px solid #ededed;
 }
 
 
 /* link colors */
 th > a:link, th > a:visited, .table-data a:link, .table-data a:visited {
-    color: #333;
+	color: #333;
 }
 
 /*--------------- Lists ------------------------*/
 
 ul, ol {
-    margin-top: 0.67em;
-    margin-bottom: 0.67em;
+	margin-top: 0.67em;
+	margin-bottom: 0.67em;
 }
 li > ul, li > ol {
-    margin-top: 0;
-    margin-bottom: 0;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 .spaced > li {
-    margin-bottom: 0.67em;
+	margin-bottom: 0.67em;
 }
 .medium-spaced > li {
-    margin-bottom: 0.33em;
+	margin-bottom: 0.33em;
 }
 .is-style-alpha {
-    list-style-type: lower-alpha;
+	list-style-type: lower-alpha;
 }
 .is-style-roman {
-    list-style-type: lower-roman;
+	list-style-type: lower-roman;
 }
 .is-style-unstyled {
-    padding-left: 0;
-    list-style: none;
+	padding-left: 0;
+	list-style: none;
 }
 
 /*--------------- Attribute-value field layout ----------*/
 
 .wp-block-semla-attr-value {
-    margin: 0.75em 0;
+	margin: 0.75em 0;
 }
 .avf-name {
-    font-weight: 600;
+	font-weight: 600;
 }
 .avf-value {
-    margin-left: 1.5rem;
+	margin-left: 1.5rem;
 }
 @media (max-width: 320px) {
-    .avf-value {
-        margin-left: 0;
-    }
+	.avf-value {
+		margin-left: 0;
+	}
 }
 @media (min-width: 480px) {
-    /** if screen is big enough put on same line */
-    .avf-same-line {
-        display: table;
-        table-layout: fixed; /* quick rendering */
-        width: 100%;
-    }
-    .avf-same-line > .avf-name, .avf-same-line > .avf-value {
-        display: table-cell;
-        vertical-align: top;
-    }
-    .avf-same-line > .avf-name {
-        width: 12em;
-    }
-    .avf-same-line > .avf-name::after {
-        content: ":";
-    }
-    .avf-same-line > .avf-value {
-        margin-left: 0;
-    }
+	/** if screen is big enough put on same line */
+	.avf-same-line {
+		display: table;
+		table-layout: fixed; /* quick rendering */
+		width: 100%;
+	}
+	.avf-same-line > .avf-name, .avf-same-line > .avf-value {
+		display: table-cell;
+		vertical-align: top;
+	}
+	.avf-same-line > .avf-name {
+		width: 12em;
+	}
+	.avf-same-line > .avf-name::after {
+		content: ":";
+	}
+	.avf-same-line > .avf-value {
+		margin-left: 0;
+	}
 }
 
 /*--------------- Accordion/tabs ----------*/
 
 .js .acrd-btn {
-    position: relative;
-    display: block;
-    width: 100%;
-    text-align: left;
-    outline: none;
-    cursor: pointer;
-    padding: 6px 5px 8px 5px;
-    border: #c3c3c3 1px solid;
-    background-color: #fff;
-    box-shadow: inset 0 -3px 0 0 #ccc;
-    border-radius: 3px;
-    font-weight: 600;
+	position: relative;
+	display: block;
+	width: 100%;
+	text-align: left;
+	outline: none;
+	cursor: pointer;
+	padding: 6px 5px 8px 5px;
+	border: #c3c3c3 1px solid;
+	background-color: #fff;
+	box-shadow: inset 0 -3px 0 0 #ccc;
+	border-radius: 3px;
+	font-weight: 600;
 }
 /* Icon */
 .js .acrd-btn::after {
-    position: absolute;
-    right: 5px;
-    width: 1.5em;
-    height: 1.5em;
-    background-repeat: no-repeat;
-    background-position: center;
-    transition: all .35s;
-    background-image: url(img/plus.png);
-    content: ""; /* won't display if there's no content! */
+	position: absolute;
+	right: 5px;
+	width: 1.5em;
+	height: 1.5em;
+	background-repeat: no-repeat;
+	background-position: center;
+	transition: all .35s;
+	background-image: url(img/plus.png);
+	content: ""; /* won't display if there's no content! */
 }
 .svg .acrd-btn::after {
-    background-image: url(img/plus.svg);
-    background-size: 1em 1em;
+	background-image: url(img/plus.svg);
+	background-size: 1em 1em;
 }
 .acrd-btn.open::after {
-    transform: rotate(315deg);
+	transform: rotate(315deg);
 }
 .acrd-content {
-    display: none;
+	display: none;
 }
 .no-js .acrd-btn {
-    display: none;
+	display: none;
 }
 .no-js .acrd-content {
-    display: block;
+	display: block;
 }
 .tabs {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+	list-style: none;
+	margin: 0;
+	padding: 0;
 }
 .tab-item {
-    display: inline-block;
-    position: relative;
-    display: inline-block;
-    border-top: 1px solid #dbdbdb;
-    border-left: 1px solid #dbdbdb;
-    border-bottom: 1px solid #dbdbdb;
+	display: inline-block;
+	position: relative;
+	display: inline-block;
+	border-top: 1px solid #dbdbdb;
+	border-left: 1px solid #dbdbdb;
+	border-bottom: 1px solid #dbdbdb;
 }
 .tab-item:last-of-type {
-    border-right: 1px solid #dbdbdb;
+	border-right: 1px solid #dbdbdb;
 }
 .tab {
-    color: #333;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 7px 10px;
-    display: block;
+	color: #333;
+	text-decoration: none;
+	cursor: pointer;
+	padding: 7px 10px;
+	display: block;
 }
 .tab.active {
-    color: #fff;
-    background-color: #1c1c1c;
+	color: #fff;
+	background-color: #1c1c1c;
 }
 /* Down arrow. The idea is a box with zero width and height. The actual width
 and height of the arrow is determined by the width of the border. In an up
 arrow, for example, the bottom border is colored while the left and right are
 transparent, which forms the triangle. */
 .tab.active::after {
-    content: ' ';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    height: 0;
-    width: 0;
-    pointer-events: none;
-    border: solid transparent;
-    border-top-color: #1c1c1c;
-    border-width: 6px;
-    margin-left: -6px;
+	content: ' ';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	height: 0;
+	width: 0;
+	pointer-events: none;
+	border: solid transparent;
+	border-top-color: #1c1c1c;
+	border-width: 6px;
+	margin-left: -6px;
 }
 .tab-pane {
-    display: none;
-    margin-top: 14px;
+	display: none;
+	margin-top: 14px;
 }
 
 /*--------------- Definition list defaults ----------*/
 
 dl {
-    margin: 1em 0;
+	margin: 1em 0;
 }
 .calendar {
-    margin: 1.5em 0;
+	margin: 1.5em 0;
 }
 .calendar > dd {
-    margin: .3em 0 .7em 30px;
+	margin: .3em 0 .7em 30px;
 }
 dt {
-    font-weight: 600;
+	font-weight: 600;
 }
 dd {
-    margin: 0 0 0.5em 30px;
+	margin: 0 0 0.5em 30px;
 }
 @media (min-width: 480px) {
-    .table > dt {
-        float: left;
-        clear: left;
-        width: 13em;
-    }
-    .colons > dt::after {
-        content: ":";
-    }
-    .table > dd {
-        margin: 0 0 0 13.5em;
-    }
+	.table > dt {
+		float: left;
+		clear: left;
+		width: 13em;
+	}
+	.colons > dt::after {
+		content: ":";
+	}
+	.table > dd {
+		margin: 0 0 0 13.5em;
+	}
 }
 /* thin was only used on contacts page!
 @media (max-width: 479px) {
-    .thin > dd {
-        margin-left: 15px;
-    }
+	.thin > dd {
+		margin-left: 15px;
+	}
 }
 @media (max-width: 379px) {
-    .thin > dd {
-        margin-left: 0;
-    }
+	.thin > dd {
+		margin-left: 0;
+	}
 }
  */
 
 /*--------------- Responsive -----------------*/
 
 /* Allow tables to be scollable, and not overflow the screen. overflow-x on
-    tables does nothing, so you need an enclosing div.
+	tables does nothing, so you need an enclosing div.
    If a table is inside a div then the margins aren't collapsed to the next
-    element, so fix that here */
+	element, so fix that here */
 .scrollable {
    overflow-x: auto;
    margin-bottom: 1.25em;
 }
 .scrollable > table:last-child {
-    margin-bottom: 0;
+	margin-bottom: 0;
 }
 @media (max-width: 769px) {
-    .hide-med {
-        display: none;
-    }
+	.hide-med {
+		display: none;
+	}
 }
 /* sml = small screen */
 @media (max-width: 589px) {
-    .hide-sml {
-        display: none;
-    }
-    /* Replace text for small screens e.g.
-        <td data-sml-text="Welwyn"><span>Welwyn Warriors</span></td>
-        Need <span> wrapper for text so we can make that <span> not be 
-        displayed. There are other methods of doing that, but this
-        seems to be the simplest, albeit with a bit of extra markup.
-    */
-    [data-sml-text] > span {
-        display: none;
-    }
-    [data-sml-text]::before {
-        content: attr(data-sml-text);
-    }
+	.hide-sml {
+		display: none;
+	}
+	/* Replace text for small screens e.g.
+		<td data-sml-text="Welwyn"><span>Welwyn Warriors</span></td>
+		Need <span> wrapper for text so we can make that <span> not be 
+		displayed. There are other methods of doing that, but this
+		seems to be the simplest, albeit with a bit of extra markup.
+	*/
+	[data-sml-text] > span {
+		display: none;
+	}
+	[data-sml-text]::before {
+		content: attr(data-sml-text);
+	}
 }
 
 /*--------------- Social sharing ------------------------*/
 
 .share {
-    margin-bottom: 1em;
+	margin-bottom: 1em;
 }
 .share > h3 {
-    text-transform: uppercase;
-    margin: 0.75em 0 0.5em 0;
+	text-transform: uppercase;
+	margin: 0.75em 0 0.5em 0;
 }
 .share-link {
-    padding: 0.35em 0.7em;
-    color: #fff;
-    text-decoration: none;
+	padding: 0.35em 0.7em;
+	color: #fff;
+	text-decoration: none;
 }
 .share-link:hover, .share-link:active {
-    color: #fff;
+	color: #fff;
 }
 .share-link:active {
-    position: relative;
-    top: 1px;
+	position: relative;
+	top: 1px;
 }
 .tw {
-    background-color: #41B7D8;
+	background-color: #41B7D8;
 }
 .tw:hover, .tw:active {
-    background-color: #279ebf;
+	background-color: #279ebf;
 }
 .fb {
-    background-color: #3B5997;
+	background-color: #3B5997;
 }
 .fb:hover, .fb:active {
-    background-color: #2d4372;
+	background-color: #2d4372;
 }
 
 /*--------------- Paging and Next/previous navigation ----------------*/
@@ -1560,47 +1560,47 @@ dd {
    elements within are floated.
    The alternate id to do :after with clear: both;, which isn't as good  */
 .page-nav {
-    margin: 0 0 1.2em;
-    overflow: hidden;
+	margin: 0 0 1.2em;
+	overflow: hidden;
 }
 .hist-nav {
-    margin-bottom: 0.5em;
-    overflow: hidden;
+	margin-bottom: 0.5em;
+	overflow: hidden;
 }
 .nav-previous {
-    float: left;
-    width: 47%;
+	float: left;
+	width: 47%;
 }
 .nav-next {
-    text-align: right;
-    float: right;
-    width: 47%;
+	text-align: right;
+	float: right;
+	width: 47%;
 }
 .left-nav {
-    width: 35%;
-    float: left;
-    text-align: left;
+	width: 35%;
+	float: left;
+	text-align: left;
 }
 .center-nav {
-    white-space: normal;
-    margin-left: 3%;
-    width: 27%;
-    float: left;
-    text-align: center;
+	white-space: normal;
+	margin-left: 3%;
+	width: 27%;
+	float: left;
+	text-align: center;
 }
 .right-nav {
-    width: 35%;
-    float: right;
-    text-align: right;
+	width: 35%;
+	float: right;
+	text-align: right;
 }
 .paging {
-    font-weight: 600;
-    line-height: 3;
+	font-weight: 600;
+	line-height: 3;
 }
 .box {
-    border: 1px solid #D0CECF;
-    padding: 5px 7px;
-    white-space: nowrap;
+	border: 1px solid #D0CECF;
+	padding: 5px 7px;
+	white-space: nowrap;
 }
 
 /*-------------- Captions ---------------------*/
@@ -1608,177 +1608,177 @@ dd {
 /* Needed by WordPress core */
 
 .wp-caption {
-    margin-bottom: 1.5em;
-    max-width: 100%;
+	margin-bottom: 1.5em;
+	max-width: 100%;
 }
 .wp-caption img[class*="wp-image-"] {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
 }
 .wp-caption .wp-caption-text {
-    margin: 0.8075em 0;
+	margin: 0.8075em 0;
 }
 .wp-caption-text {
-    text-align: center;
+	text-align: center;
 }
 
 /*-------------- Galleries ---------------------*/
 
 .gallery {
-    margin-bottom: 1.5em;
+	margin-bottom: 1.5em;
 }
 .gallery-item {
-    display: inline-block;
-    text-align: center;
-    vertical-align: top;
-    width: 100%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+	width: 100%;
 }
 .gallery-columns-2 .gallery-item {
-    max-width: 50%;
+	max-width: 50%;
 }
 .gallery-columns-3 .gallery-item {
-    max-width: 33.33%;
+	max-width: 33.33%;
 }
 .gallery-columns-4 .gallery-item {
-    max-width: 25%;
+	max-width: 25%;
 }
 .gallery-columns-5 .gallery-item {
-    max-width: 20%;
+	max-width: 20%;
 }
 .gallery-columns-6 .gallery-item {
-    max-width: 16.66%;
+	max-width: 16.66%;
 }
 .gallery-columns-7 .gallery-item {
-    max-width: 14.28%;
+	max-width: 14.28%;
 }
 .gallery-columns-8 .gallery-item {
-    max-width: 12.5%;
+	max-width: 12.5%;
 }
 .gallery-columns-9 .gallery-item {
-    max-width: 11.11%;
+	max-width: 11.11%;
 }
 .gallery-caption {
-    display: block;
+	display: block;
 }
 
 /*-------------- Miscellaneous -----*/
 
 abbr[title] {
-    text-decoration: none;
-    border-bottom: 0 !important;
+	text-decoration: none;
+	border-bottom: 0 !important;
 }
 /* show must be later than all the display:none; rules as later rules override earlier ones */
 .show {
-    display: block;
+	display: block;
 }
 .no-top-margin {
-    margin-top: 0;
+	margin-top: 0;
 }
 code {
-    user-select: all;    
+	user-select: all;	
 }
 /* If javascript isn't active then they can't display the map anyway! */
 .no-js .gmap {
-    display: none;
+	display: none;
 }
 .gmap {
-    /* embeded Google map */
-    width: 100%;
-    height: 400px;
-    border: 1px solid #333;
-    margin-top: 0.5em;
+	/* embeded Google map */
+	width: 100%;
+	height: 400px;
+	border: 1px solid #333;
+	margin-top: 0.5em;
 }
 .gdoc {
-    /* Google Docs container */
-    width: 100%;
-    height: 600px;
-    border: 1px;
+	/* Google Docs container */
+	width: 100%;
+	height: 600px;
+	border: 1px;
 }
 .wp-block-code {
-    overflow-x: auto;
-    background-color: #F7F7F9;
-    border: 1px solid #E1E1E8;
-    margin: 0.67em auto;
-    padding: 5px 8px;
+	overflow-x: auto;
+	background-color: #F7F7F9;
+	border: 1px solid #E1E1E8;
+	margin: 0.67em auto;
+	padding: 5px 8px;
 }
 hr {
-    margin: 0.67em 0;
-    border: 0;
-    border-top: 1px solid #ccc;
+	margin: 0.67em 0;
+	border: 0;
+	border-top: 1px solid #ccc;
 }
 .no-margin {
-    margin: 0;
+	margin: 0;
 }
 .has-small-font-size, .small {
-    font-size: 80%;
+	font-size: 80%;
 }
 @keyframes spinner-border {
-    to {
-        transform: rotate(360deg);
-    }
+	to {
+		transform: rotate(360deg);
+	}
 }
 .spinner-border {
-    color: #6c757d!important;
-    display: inline-block;
-    width: 2rem;
-    height: 2rem;
-    vertical-align: text-bottom;
-    border: .25em solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    animation: spinner-border .75s linear infinite;
+	color: #6c757d!important;
+	display: inline-block;
+	width: 2rem;
+	height: 2rem;
+	vertical-align: text-bottom;
+	border: .25em solid currentColor;
+	border-right-color: transparent;
+	border-radius: 50%;
+	animation: spinner-border .75s linear infinite;
 }
 mark {
-    background-color: #0277bd;
-    color: #fafafa;
-    font-size: 0.95em;
-    line-height: 1em;
-    border-radius: 0.125em;
-    padding: 0.125em 0.25em;
-    /*calc(var(--universal-padding) / 4) calc(var(--universal-padding) / 2); */
+	background-color: #0277bd;
+	color: #fafafa;
+	font-size: 0.95em;
+	line-height: 1em;
+	border-radius: 0.125em;
+	padding: 0.125em 0.25em;
+	/*calc(var(--universal-padding) / 4) calc(var(--universal-padding) / 2); */
 }
 mark.tag {
-    padding: 0.25em 0.5em;
-    /* calc(var(--universal-padding)/2) var(--universal-padding); */
-    border-radius: 1em;
+	padding: 0.25em 0.5em;
+	/* calc(var(--universal-padding)/2) var(--universal-padding); */
+	border-radius: 1em;
 }
 
 /*--------------- Icons ------------------------*/
 
 .icon, a[href^="mailto"]::before, a[href^="tel"]::before, .ma[rel]::after {
-    vertical-align: middle;
-    display: inline-block;
-    background-position: center;
-    background-repeat: no-repeat;
+	vertical-align: middle;
+	display: inline-block;
+	background-position: center;
+	background-repeat: no-repeat;
 }
 .icon, a[href^="mailto"]::before, a[href^="tel"]::before {
-    margin-right: 0.35em;
+	margin-right: 0.35em;
 }
 .no-icon::before {
-    display: none;
+	display: none;
 }
 .avf-value > a[href^="mailto"]::before, a.icon[href^="mailto"]::before {
-    background-image: url(img/email.svg);
-    width: 1.15em;
-    height: 1.15em;
-    content: ''; /* need content or it won't display */
+	background-image: url(img/email.svg);
+	width: 1.15em;
+	height: 1.15em;
+	content: ''; /* need content or it won't display */
 }
 .icon-folder-open {
-    background-image: url(img/folder-open.svg);
-    width: 1.19em;
-    height: 1.15em;
+	background-image: url(img/folder-open.svg);
+	width: 1.19em;
+	height: 1.15em;
 }
 .avf-value > a[href^="tel"]::before, a.icon[href^="tel"]::before {
-    background-image: url(img/phone.svg);
-    width: 0.90em;
-    height: 1.15em;
-    content: ''; /* need content or it won't display */
+	background-image: url(img/phone.svg);
+	width: 0.90em;
+	height: 1.15em;
+	content: ''; /* need content or it won't display */
 }
 .icon-tags {
-    background-image: url(img/tags.svg);
-    width: 1.23em;
-    height: 1.15em;
+	background-image: url(img/tags.svg);
+	width: 1.23em;
+	height: 1.15em;
 }
 
 /*--------------- Accessibility ------------------------*/
@@ -1795,7 +1795,7 @@ mark.tag {
 	position: absolute !important;
 	width: 1px;
 	word-wrap: normal !important;
-    /* Many screen reader and browser combinations announce broken words as they would appear visually. */
+	/* Many screen reader and browser combinations announce broken words as they would appear visually. */
 }
 .screen-reader-text:focus {
 	background-color: #f1f1f1;
@@ -1815,43 +1815,43 @@ mark.tag {
 	top: 5px;
 	width: auto;
 	z-index: 100000;
-    /* Above WP toolbar. */
+	/* Above WP toolbar. */
 }
 /* Do not show the outline on the skip link target. */
 #content[tabindex="-1"]:focus {
-    outline: 0;
+	outline: 0;
 }
 
 /*--------------- Printing ------------------------*/
 
 @media print {
-    html {
-        font-family: Georgia, "Times New Roman", Times, serif;
-    }
-    body > header, nav, body > footer, .no-print, #semla_toc {
-        display: none;
-    }
-    body {
-        color: black;
-    }
-    a:link, a:visited {
-        color: black !important;
-        text-decoration: none !important;
-    }
-    .clubs-list td:nth-child(2) > a::after {
-        content: " (" attr(href) ") ";
-        font-size: 0.8em;
-        font-weight: normal;
-    }
-    /* show cells even if hide-sml kicks in */
-    .table-data th.hide-sml, .table-data td.hide-sml {
-        display: table-cell;
-    }
-    /* Display background images for things like phone, email */
-    .acrd-btn::after, a::before, .icon {
+	html {
+		font-family: Georgia, "Times New Roman", Times, serif;
+	}
+	body > header, nav, body > footer, .no-print, #semla_toc {
+		display: none;
+	}
+	body {
+		color: black;
+	}
+	a:link, a:visited {
+		color: black !important;
+		text-decoration: none !important;
+	}
+	.clubs-list td:nth-child(2) > a::after {
+		content: " (" attr(href) ") ";
+		font-size: 0.8em;
+		font-weight: normal;
+	}
+	/* show cells even if hide-sml kicks in */
+	.table-data th.hide-sml, .table-data td.hide-sml {
+		display: table-cell;
+	}
+	/* Display background images for things like phone, email */
+	.acrd-btn::after, a::before, .icon {
 
-        print-color-adjust: exact !important;
-        -webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
-        color-adjust: exact !important;                 /*Firefox*/
-    }
+		print-color-adjust: exact !important;
+		-webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
+		color-adjust: exact !important;				 /*Firefox*/
+	}
 }

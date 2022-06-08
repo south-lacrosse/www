@@ -19,15 +19,15 @@ To view the maps, enable JavaScript in your browser options, and then try again.
 <script>
 SemlaClubs=[<?php
 while ($query->have_posts()) {
-    $query->the_post();
-    if (preg_match('/"latLong":"([^"]*)"/', get_the_content(), $matches)) {
-        $lat_lng = explode('%2C' , esc_attr($matches[1]));
-        echo "\n{name:'";
-        the_title();
-        echo "',lat:$lat_lng[0],lng:$lat_lng[1],html:'<a href=\"";
-        the_permalink();
-        echo '">Club page</a>\'},';
-    }
+	$query->the_post();
+	if (preg_match('/"latLong":"([^"]*)"/', get_the_content(), $matches)) {
+		$lat_lng = explode('%2C' , esc_attr($matches[1]));
+		echo "\n{name:'";
+		the_title();
+		echo "',lat:$lat_lng[0],lng:$lat_lng[1],html:'<a href=\"";
+		the_permalink();
+		echo '">Club page</a>\'},';
+	}
 }
 ?>
 ];

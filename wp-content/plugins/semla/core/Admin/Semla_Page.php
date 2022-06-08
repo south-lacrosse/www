@@ -90,8 +90,8 @@ class Semla_Page {
 	}
 
 	public static function load() {
-        if ( ! current_user_can( 'manage_semla' ) ) {
-            wp_die('You do not have sufficient permissions to access this page.');
+		if ( ! current_user_can( 'manage_semla' ) ) {
+			wp_die('You do not have sufficient permissions to access this page.');
 		}
 		// remove args from query string in browser so update doesn't re-run. Needs
 		// to be before render_page as the filter will already have run 

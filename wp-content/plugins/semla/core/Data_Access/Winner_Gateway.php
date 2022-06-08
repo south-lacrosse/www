@@ -96,30 +96,31 @@ class Winner_Gateway {
 	// TODO: Code below here is just an initial mock up - need to change table names etc
 
 	function get_all_winners( $args = array() ) {
-        global $wpdb;
+		global $wpdb;
 
-        $defaults = [
-            'number'     => 20,
-            'offset'     => 0,
-            'orderby'    => 'team',
-            'order'      => 'ASC',
-        ];
-        $args      = wp_parse_args( $args, $defaults );
-        $cache_key = 'team_abbrev-all';
-        $items     = wp_cache_get( $cache_key, '' );
-        if ( false === $items ) {
-            $items = $wpdb->get_results( 'SELECT * FROM sl_team_abbrev ORDER BY ' . $args['orderby'] .' ' . $args['order'] .' LIMIT ' . $args['offset'] . ', ' . $args['number'] );
-            wp_cache_set( $cache_key, $items, '' );
-        }
-        return $items;
-    }
+		$defaults = [
+			'number'     => 20,
+			'offset'     => 0,
+			'orderby'    => 'team',
+			'order'      => 'ASC',
+		];
+		$args = wp_parse_args( $args, $defaults );
+		$cache_key = 'team_abbrev-all';
+		$items = wp_cache_get( $cache_key, '' );
+		if ( false === $items ) {
+			$items = $wpdb->get_results( 'SELECT * FROM sl_team_abbrev ORDER BY ' . $args['orderby'] .' ' . $args['order'] .' LIMIT ' . $args['offset'] . ', ' . $args['number'] );
+			wp_cache_set( $cache_key, $items, '' );
+		}
+		return $items;
+	}
 
-    static function get_winner_count() {
-        global $wpdb;
-        return (int) $wpdb->get_var( 'SELECT COUNT(*) FROM sl_team_abbrev' );
-    }
+	static function get_winner_count() {
+		global $wpdb;
+		return (int) $wpdb->get_var( 'SELECT COUNT(*) FROM sl_team_abbrev' );
+	}
 
-    static function get_winner( $id = 0 ) {
-        global $wpdb;
-        return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM sl_team_abbrev WHERE id = %d', $id ) );
-    }}
+	static function get_winner( $id = 0 ) {
+		global $wpdb;
+		return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM sl_team_abbrev WHERE id = %d', $id ) );
+	}
+}

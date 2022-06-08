@@ -672,8 +672,8 @@ class Fixtures_Sheet_Gateway {
 		$row_count = count($rows);
 		if ($row_count < 5) return;
 
-        $ha = ['H'=>1,'A'=>2,'NH'=>3,'NA'=>4];
-        $matches = $round_dates = [];
+		$ha = ['H'=>1,'A'=>2,'NH'=>3,'NA'=>4];
+		$matches = $round_dates = [];
 		$row = $count = 0;
 		while ($row < $row_count) {
 			// title
@@ -685,12 +685,12 @@ class Fixtures_Sheet_Gateway {
 				$comp_id = $this->competitions[$comp]->id;
 			}
 			$row++;
-            if ($row + 3 > $row_count) {
-                $this->error->add('fixtures', "Too few rows in flags competition $comp");
-                return;
-            }
+			if ($row + 3 > $row_count) {
+				$this->error->add('fixtures', "Too few rows in flags competition $comp");
+				return;
+			}
 			//dates
-            $cur_row = $rows[$row];
+			$cur_row = $rows[$row];
 			$col = 2;
 			$round_cnt = 0;
 			while (!empty($cur_row[$col])) {
@@ -704,53 +704,53 @@ class Fixtures_Sheet_Gateway {
 					$round_dates[] = [ $comp_id, $round_cnt, substr($date, 0, 10) ];
 				}
 				$col += 5;
-            }
+			}
 			if ($round_cnt > $this->max_flags_rounds) {
 				$this->max_flags_rounds = $round_cnt;
 			}
-            $r1_matches = 2**($round_cnt-1);
-            $start_row = $row + 2;
-            $end_row = $start_row + ($r1_matches * 2) - 1;
-            if ($end_row > $row_count) {
-                $this->error->add('fixtures', "Too few rows in flags competition $comp");
-                return;
+			$r1_matches = 2**($round_cnt-1);
+			$start_row = $row + 2;
+			$end_row = $start_row + ($r1_matches * 2) - 1;
+			if ($end_row > $row_count) {
+				$this->error->add('fixtures', "Too few rows in flags competition $comp");
+				return;
 			}
-            $col = 1; // h/a
-            $round = 1;
-            while ($round < $round_cnt) {
+			$col = 1; // h/a
+			$round = 1;
+			while ($round < $round_cnt) {
 				$num = 0;
 				$team1 = false;
-                for ($row = $start_row; $row<= $end_row; $row++) {
-                    if (!empty($rows[$row][$col])) {
-                        if ($team1 === false) { // home
-                            $home_team = $ha[ $rows[$row][$col] ];
-                            $team1 = $rows[$row][$col+1];
-                            $team1_goals = $rows[$row][$col+2];
-                        } else {
+				for ($row = $start_row; $row<= $end_row; $row++) {
+					if (!empty($rows[$row][$col])) {
+						if ($team1 === false) { // home
+							$home_team = $ha[ $rows[$row][$col] ];
+							$team1 = $rows[$row][$col+1];
+							$team1_goals = $rows[$row][$col+2];
+						} else {
 							$matches[] = [$comp_id, $round, ++$num,
 								$team1, $rows[$row][$col+1], $team1_goals,
 								$rows[$row][$col+2], $home_team ];
 							$team1 = false;
-                        }
-                    }
-                }
-                $col +=5;
-                $round++;
-            }
-            // final round - no h/a
+						}
+					}
+				}
+				$col +=5;
+				$round++;
+			}
+			// final round - no h/a
 			$col ++;
 			$team1 = $team2 = '';
 			$team1_goals = $team2_goals = null;
-            for ($row = $start_row; $row<= $end_row; $row++) {
-                if (!empty($rows[$row][$col])) {
-                    if ($team1) {
-                        $team2 = $rows[$row][$col];
-                        $team2_goals = $rows[$row][$col+1];
-                        break;
-                    }
-                    $team1 = $rows[$row][$col];
-                    $team1_goals = $rows[$row][$col+1];
-                }
+			for ($row = $start_row; $row<= $end_row; $row++) {
+				if (!empty($rows[$row][$col])) {
+					if ($team1) {
+						$team2 = $rows[$row][$col];
+						$team2_goals = $rows[$row][$col+1];
+						break;
+					}
+					$team1 = $rows[$row][$col];
+					$team1_goals = $rows[$row][$col+1];
+				}
 			}
 			$matches[] = [$comp_id, $round, 1,
 				$team1, $team2, $team1_goals, $team2_goals, 0 ];
@@ -814,7 +814,7 @@ class Fixtures_Sheet_Gateway {
 	 * @return string|WP_Error on success return string with message, on failure a WP_Error
 	 */
 	public static function revert() {
-        global $wpdb;
+		global $wpdb;
 		$fp = fopen(__DIR__ . '/lock.txt', 'w');
 		if (! flock($fp, LOCK_EX|LOCK_NB)) {
 			return new WP_Error('fixtures_lock', 'Someone else is currently updating the fixtures!');
@@ -822,12 +822,12 @@ class Fixtures_Sheet_Gateway {
 
 		$tables = ['cup_draw', 'cup_round_date', 'deduction', 'fixture', 'fixture_date', 'table'];
 		
-        $tables_count = $wpdb->get_var(
-            'SELECT COUNT(*) FROM information_schema.TABLES 
+		$tables_count = $wpdb->get_var(
+			'SELECT COUNT(*) FROM information_schema.TABLES 
 			WHERE TABLE_CATALOG = "def" AND TABLE_SCHEMA = "' . DB_NAME . '"
 				AND TABLE_TYPE = "BASE TABLE"
 				AND TABLE_NAME IN ("backup_' . implode('", "backup_', $tables). '")');
-        if ($tables_count === null) {
+		if ($tables_count === null) {
 			return self::db_error('Failed to count backup tables');
 		}
 		if ($tables_count !== '6') {

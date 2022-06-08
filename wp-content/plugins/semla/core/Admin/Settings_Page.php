@@ -144,5 +144,5 @@ class Settings_Page {
 	</form>
 </div>
 <?php
-    }
+	}
 }

@@ -4,13 +4,13 @@ namespace Semla\Data_Access;
  * Data access for Clubs
  */
 class Club_Gateway {
-    /**
-     * Get a WP_Query for all published clubs
-     */
-    public static function get_all_clubs_query() {
+	/**
+	 * Get a WP_Query for all published clubs
+	 */
+	public static function get_all_clubs_query() {
 		return new \WP_Query([
 			'post_type' => 'clubs',
-            'post_status' => 'publish',
+			'post_status' => 'publish',
 			'nopaging' => true,
 			'orderby' => 'title',
 			'order' => 'ASC',
@@ -20,7 +20,7 @@ class Club_Gateway {
 			'update_post_term_cache' => false,
 			'update_post_meta_cache' => false
 		]);
-    }
+	}
 	public static function clubs_list() {
 		$query = self::get_all_clubs_query();
 
@@ -29,8 +29,8 @@ class Club_Gateway {
 		require __DIR__ . '/views/clubs-list.php';
 		wp_reset_postdata();
 		return ob_get_clean();
-    }
-    
+	}
+
 	public static function clubs_map() {
 		$query = self::get_all_clubs_query();
 

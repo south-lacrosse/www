@@ -10,9 +10,9 @@
 <body>
 <div id="content">
 <?php if (!empty($parent)) :
-  $route = $request->get_route();
-  $parent_url = rest_url(substr($route, 0,strrpos($route, '/')));
-  ?>
+	$route = $request->get_route();
+	$parent_url = rest_url(substr($route, 0,strrpos($route, '/')));
+?>
 <nav>><a href="<?= $parent_url ?>"><?= $parent ?></a></nav>
 <?php endif; ?>
 <h1><?= $title ?></h1>

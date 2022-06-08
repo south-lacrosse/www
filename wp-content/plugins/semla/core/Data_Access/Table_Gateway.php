@@ -164,9 +164,9 @@ class Table_Gateway {
 		return ob_get_clean();
 	}
 
-    public static function save_deductions($rows) {
-        global $wpdb;
-        $result = DB_Util::create_table('new_deduction',
+	public static function save_deductions($rows) {
+		global $wpdb;
+		$result = DB_Util::create_table('new_deduction',
 			'`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 			`comp_id` INT UNSIGNED NOT NULL,
 			`team` VARCHAR(50) NOT NULL,
@@ -175,7 +175,7 @@ class Table_Gateway {
 			`reason` VARCHAR(50) NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `comp_team_idx` (`comp_id`, `team`)');
-        if ($result === false) return false;
+		if ($result === false) return false;
 		if (count($rows) > 0) {
 			foreach ( $rows as $key => $row ) {
 				$values[] = $wpdb->prepare( '(%d,%s,%.1f,', array_slice($row,0,3))
@@ -189,7 +189,7 @@ class Table_Gateway {
 		}
 		DB_Util::add_table_to_rename('deduction');
 		return true;
-    }
+	}
 	
 	public static function save_tables($tables) {
 		global $wpdb;
@@ -213,7 +213,7 @@ class Table_Gateway {
 			`tiebreaker` BOOLEAN NOT NULL,
 			PRIMARY KEY (`comp_id`, `position`),
 			UNIQUE KEY `team_comp` (`team`,`comp_id`)');
-        if ($result === false) return false;
+		if ($result === false) return false;
 
 		$query = 'INSERT INTO new_table (comp_id, position, team, played, won, drawn, lost, goals_for,
 			goals_against, goal_avg, points_deducted, points, divider, form, tiebreaker) VALUES ';
@@ -227,9 +227,9 @@ class Table_Gateway {
 				$pos++;
 			}
 		}
-        $query .= implode( ",\n", $values );
-        $result = $wpdb->query($query);
-        if ($result === false) return false;
+		$query .= implode( ",\n", $values );
+		$result = $wpdb->query($query);
+		if ($result === false) return false;
 		DB_Util::add_table_to_rename('table');
 		return true;
 	}

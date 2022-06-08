@@ -45,7 +45,7 @@ class SMTP_Page {
 	</div>
 </div>
 <?php
-    }
+	}
 
 	private static function send_test_email($send_to) {
 		// don't log this
@@ -60,7 +60,7 @@ class SMTP_Page {
 		});
 		ob_start(); 
 		wp_mail($send_to, 'SEMLA Email Test', 'Test message');
-        $test_result = ob_get_clean();
+		$test_result = ob_get_clean();
 		if (self::$test_passed) {
 			Admin_Menu::dismissible_success_message('Test email sent. See debug information below.<br><br>'
 				. $test_result);

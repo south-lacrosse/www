@@ -11,8 +11,8 @@ fi
 echo 'Media backup (if needed)'
 
 if [[ -z $(git remote -v|grep git@github.com:south-lacrosse/media.git) ]]; then
-    echo 'Error: media dir is not set up for the correct remote repository'
-    exit 1
+	echo 'Error: media dir is not set up for the correct remote repository'
+	exit 1
 fi
 
 if [[ $(git status --porcelain) ]]; then

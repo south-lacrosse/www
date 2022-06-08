@@ -27,27 +27,27 @@ END:VTIMEZONE
 use Semla\Utils\UUID;
 
 if ($rows) {
-    $date = explode('-',$rows[0]->match_date);
-    if ($date[1] < 6) {
-        $date[0]--;
-    }
-    $dtstamp = $date[0] . '0901T120000Z';
-    foreach ($rows as $row) {
-        $summary = $row->home ? $row->home : '?';
-        $summary .= ' v ';
-        $summary .= $row->away ? $row->away : '?';
-        if ($row->venue) {
-            $summary .= " at $row->venue";
-        }
-        $summary .= ' (';
-        if ($row->pitch_type) {
-            $summary .= $row->pitch_type . ', ';
-        }
-        $summary .= "$row->competition)";
-        $uuid = UUID::v5(UUID::NS_URL, "$team$row->match_date$row->match_time");
-        $start = strtotime($row->match_time);
-        $end = $start + 7200; // +2 hours
-        $date = str_replace('-','',$row->match_date);
+	$date = explode('-',$rows[0]->match_date);
+	if ($date[1] < 6) {
+		$date[0]--;
+	}
+	$dtstamp = $date[0] . '0901T120000Z';
+	foreach ($rows as $row) {
+		$summary = $row->home ? $row->home : '?';
+		$summary .= ' v ';
+		$summary .= $row->away ? $row->away : '?';
+		if ($row->venue) {
+			$summary .= " at $row->venue";
+		}
+		$summary .= ' (';
+		if ($row->pitch_type) {
+			$summary .= $row->pitch_type . ', ';
+		}
+		$summary .= "$row->competition)";
+		$uuid = UUID::v5(UUID::NS_URL, "$team$row->match_date$row->match_time");
+		$start = strtotime($row->match_time);
+		$end = $start + 7200; // +2 hours
+		$date = str_replace('-','',$row->match_date);
 // Note: PHP removes line feeds after a closing short tag, therefore
 // we need extra line feeds to work properly
 ?>

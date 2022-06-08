@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:       SEMLA
- * Plugin URI:        https://www.southlacrosse.org.uk/
- * Description:       South of England Men's Lacrosse Association clubs, league, flags, fixtures etc.
- * Version:           1.0.0
- * Author:            SEMLA
- * Author URI:        mailto:webmaster@southlacrosse.org.uk
- * License:           GNU General Public License v2 or later
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.html
+ * Plugin Name:  SEMLA
+ * Plugin URI:   https://www.southlacrosse.org.uk/
+ * Description:  South of England Men's Lacrosse Association clubs, league, flags, fixtures etc.
+ * Version:      1.0.0
+ * Author:       SEMLA
+ * Author URI:   mailto:webmaster@southlacrosse.org.uk
+ * License:      GNU General Public License v2 or later
+ * License URI:  http://www.gnu.org/licenses/gpl-2.0.html
  */
 namespace Semla;
 
@@ -18,7 +18,7 @@ defined('WPINC') || die;
 // equally important, everything else isn't. IMPORTANT: if you remove this code
 // also change App_Admin as that removes the blog_public option from the admin Reading screen
 ! defined('SEMLA_PUBLIC')
-    && define('SEMLA_PUBLIC', wp_get_environment_type() === 'production' ? '1' : '0');
+	&& define('SEMLA_PUBLIC', wp_get_environment_type() === 'production' ? '1' : '0');
 add_filter('pre_option_blog_public', function() { return SEMLA_PUBLIC; });
 
 // Uncomment to test sitemaps in a non-production environment
@@ -37,7 +37,7 @@ add_filter( 'rest_url_prefix', function () {
 
 add_action( 'init', [App::class, 'init'] );
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-    add_action( 'cli_init', function() {
-        \WP_CLI::add_command( 'semla', \Semla\CLI\Semla_Command::class );
-    } );
+	add_action( 'cli_init', function() {
+		\WP_CLI::add_command( 'semla', \Semla\CLI\Semla_Command::class );
+	} );
 }

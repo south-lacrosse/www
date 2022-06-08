@@ -96,8 +96,8 @@ class Cup_Draw_Gateway {
 	}
 
 	public static function save_current($rows, $round_dates) {
-        global $wpdb;
-        $result = DB_Util::create_table('new_cup_draw',
+		global $wpdb;
+		$result = DB_Util::create_table('new_cup_draw',
 			'`comp_id` SMALLINT UNSIGNED NOT NULL,
 			`round` TINYINT UNSIGNED NOT NULL,
 			`match_num` TINYINT UNSIGNED NOT NULL,
@@ -108,19 +108,19 @@ class Cup_Draw_Gateway {
 			`result_extra` VARCHAR(20) NOT NULL,
 			`home_team` TINYINT NOT NULL,
 			PRIMARY KEY (`comp_id`, `round`, `match_num`)');
-        if ($result === false) return false;
-        foreach ( $rows as $key => $row ) {
+		if ($result === false) return false;
+		foreach ( $rows as $key => $row ) {
 			$values[] = "($row[0],$row[1],$row[2],"
 				. $wpdb->prepare( '%s,%s,', $row[3], $row[4] )
 				. ($row[5] == '' ? 'null' : $row[5]) . ','
 				. ($row[6] == '' ? 'null' : $row[6])
 				. ",'',$row[7])";
-        }
-        $query = 'INSERT INTO new_cup_draw (comp_id, round, match_num, team1, team2,
+		}
+		$query = 'INSERT INTO new_cup_draw (comp_id, round, match_num, team1, team2,
 			team1_goals, team2_goals, result_extra, home_team) VALUES ';
 		$query .= implode( ",\n", $values );
-        $result = $wpdb->query($query);
-        if ($result === false) return false;
+		$result = $wpdb->query($query);
+		if ($result === false) return false;
 		DB_Util::add_table_to_rename('cup_draw');
 
 		$result = DB_Util::create_table('new_cup_round_date',
@@ -131,12 +131,12 @@ class Cup_Draw_Gateway {
 		if ($result === false) return false;
 		$query = 'INSERT INTO new_cup_round_date (comp_id, round, match_date) VALUES ';
 		$values = [];
-        foreach ( $round_dates as $row ) {
+		foreach ( $round_dates as $row ) {
 			$values[] = "($row[0],$row[1],'$row[2]')";
-        }
+		}
 		$query .= implode( ",\n", $values );
-        $result = $wpdb->query($query);
-        if ($result === false) return false;
+		$result = $wpdb->query($query);
+		if ($result === false) return false;
 		DB_Util::add_table_to_rename('cup_round_date');
 		return true;
 	}

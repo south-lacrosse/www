@@ -7,10 +7,10 @@ $teams_url = substr($clubs_url, 0, -6) . 'teams/';
 <?php foreach ($clubs as $name => $club) : ?>
 <tr><td><a href="<?= $clubs_url . urlencode($name) ?>"><?= $name ?></a></td>
 <td><?php
-    $teams = [];
-    foreach (explode('|', $club->teams) as $team) {
-        $teams[] = '<a href="' . $teams_url . urlencode($team) . '">' . $team . '</a>';
-    }
-    echo implode(', ',$teams) ?></td></tr>
+	$teams = [];
+	foreach (explode('|', $club->teams) as $team) {
+		$teams[] = '<a href="' . $teams_url . urlencode($team) . '">' . $team . '</a>';
+	}
+	echo implode(', ',$teams) ?></td></tr>
 <?php endforeach; ?>
 </tbody></table>

@@ -69,8 +69,8 @@ class Fixtures_Gateway {
 			PRIMARY KEY (id),
 			UNIQUE KEY `date_id` (`match_date`, `id`)'
 			. ($ladder ? '' : ', UNIQUE KEY `comp_idx` (`comp_id`,`id`)'));
-        if ($result === false) return false;
-        foreach ( $rows as $key => $row ) {
+		if ($result === false) return false;
+		foreach ( $rows as $key => $row ) {
 			unset($row['sort']);
 			unset($row['sort2']);
 			$values[] = $wpdb->prepare( '(%s,%s,%d,%d,%s,%s,%s,', array_slice($row,0,7))
@@ -81,12 +81,12 @@ class Fixtures_Gateway {
 				. ($row[11] === null ? 'null' : $row[11]) . ','
 				. ($row[12] === null ? 'null' : $row[12])
 				. ",$row[13])";
-        }
-        $query = 'INSERT INTO new_fixture (match_date, match_time, comp_id, comp_id2, competition, home, away,
+		}
+		$query = 'INSERT INTO new_fixture (match_date, match_time, comp_id, comp_id2, competition, home, away,
 			home_goals, away_goals, venue, result, home_points, away_points, points_multi) VALUES ';
-        $query .= implode( ",\n", $values );
-        $result = $wpdb->query($query);
-        if ($result === false) return false;
+		$query .= implode( ",\n", $values );
+		$result = $wpdb->query($query);
+		if ($result === false) return false;
 		DB_Util::add_table_to_rename('fixture');
 
 		// add a table of all the dates

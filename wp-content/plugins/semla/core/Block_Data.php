@@ -224,8 +224,8 @@ class Block_Data {
 	 * Create a select box
 	 */
 	private function create_select($name, $label, $arr, $selected, $action=false, $hidden = []) {
-        $html = '<form class="selform" id="' . $name . 'form" name="' . $name
-        . 'form" method="get" '. ($action ? 'action="' . $action . '" ' : '') . 'onchange="document.' . $name . 'form.submit();">'
+		$html = '<form class="selform" id="' . $name . 'form" name="' . $name
+		. 'form" method="get" '. ($action ? 'action="' . $action . '" ' : '') . 'onchange="document.' . $name . 'form.submit();">'
 		. '<label for="' . $name . '">' . $label . ': </label><select name="' . $name . '" id="' . $name . '">';
 		if (!$selected) {
 			$html .= '<option value="" selected="" disabled="">Select...</option>';

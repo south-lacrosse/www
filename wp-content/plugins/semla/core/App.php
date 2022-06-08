@@ -176,12 +176,12 @@ class App {
 				'parent_item_colon' => "Parent $single_name",
 				'all_items' => "All $plural_name",
 				'archives' => "All $plural_name",
-    			'attributes' => "$single_name Attributes",
+				'attributes' => "$single_name Attributes",
 				'insert_into_item' => "Insert into $single_name",
-            	'uploaded_to_this_item' => "Uploaded to this $single_name",
-            	'filter_items_list' => "Filter $plural_name list",
-            	'items_list_navigation' => "$plural_name list navigation",
-            	'items_list' =>  "$plural_name list",
+				'uploaded_to_this_item' => "Uploaded to this $single_name",
+				'filter_items_list' => "Filter $plural_name list",
+				'items_list_navigation' => "$plural_name list navigation",
+				'items_list' =>  "$plural_name list",
 				'menu_name' => $plural_name,
 				'item_published' => "$single_name published.",
 				'item_published_privately' => "$single_name published privately.",
@@ -213,21 +213,21 @@ class App {
 	 */
 	public static function register_blocks() {
 		register_block_type( 'semla/data', [
-            'attributes' => [
-                'src' => [
-                    'type' => 'string'
+			'attributes' => [
+				'src' => [
+					'type' => 'string'
 				]
 			],
-            'render_callback' => [Block_Data::class, 'render_callback'],
+			'render_callback' => [Block_Data::class, 'render_callback'],
 		]);
 		register_block_type( 'semla/calendar', [
-            'render_callback' => [Block_Calendar::class, 'render_callback'],
+			'render_callback' => [Block_Calendar::class, 'render_callback'],
 		]);
 		register_block_type( 'semla/toc', [
-            'render_callback' => [Blocks::class, 'toc'],
+			'render_callback' => [Blocks::class, 'toc'],
 		]);
 		register_block_type( 'semla/location', [
-            'render_callback' => [Blocks::class, 'location'],
+			'render_callback' => [Blocks::class, 'location'],
 		]);
 	}
 }

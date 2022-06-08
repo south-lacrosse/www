@@ -22,8 +22,8 @@ fi
 
 cd wordpress || exit 1
 if [[ -z $(git remote -v|grep git@github.com:south-lacrosse/wordpress.git) ]]; then
-    echo 'Error: backups/wordpress dir is not set up for the correct remote repository'
-    exit 1
+	echo 'Error: backups/wordpress dir is not set up for the correct remote repository'
+	exit 1
 fi
 
 eval "$COMMAND"
@@ -35,5 +35,5 @@ if [[ $(git status --porcelain) ]]; then
 	git push || exit 1
 	echo 'Repository successfully updated'
 else
-    echo 'Nothing changed'
+	echo 'Nothing changed'
 fi
