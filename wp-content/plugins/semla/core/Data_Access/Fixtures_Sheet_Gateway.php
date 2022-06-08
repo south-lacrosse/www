@@ -94,6 +94,9 @@ class Fixtures_Sheet_Gateway {
 		update_option('semla_max_flags_rounds', $this->max_flags_rounds, 'no');
 		Cache::clear_cache();
 
+		$datetime = (new \DateTime('now', new \DateTimeZone('Europe/London')))->format('d/m/Y H:i:s');
+		update_option('semla_fixtures_datetime', $datetime, 'no');
+
 		fclose($fp);
 		return $this->status;
 	}

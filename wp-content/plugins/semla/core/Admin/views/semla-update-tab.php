@@ -6,7 +6,10 @@ season's data has been archived by running the <a href="https://github.com/south
 
 use Semla\Utils\Util;
 
-$fixtures_sheet_id = get_option('semla_fixtures_sheet_id'); ?>
+$fixtures_datetime = get_option('semla_fixtures_datetime'); 
+if ($fixtures_datetime) { ?>
+<p><b>Last update:</b> <?= $fixtures_datetime ?></p>
+<?php } ?>
 <p><?php if ($fixtures_sheet_id) { ?>
 The fixtures will be loaded from <a href="<?= Util::get_fixtures_sheet_url($fixtures_sheet_id) ?>edit">the Fixtures Google Sheet</a>.
 <?php } ?>
