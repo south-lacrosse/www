@@ -15,7 +15,7 @@ if [[ $# -gt 1 ]]; then
 	exit 1
 fi
 if [[ $# -eq 0 ]]; then
-	if [[ $(date +%d) -eq 1 ]]; then
+	if [[ $(date +%d) == '01' ]]; then
 		set -- 'monthly'
 	elif [[ $(date +%u) -eq 1 ]]; then
 		set -- 'weekly'
