@@ -5,7 +5,7 @@
 # This script enables you to load a production version of the website
 # into another database, changing the URL to that in wp-config.php
 
-# If run with --latest will copy the latest daily backup in ~/public_html/bin/backups,
+# If run with --latest will copy the latest daily in ~/public_html/bin/backups,
 # which is an easy way to copy production to staging (assumes both are on the same server)
 
 if [[ $# -ne 1 ]]; then
@@ -13,7 +13,7 @@ if [[ $# -ne 1 ]]; then
 	exit 1
 fi
 if [[ "$1" == '--latest' ]]; then
-	FILE=$(ls -t ~/public_html/bin/backups/db*-daily.sql.gz | head -1)
+	FILE=$(ls -t ~/public_html/bin/backups/db-*.sql.gz | head -1)
 	if [[ -z "$FILE" ]] ; then
 		echo 'Cannot find latest production backup.'
 		exit 1
