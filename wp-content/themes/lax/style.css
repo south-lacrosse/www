@@ -1780,6 +1780,11 @@ mark.tag {
 	width: 1.23em;
 	height: 1.15em;
 }
+.icon-citymapper {
+	width: 32px;
+	height: 32px;
+	background-image: url(img/citymapper.svg);
+}
 
 /*--------------- Accessibility ------------------------*/
 
@@ -1849,7 +1854,6 @@ mark.tag {
 	}
 	/* Display background images for things like phone, email */
 	.acrd-btn::after, a::before, .icon {
-
 		print-color-adjust: exact !important;
 		-webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
 		color-adjust: exact !important;				 /*Firefox*/

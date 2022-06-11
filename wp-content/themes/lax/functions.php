@@ -109,7 +109,7 @@ function lax_admin() {
 
 add_action('wp_enqueue_scripts', function() {
 	wp_enqueue_style('lax-style', get_stylesheet_directory_uri() . '/style' . SEMLA_MIN . '.css'
-		, [], '1.0');
+		, [], '1.1');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
 		, ['lax-style'], '1.0');
