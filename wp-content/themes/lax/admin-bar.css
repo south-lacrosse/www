@@ -4,8 +4,9 @@
  * main css and qualify everything by '.admin-bar xxx' but that just
  * adds extra complexity to 0.01% of pages.
  */
+ /** Pullout menu - need to set height to account for admin bar */
 .js .menu-wrapper {
-	height: calc(100% -  var(--wp-admin--admin-bar--height));
+	height: calc(100% - var(--wp-admin--admin-bar--height));
 }
 /* For some reason WordPress doesn't reset this when they don't used a fixed */
 @media screen and (max-width: 600px) {
@@ -16,6 +17,9 @@
 
 /* media query matches style.css for sticky menu */
 @media screen and (min-height: 500px) and (min-width: 680px) {
+	html {
+		scroll-padding-top: calc(var(--wp-admin--admin-bar--height) + 40px);
+	}
 	.menu-nav {
 		/* scroll-padding-top added by WP handles everything else */
 		top: var(--wp-admin--admin-bar--height);
@@ -31,11 +35,6 @@ screen and (max-height: 499px) and (min-width: 601px) and (max-width: 679px) {
 	body > header {
 		position: static;
 	}
-	/* reset from sticky menu */
-	:target::before {
-		display: none;
-		content: none;
-	}
 	.middle {
 		margin-top: 0;
 	}
@@ -49,6 +48,9 @@ screen and (max-height: 499px) and (min-width: 601px) and (max-width: 679px) {
 
 /* last piece of the puzzle, WP admin bar is fixed, and so is our header */
 @media screen and (min-height: 500px) and (min-width: 601px) and (max-width: 679px) {
+	html {
+		scroll-padding-top: calc(var(--wp-admin--admin-bar--height) + 46px);
+	}
 	body > header {
 		/* scroll-padding-top added by WP handles everything else */
 		top: var(--wp-admin--admin-bar--height);

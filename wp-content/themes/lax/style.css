@@ -486,21 +486,10 @@ button {
 		z-index: 1; /* keep on top of any relative positioned elements in page */
 		top: 0;
 	}
-	/* make sure we don't move the target link down for anything in the menu (see below) */
-	.menu-nav :target::before {
-		display: none;
-		content: none;
-	}
-}
-@media screen and (min-height: 500px) {
-	/* Need to move the link target down 40px so as not to be obscured by the sticky menu,
-	i.e. when we have internal links such at #Referees  */
-	:target::before {
-		display: block;
-		content: " ";
-		margin-top: -40px;
-		height: 40px;
-		visibility: hidden;
+	/* Make sure link targets are not obscured by the sticky menu i.e. when we have
+	   internal links such at #Referees */
+	html {
+		scroll-padding-top: 40px;
 	}
 }
 @media screen and (min-height: 500px) and (max-width: 679px) {
@@ -513,9 +502,10 @@ button {
 	.middle {
 		margin-top: 46px; /* for the fixed header */
 	}
-	:target::before {
-		margin-top: -46px;
-		height: 46px;
+	/* Make sure link targets are not obscured by the fixed menu i.e. when we have
+	   internal links such at #Referees */
+	html {
+		scroll-padding-top: 46px;
 	}
 }
 /* class names are short 
