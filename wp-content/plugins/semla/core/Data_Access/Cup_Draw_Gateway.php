@@ -14,7 +14,6 @@ class Cup_Draw_Gateway {
 	public static function get_draws($year, $group_id, $display = '', $slug='') {
 		global $wpdb;
 
-		$remarks = [];
 		if (!$year) {
 			$rows = $wpdb->get_results( $wpdb->prepare(
 				'SELECT c.section_name, cd.comp_id, cd.round, cd.match_num,
@@ -33,6 +32,11 @@ class Cup_Draw_Gateway {
 				WHERE c.group_id = %d
 				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num', $group_id ));
 			if ($wpdb->last_error) return DB_Util::db_error();
+			// TODO: optimize?? not that many rows, so do we need to join?
+			$remarks = $wpdb->get_results( $wpdb->prepare(
+				'SELECT comp_id, remarks
+				FROM slc_remarks'), OBJECT_K);
+			if ($wpdb->last_error) return DB_Util::db_error();
 			$years = false;
 		} else {
 			$years = $wpdb->get_row( $wpdb->prepare(
@@ -46,9 +50,9 @@ class Cup_Draw_Gateway {
 			if ($wpdb->last_error) return false;
 			// TODO: optimize?? not that many rows, so do we need to join?
 			$remarks = $wpdb->get_results( $wpdb->prepare(
-				"SELECT comp_id, remarks
+				'SELECT comp_id, remarks
 				FROM slh_remarks
-				WHERE year = %d",$year), OBJECT_K);
+				WHERE year = %d', $year), OBJECT_K);
 			if ($wpdb->last_error) return false;
 			$rows = $wpdb->get_results( $wpdb->prepare(
 				'SELECT c.section_name, cd.comp_id, cd.round, cd.match_num,

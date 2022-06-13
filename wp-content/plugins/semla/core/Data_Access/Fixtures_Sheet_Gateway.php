@@ -80,6 +80,7 @@ class Fixtures_Sheet_Gateway {
 
 		$this->load_fixtures_deductions();
 		$this->load_flags();
+		$this->load_remarks();
 		if ($this->error->has_errors()) return $this->error;
 
 		$res = DB_Util::on_success();
@@ -129,7 +130,7 @@ class Fixtures_Sheet_Gateway {
 			}
 			$comp_id = $this->competitions[$competition]->id;
 			$table = [];
-			for ($i=self::TEAMS; !empty($row[$i]); $i++) {
+			for ($i = self::TEAMS; !empty($row[$i]); $i++) {
 				$team = new \stdClass();
 				$team->team = $row[$i];
 				$team->won=0; $team->drawn=0; $team->lost=0;
@@ -516,6 +517,7 @@ class Fixtures_Sheet_Gateway {
 			$this->add_db_error('Failed to create tiebreaker table');
 			return;
 		}
+		$division_order = $this->get_division_order();
 		foreach ($this->divisions as $division) {
 			$comp_id = $division[0];
 			$promoted = $division[2];
@@ -536,29 +538,51 @@ class Fixtures_Sheet_Gateway {
 					$team->goal_avg = 99;
 				}
 			}
-			usort($table, [$this, 'cmp_tables']);
-			
-			if ($table[0]->played > 0) {
-				if ($table[0]->points === $table[1]->points) {
-					// top = 2nd, order by head-to-head
-					$this->tiebreaker_reorder($comp_id, $table, 0, $division_fixtures[$comp_id]);
-					if ($this->error->has_errors()) return;
+			if (array_key_exists($comp_id, $division_order)) {
+				// "Division Order" sheet has specific order
+				$team_order = $division_order[$comp_id];
+				if (count($team_order) !== count($table)) {
+					$this->error->add('fixtures', 'Division Order for ' . $this->get_competition_name($comp_id)
+						. ' has wrong number of teams');
+					continue;
 				}
-				if ($promoted != 0 && $table[$promoted]->points > 0
-				&& $table[$promoted]->points === $table[$promoted-1]->points
-				// check we haven't already done a tie-break for champions
-				&& $table[$promoted]->points !== $table[0]->points) {
-					$this->tiebreaker_reorder($comp_id, $table, $promoted - 1, $division_fixtures[$comp_id]);
-					if ($this->error->has_errors()) return;
+				$new_table = [];
+				foreach ($table as $team) {
+					if (!array_key_exists($team->team, $team_order)) {
+						$this->error->add('fixtures', 'Division Order for ' . $this->get_competition_name($comp_id)
+						. ' has unknown team ' . $team->team);
+						continue;
+					}
+					$new_table[$team_order[$team->team]] = $team;
 				}
-				if ($relegated_after != 0 && $table[$relegated_after]->points > 0
-				&& $table[$relegated_after]->points === $table[$relegated_after-1]->points
-				// check we haven't already done a tie-break which could have gone this far
-				&& $table[$relegated_after]->points !== $table[$promoted]->points) {
-					$this->tiebreaker_reorder($comp_id, $table, $relegated_after - 1, $division_fixtures[$comp_id]);
-					if ($this->error->has_errors()) return;
+				$table = $new_table;
+				ksort($table);
+			} else {
+				usort($table, [$this, 'cmp_tables']);
+				
+				if ($table[0]->played > 0) {
+					if ($table[0]->points === $table[1]->points) {
+						// top = 2nd, order by head-to-head
+						$this->tiebreaker_reorder($comp_id, $table, 0, $division_fixtures[$comp_id]);
+						if ($this->error->has_errors()) return;
+					}
+					if ($promoted != 0 && $table[$promoted]->points > 0
+					&& $table[$promoted]->points === $table[$promoted-1]->points
+					// check we haven't already done a tie-break for champions
+					&& $table[$promoted]->points !== $table[0]->points) {
+						$this->tiebreaker_reorder($comp_id, $table, $promoted - 1, $division_fixtures[$comp_id]);
+						if ($this->error->has_errors()) return;
+					}
+					if ($relegated_after != 0 && $table[$relegated_after]->points > 0
+					&& $table[$relegated_after]->points === $table[$relegated_after-1]->points
+					// check we haven't already done a tie-break which could have gone this far
+					&& $table[$relegated_after]->points !== $table[$promoted]->points) {
+						$this->tiebreaker_reorder($comp_id, $table, $relegated_after - 1, $division_fixtures[$comp_id]);
+						if ($this->error->has_errors()) return;
+					}
 				}
 			}
+
 			if ($promoted != 0) {
 				$table[$promoted - 1]->divider = 1;
 			}
@@ -668,6 +692,36 @@ class Fixtures_Sheet_Gateway {
 		return $this->competition_by_id[$comp_id];
 	}
 
+	private function get_division_order() {
+		if (!array_key_exists('Division Order', $this->sheet_names)) {
+			return [];
+		}
+		$division_order = [];
+		$rows = $this->get_rows('Division Order', false);
+		$comps = '';
+		$row_count = count($rows);
+		for ($col = count($rows[0]) - 1; $col >= 0; $col--) {
+			$comp = $rows[0][$col];
+			if (empty($this->competitions[$comp])) {
+				$this->error->add('fixtures', "Division Order sheet: Competition $comp does not exist");
+				continue;
+			}
+
+			$teams = [];
+			$pos = 1;
+			for ($row = 1; $row < $row_count; $row++) {
+				if (empty($rows[$row][$col])) break;
+				$teams[$rows[$row][$col]] = $pos++;
+			}
+			$division_order[$this->competitions[$rows[0][$col]]->id] = $teams;
+
+			if ($comps !== '') $comps .= ', ';
+			$comps .= $comp;
+		}
+		$this->status[] = "Loaded division order for $comps";
+		return $division_order;
+	}
+
 	private function load_flags() {
 		$rows = $this->get_rows('Flags', false);
 		if (!$rows) return;
@@ -765,7 +819,30 @@ class Fixtures_Sheet_Gateway {
 			$this->add_db_error('Failed to save Flags draws');
 			return;
 		}
-		$this->status[] = $count . ' Flags competitions updated';
+		$this->status[] = "$count Flags competitions updated";
+	}
+
+	private function load_remarks() {
+		// Remarks sheet is optional
+		if (!array_key_exists('Remarks', $this->sheet_names)) return;
+		$rows = $this->get_rows('Remarks');
+		if (!$rows) return;
+
+		$remarks = [];
+		foreach ($rows as $row) {
+			if (empty($row[0])) continue;
+			if (empty($this->competitions[$row[0]])) {
+				$this->error->add('fixtures', "Remarks sheet: Competition $row[0] does not exist");
+				continue;
+			}
+			$remarks[] = [$this->competitions[$row[0]]->id, $row[1]];
+		}
+		if (!$remarks) return;
+		if (!Competition_Gateway::save_remarks($remarks)) {
+			$this->add_db_error('Failed to save Remarks');
+			return;
+		}
+		$this->status[] = count($remarks) . ' remarks updated';
 	}
 
 	/**
@@ -784,9 +861,6 @@ class Fixtures_Sheet_Gateway {
 			return $xlsx;
 		}
 		$this->xlsx = SimpleXLSX::parseData($xlsx);
-
-		// testing
-		// $this->xlsx = SimpleXLSX::parse(dirname(__DIR__,5) . '/Test.xlsx');
 		if (!$this->xlsx) {
 			return new WP_Error('xlsx_parse', 'Error parsing xlsx file: '. SimpleXLSX::parseError());
 		}
@@ -800,7 +874,7 @@ class Fixtures_Sheet_Gateway {
 	 * @return array|null array of rows, or null on failure
 	 */
 	private function get_rows($sheet, $remove_header = true) {
-		if (!array_key_exists($sheet,$this->sheet_names)) {
+		if (!array_key_exists($sheet, $this->sheet_names)) {
 			$this->error->add('fixtures', "Unknown sheet $sheet");
 			return null;
 		}

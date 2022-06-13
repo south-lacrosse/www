@@ -50,6 +50,12 @@ INSERT INTO `slh_deduction`
 SELECT @end_year, `comp_id`, `team`, `penalty`, `deduct_date`, `reason`
 from `slc_deduction`;
 
+SELECT 'Inserting remarks' as '';
+INSERT INTO `slh_remarks`
+(`year`, `comp_id`, `remarks`)
+SELECT @end_year, `comp_id`, `remarks`
+from `slc_remarks`;
+
 -- League winners
 SELECT 'Inserting league winners' as '';
 INSERT INTO `slh_winner`
