@@ -26,9 +26,8 @@ class Table_Gateway {
 				ORDER BY c.seq, c.id, t.position', $league_id));
 			if ($wpdb->last_error) return DB_Util::db_error();
 			// TODO: optimize?? not that many rows anyway
-			$remarks = $wpdb->get_results( $wpdb->prepare(
-				'SELECT comp_id, remarks
-				FROM slc_remarks'), OBJECT_K);
+			$remarks = $wpdb->get_results(
+				'SELECT comp_id, remarks FROM slc_remarks', OBJECT_K);
 			if ($wpdb->last_error) return false;
 		} else {
 			$years = $wpdb->get_row( $wpdb->prepare(

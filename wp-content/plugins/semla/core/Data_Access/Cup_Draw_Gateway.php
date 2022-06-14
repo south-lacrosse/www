@@ -33,9 +33,8 @@ class Cup_Draw_Gateway {
 				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num', $group_id ));
 			if ($wpdb->last_error) return DB_Util::db_error();
 			// TODO: optimize?? not that many rows, so do we need to join?
-			$remarks = $wpdb->get_results( $wpdb->prepare(
-				'SELECT comp_id, remarks
-				FROM slc_remarks'), OBJECT_K);
+			$remarks = $wpdb->get_results(
+				'SELECT comp_id, remarks FROM slc_remarks', OBJECT_K);
 			if ($wpdb->last_error) return DB_Util::db_error();
 			$years = false;
 		} else {
