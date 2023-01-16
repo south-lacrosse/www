@@ -51,8 +51,9 @@ define( 'NONCE_SALT',       'put your unique phrase here' );
 $table_prefix  = 'wp_';
 
 /** Absolute path to the WordPress directory. */
-if ( !defined('ABSPATH') )
-	define('ABSPATH', dirname(__FILE__) . '/');
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', __DIR__ . '/' );
+}
 
 /**
  * Hardcoding WP_SITEURL and WP_HOME saves a couple of database lookups for every page.
@@ -63,13 +64,18 @@ if ( !defined('ABSPATH') )
  * database). Note: The Local development tool automatically sets this to 'local', which is
  * for usually development machines not reachable from the internet.
  */
-// Local
-// define('WP_SITEURL', 'https://dev.southlacrosse.org.uk');
-// define('WP_ENVIRONMENT_TYPE','development');
-// define('WP_DEBUG', true);
-// define('WP_DEBUG_LOG', true); // true to write to wp-content/debug.log, or location of log file
+// Local Server ---------------------------------------------
+define('WP_SITEURL', 'https://dev.southlacrosse.org.uk');
+define('WP_ENVIRONMENT_TYPE','development'); // Comment out if using Local
+define('WP_DEBUG', true);
+define('WP_DEBUG_LOG', true); // true to write to wp-content/debug.log, or location of log file
 // define('BE_MEDIA_FROM_PRODUCTION_URL', 'https://www.southlacrosse.org.uk'); // get media from production, if plugin installed
-// Live
+
+// if SEMLA .css & .js files should be served minimized. Defaults to '.min' to minimize, '' otherwise
+// define('SEMLA_MIN', '');
+// End Local Server  -----------------------------------------
+
+// Live Server ---------------------------------------------
 define('WP_SITEURL', 'https://www.southlacrosse.org.uk');
 define('WP_ENVIRONMENT_TYPE','production');
 define('WP_DEBUG', true);
@@ -79,21 +85,19 @@ define('WP_DEBUG_DISPLAY', false);
 define('WP_DEBUG_LOG', true);
 define('WP_CACHE', true); // if LSCache installed on host, though it should add the line when enabled
 
-// if SEMLA .css & .js files should be served minimized. Defaults to '.min' to minimize, '' otherwise
-// define('SEMLA_MIN', '');
-
 // Only set Google Analytics id in production
 // define('SEMLA_ANALYTICS', 'UA-xxxxxxxx-y');
 
 // Set SMTP_USER and SMTP_PASS on production & staging sites, or on development when testing
 // If not set the Local development tool will intercept emails in Mailhog
-// define('SMTP_USER', '<user to send emails>' );
-// define('SMTP_PASS', '<password for sending wordpress emails>');
+define('SMTP_USER', '<user to send emails>' );
+define('SMTP_PASS', '<password for sending wordpress emails>');
 
 # define('SMTP_HOST', 'smtp.hostinger.com' ); // The hostname of the mail server, defaults to hostinger
 # define('SMTP_FROM', '<from address>' ); defaults to SMTP_USER
 # NAME defaults to 'SEMLA' for prod, otherwise 'SEMLA (stg|dev)' using 1st part of site URL
 # define('SMTP_NAME', 'FROM_NAME');
+// End Live Server -----------------------------------------
 
 define('WP_HOME',WP_SITEURL);
 
@@ -112,3 +116,8 @@ define('AUTOSAVE_INTERVAL', 120); // seconds, default 60
 
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
+
+// If WordPress isn't yet compatible with a very recent version of PHP, and WP_DEBUG
+// is true, you might get deprecated errors. To ignore those uncomment use the call below.
+// Make sure to comment it out again when WordPress catches up!
+// error_reporting( E_ALL ^ E_DEPRECATED );
