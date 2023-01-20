@@ -78,15 +78,22 @@ define('WP_DEBUG_LOG', true); // true to write to wp-content/debug.log, or locat
 // Live Server ---------------------------------------------
 define('WP_SITEURL', 'https://www.southlacrosse.org.uk');
 define('WP_ENVIRONMENT_TYPE','production');
-define('WP_DEBUG', true);
-define('WP_DEBUG_DISPLAY', false);
-// true to write to wp-content/debug.log, or location of log file. Make 100% sure this
-// file cannot be served by the web server as bots will try to access it
-define('WP_DEBUG_LOG', true);
+define('WP_DEBUG', false);
+
+// To track down errors in production comment out WP_DEBUG above, and uncomment
+// the 3 following defines.
+// Note: if WP_DEBUG_LOG is true then errors are written to wp-content/debug.log,
+// or location of log file. Make 100% sure this file cannot be served by the web
+// server as bots will try to access it
+
+// define('WP_DEBUG', true);
+// define('WP_DEBUG_DISPLAY', false);
+// define('WP_DEBUG_LOG', true);
+
 define('WP_CACHE', true); // if LSCache installed on host, though it should add the line when enabled
 
 // Only set Google Analytics id in production
-// define('SEMLA_ANALYTICS', 'UA-xxxxxxxx-y');
+define('SEMLA_ANALYTICS', 'UA-xxxxxxxx-y');
 
 // Set SMTP_USER and SMTP_PASS on production & staging sites, or on development when testing
 // If not set the Local development tool will intercept emails in Mailhog
@@ -117,7 +124,8 @@ define('AUTOSAVE_INTERVAL', 120); // seconds, default 60
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
 
-// If WordPress isn't yet compatible with a very recent version of PHP, and WP_DEBUG
-// is true, you might get deprecated errors. To ignore those uncomment use the call below.
+// If WordPress isn't yet compatible with a very recent version of PHP in
+// development, and WP_DEBUG is true, you might get deprecated errors. To
+// ignore those uncomment use the call below.
 // Make sure to comment it out again when WordPress catches up!
 // error_reporting( E_ALL ^ E_DEPRECATED );
