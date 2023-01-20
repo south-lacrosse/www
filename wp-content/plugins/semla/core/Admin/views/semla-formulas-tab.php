@@ -7,7 +7,8 @@
 			column right click->Paste Special->Paste Values Only, and repeat until you have copied all the Flags games into the
 			correct position on the sheet.</p>
 		<p>Note: Google Sheets can be a bit flaky when pasting formulas, so if you end up with cells like "=Flags!$D$4"
-			then create a blank sheet and paste all rows into into there, and then copy those rows into the Fixtures sheet.</p>
+			then create a blank sheet and paste all rows into into there, and then copy those rows into the Fixtures sheet.
+			Or also pasting into Notepad++, and then copy and pasting from there works.</p>
 	</div>
 </div>
 <?php if ($rows) : ?>
