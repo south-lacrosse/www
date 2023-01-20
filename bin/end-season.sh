@@ -26,6 +26,9 @@ if [[ $prompt != "y" && $prompt != "Y" ]] ; then
 	echo 'End of season processing terminated'
 	exit 0
 fi
+echo ---------- Stats before history update -----------------
+wp semla history stats
+echo --------------------------------------------------------
 # Run with --verbose to see statements
 mysql --defaults-extra-file=.my.cnf < end-season.sql
 if [[ $? -ne 0 ]]; then
@@ -33,3 +36,6 @@ if [[ $? -ne 0 ]]; then
 	exit 1
 fi
 wp semla history update-pages
+echo ---------- Stats after history update ------------------
+wp semla history stats
+echo --------------------------------------------------------
