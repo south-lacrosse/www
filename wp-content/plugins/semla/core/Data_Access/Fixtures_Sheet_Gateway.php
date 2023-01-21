@@ -382,29 +382,33 @@ class Fixtures_Sheet_Gateway {
 			$a_goals = $this->parse_goals($row[$away_goals_col]);
 			$result = '';
 			$h_points = $a_points = null;
+
+			if ($is_league) {
+				// cater for ladders - most of the time it won't be
+				if ($comp_id2 == 0) {
+					$h_comp_id = $a_comp_id = $comp_id;
+				} elseif (isset($this->tables[$comp_id][$home])) {
+					$h_comp_id = $comp_id;
+					$a_comp_id = $comp_id2;
+				} else {
+					$h_comp_id = $comp_id2;
+					$a_comp_id = $comp_id;
+				}
+				if (!isset($this->tables[$h_comp_id][$home])) {
+					$this->error->add('fixtures', "$date $home v $away, $home is not in division $competition, row $row_no");
+					continue;
+				}
+				if (!isset($this->tables[$a_comp_id][$away])) {
+					$this->error->add('fixtures', "$date $home v $away, $away is not in division $competition,  row $row_no");
+					continue;
+				}
+			}
+
 			if (is_int($h_goals) && is_int($a_goals)) {
 				$penalty = $v[0] === 'C';
 				$result = sprintf('%d - %d', $h_goals, $a_goals)
 					. ($penalty ? ' w/o' : '');
 				if ($is_league) {
-					// cater for ladders - most of the time it won't be
-					if ($comp_id2 == 0) {
-						$h_comp_id = $a_comp_id = $comp_id;
-					} elseif (isset($this->tables[$comp_id][$home])) {
-						$h_comp_id = $comp_id;
-						$a_comp_id = $comp_id2;
-					} else {
-						$h_comp_id = $comp_id2;
-						$a_comp_id = $comp_id;
-					}
-					if (!isset($this->tables[$h_comp_id][$home])) {
-						$this->error->add('fixtures', "$date $home v $away, $home is not in division $competition, row $row_no");
-						continue;
-					}
-					if (!isset($this->tables[$a_comp_id][$away])) {
-						$this->error->add('fixtures', "$date $home v $away, $away is not in division $competition,  row $row_no");
-						continue;
-					}
 					$h = $this->tables[$h_comp_id][$home];
 					$a = $this->tables[$a_comp_id][$away];
 					$h->goals_for += ($h_goals * $multi);
