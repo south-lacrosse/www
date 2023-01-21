@@ -26,11 +26,16 @@ class Fixtures_Sheet_Gateway {
 	const DEDUCT_COMPETITION = 0;
 	const DEDUCT_POINTS = 2;
 
-	private $xlsx;
+	private $xlsx; // the spreadsheet
+	private $tables; // league tables
+	private $points; // points for win/draw/loss
 	private $sheet_names;
+	// cache file of serialized tables with no games played
 	private $tables_file;
+	// WP_Error with any error messages. We try to show as many errors as
+	// possible so they can all be fixed in one go.
 	private $error;
-	private $status = [];
+	private $status = []; // array of update messages
 	private $competitions;
 	private $competition_by_id = null;
 	private $divisions;
@@ -341,9 +346,9 @@ class Fixtures_Sheet_Gateway {
 						$seq = $c->seq;
 					$comp_short .= ($comp_short ? '/' : '') . ($c->abbrev ? $c->abbrev : $c->name);
 					if (!$comp_id) {
-						$comp_id = $c->id; 
+						$comp_id = $c->id;
 					} else {
-						$comp_id2 = $c->id; 
+						$comp_id2 = $c->id;
 					}
 					if ($c->type === 'league' || $c->type === 'league-prelim') $is_league = true;
 				} else {
@@ -355,7 +360,7 @@ class Fixtures_Sheet_Gateway {
 					}
 					$round = array_pop($temp); // get rid of flags round
 					$comp2 = implode(' ', $temp);
-					if (empty($this->competitions[$comp2])) {
+					if (empty($this->competitions[$comp2]) || ($this->competitions[$comp2]->type != 'cup')) {
 						$this->status[] = "Warning: Unknown competition '$comp' in fixtures row $row_no";
 						$comp_short .= ($comp_short ? '/' : '') . $comp;
 						continue;
@@ -365,9 +370,9 @@ class Fixtures_Sheet_Gateway {
 						$seq = $c->seq;
 					$comp_short .= ($comp_short ? '/' : '') . ($c->abbrev ? $c->abbrev : $c->name) . ' ' . $round;
 					if (!$comp_id) {
-						$comp_id = $c->id; 
+						$comp_id = $c->id;
 					} else {
-						$comp_id2 = $c->id; 
+						$comp_id2 = $c->id;
 					}
 					if ($c->type === 'league' || $c->type === 'league-prelim') $is_league = true;
 				}
@@ -477,7 +482,7 @@ class Fixtures_Sheet_Gateway {
 					case 'A':
 						$result = 'Abandoned';
 						break;
-					default: 
+					default:
 						if ($h_goals) $result = "$h_goals - $a_goals";
 				}
 				$h_goals = $a_goals = null;
@@ -559,7 +564,7 @@ class Fixtures_Sheet_Gateway {
 				ksort($table);
 			} else {
 				usort($table, [$this, 'cmp_tables']);
-				
+
 				if ($table[0]->played > 0) {
 					if ($table[0]->points === $table[1]->points) {
 						// top = 2nd, order by head-to-head
@@ -898,9 +903,9 @@ class Fixtures_Sheet_Gateway {
 		}
 
 		$tables = ['cup_draw', 'cup_round_date', 'deduction', 'fixture', 'fixture_date', 'table'];
-		
+
 		$tables_count = $wpdb->get_var(
-			'SELECT COUNT(*) FROM information_schema.TABLES 
+			'SELECT COUNT(*) FROM information_schema.TABLES
 			WHERE TABLE_CATALOG = "def" AND TABLE_SCHEMA = "' . DB_NAME . '"
 				AND TABLE_TYPE = "BASE TABLE"
 				AND TABLE_NAME IN ("backup_' . implode('", "backup_', $tables). '")');
@@ -911,7 +916,7 @@ class Fixtures_Sheet_Gateway {
 			return new WP_Error('fixtures', 'Not all backup tables exist, cannot revert');
 		}
 		$rows = $wpdb->get_results(
-			'SELECT TABLE_NAME FROM information_schema.TABLES 
+			'SELECT TABLE_NAME FROM information_schema.TABLES
 			WHERE TABLE_CATALOG = "def" AND TABLE_SCHEMA = "' . DB_NAME . '"
 				AND TABLE_TYPE = "BASE TABLE"
 				AND TABLE_NAME LIKE "slc_%"' );
@@ -934,7 +939,7 @@ class Fixtures_Sheet_Gateway {
 		if ($result === false) {
 			return self::db_error('Failed to rename tables');
 		}
-		$result = $wpdb->query('DROP TABLE IF EXISTS new_' 
+		$result = $wpdb->query('DROP TABLE IF EXISTS new_'
 			. implode(', new_', $tables));
 		if ($result === false) {
 			return self::db_error('Failed to drop replaced tables');
