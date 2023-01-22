@@ -39,6 +39,7 @@ class Fixtures_Sheet_Gateway {
 	private $competitions;
 	private $competition_by_id = null;
 	private $divisions;
+	private $teams; // array keyed on team for validating team names
 	private $max_flags_rounds = 0;
 	private	$have_ladder = false;
 
@@ -75,6 +76,12 @@ class Fixtures_Sheet_Gateway {
 				$this->load_divisions_and_teams();
 			} else {
 				$this->tables = unserialize(file_get_contents($this->tables_file));
+				$team_names = Club_Team_Gateway::get_team_names();
+				if ($team_names === false) {
+					$this->add_db_error('Failed to load team names');
+				} else {
+					$this->teams = array_flip($team_names);
+				}
 				$this->divisions = Competition_Gateway::get_division_info();
 				if ($this->divisions === false) {
 					$this->add_db_error('Failed to load division info');
@@ -117,10 +124,11 @@ class Fixtures_Sheet_Gateway {
 			$this->error->add('fixtures', 'No Teams');
 		}
 		if ($this->error->has_errors()) return;
-		$team_minimals = [];
-		$team_abbrevs = [];
+		$team_minimals = $team_abbrevs = $this->teams = [];
 		foreach ($team_rows as $key => $row) {
-			$team_minimals[] = [$row[self::TEAM_NAME],$row[self::TEAM_MINIMAL]];
+			$team_name = $row[self::TEAM_NAME];
+			$this->teams[$team_name] = 1;
+			$team_minimals[] = [$team_name,$row[self::TEAM_MINIMAL]];
 			if (!empty($row[self::TEAM_SHORT])) {
 				$team_abbrevs[] = [$row[self::TEAM_NAME],$row[self::TEAM_SHORT]];
 			}
@@ -138,6 +146,10 @@ class Fixtures_Sheet_Gateway {
 			for ($i = self::TEAMS; !empty($row[$i]); $i++) {
 				$team = new \stdClass();
 				$team->team = $row[$i];
+				if (!array_key_exists($team->team, $this->teams)) {
+					$this->error->add('fixtures', "Team $team->team in division $competition is not on Teams sheet");
+					continue;
+				}
 				$team->won=0; $team->drawn=0; $team->lost=0;
 				$team->goals_for=0; $team->goals_against=0; $team->points_deducted = 0;
 				$team->points=0; $team->divider=0; $team->form=''; $team->tiebreaker = 0;
@@ -784,8 +796,9 @@ class Fixtures_Sheet_Gateway {
 			$col = 1; // h/a
 			$round = 1;
 			while ($round < $round_cnt) {
-				$num = 0;
+				$num = $team1_goals = 0;
 				$team1 = false;
+				$home_team = '';
 				for ($row = $start_row; $row<= $end_row; $row++) {
 					if (!empty($rows[$row][$col])) {
 						if ($team1 === false) { // home
@@ -793,9 +806,12 @@ class Fixtures_Sheet_Gateway {
 							$team1 = $rows[$row][$col+1];
 							$team1_goals = $rows[$row][$col+2];
 						} else {
+							$team2 = $rows[$row][$col+1];
 							$matches[] = [$comp_id, $round, ++$num,
-								$team1, $rows[$row][$col+1], $team1_goals,
+								$team1, $team2, $team1_goals,
 								$rows[$row][$col+2], $home_team ];
+							$this->validate_flags_team($comp, $team1);
+							$this->validate_flags_team($comp, $team2);
 							$team1 = false;
 						}
 					}
@@ -820,7 +836,9 @@ class Fixtures_Sheet_Gateway {
 			}
 			$matches[] = [$comp_id, $round, 1,
 				$team1, $team2, $team1_goals, $team2_goals, 0 ];
-			$row = $end_row + 3;
+				$this->validate_flags_team($comp, $team1);
+				$this->validate_flags_team($comp, $team2);
+				$row = $end_row + 3;
 			$count++;
 		}
 		if ($this->error->has_errors()) return;
@@ -829,6 +847,13 @@ class Fixtures_Sheet_Gateway {
 			return;
 		}
 		$this->status[] = "$count Flags competitions updated";
+	}
+
+	private function validate_flags_team($comp, $team) {
+		if (!$team || $team === 'Bye') return;
+		if (!array_key_exists($team, $this->teams)) {
+			$this->error->add('fixtures', "Team $team in competition $comp is not on Teams sheet");
+		}
 	}
 
 	private function load_remarks() {
