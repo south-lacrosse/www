@@ -5,9 +5,10 @@
 #  slc - all SEMLA current fixtures/flags/league tables (prefix slc_)
 #  slh - all SEMLA history tables (prefix slh_)
 #  wp - all core WordPress tables
+#  table-name - must be specific table, startting sl_,slc_,slh_ or wp_
 
 if [[ $# -ne 1 ]]; then
-	echo "Usage: $0 sl|slc|slh|wp"
+	echo "Usage: $0 sl|slc|slh|wp|table-name"
 	exit 1
 fi
 
@@ -26,8 +27,17 @@ case "$1" in
 		fi
 		;;
 	*)
-		echo "Usage: $0 sl|slh|wp"
-		exit 1
+		if [[ ! "$1" =~ ^(sl|slc|slh|wp)_[a-z\_]+$ ]]; then
+			echo "Usage: $0 sl|slc|slh|wp|table-name"
+			exit 1
+		fi
+		TEST_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like '$1'")
+		[[ $? -ne 0 ]] && exit 1
+		if [[ -z $TEST_TABLES ]]; then
+			echo "Unknown table. Usage: $0 sl|slc|slh|wp|table-name"
+			exit 1
+		fi
+		BACKUP_TABLES=$1
 		;;
 esac
 
