@@ -2,6 +2,9 @@
 <table class="sl-fixtures">
 <thead><tr><th>Date</th><th>Home</th><th></th><th>Away</th><th>Competition</th></tr></thead>
 <tbody><?php
+
+use Semla\Utils\Util;
+
 $last_date = null;
 foreach ($rows as $row) {
 	if ($row->match_date !== $last_date) {
@@ -11,20 +14,7 @@ foreach ($rows as $row) {
 		$date = '';
 	}
 	if ($row->result == '') {
-		$time = explode(':',$row->match_time);
-		if ($time[0] > 12) {
-			$ampm = 'pm';
-			$time[0] -= 12;
-		} elseif ($row->match_time === '12:00:00') {
-			$ampm = 'pm';
-		} else {
-			$ampm = 'am';
-		}
-		$result = $time[0];
-		if ($time[1] !== '00') {
-			$result .= ':' . $time[1];
-		}
-		$result .= $ampm;
+		$result = Util::format_time($row->match_time);
 		if ($row->pitch_type) {
 			$result .= ' ' . $row->pitch_type;
 		}

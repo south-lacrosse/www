@@ -1,4 +1,7 @@
 <?php
+
+use Semla\Utils\Util;
+
 $last_date = '';
 foreach ( $rows as $row ) {
 	if ($row->match_date !== $last_date) {
@@ -28,20 +31,7 @@ foreach ( $rows as $row ) {
 	if (!$row->result) {
 		$extra = '';
 		if ($row->match_time !== '14:00:00') {
-			$time = explode(':',$row->match_time);
-			if ($time[0] > 12) {
-				$ampm = 'pm';
-				$time[0] -= 12;
-			} elseif ($row->match_time === '12:00:00') {
-				$ampm = 'pm';
-			} else {
-				$ampm = 'am';
-			}
-			$extra .= $time[0];
-			if ($time[1] !== '00') {
-				$extra .= ':' . $time[1];
-			}
-			$extra .= $ampm;
+			$extra = Util::format_time($row->match_time);
 		}
 		if ($row->venue) {
 			if ($extra) $extra .= ' ';

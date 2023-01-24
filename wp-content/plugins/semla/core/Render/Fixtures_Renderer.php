@@ -1,6 +1,8 @@
 <?php
 namespace Semla\Render;
 
+use Semla\Utils\Util;
+
 class Fixtures_Renderer {
 
 	const MONTHS = ['<abbr title="January">Jan</abbr>', '<abbr title="February">Feb</abbr>',
@@ -46,20 +48,7 @@ class Fixtures_Renderer {
 						$result = $row->result;
 				}
 			} else {
-				$time = explode(':',$row->match_time);
-				if ($time[0] > 12) {
-					$ampm = 'pm';
-					$time[0] -= 12;
-				} elseif ($row->match_time === '12:00:00') {
-					$ampm = 'pm';
-				} else {
-					$ampm = 'am';
-				}
-				$result = $time[0];
-				if ($time[1] !== '00') {
-					$result .= ':' . $time[1];
-				}
-				$result .= $ampm;
+				$result = Util::format_time($row->match_time);
 				if ($result !== '2pm')  {
 					$hl = ' hl';
 				}
@@ -89,7 +78,7 @@ class Fixtures_Renderer {
 			echo "</tr>\n";
 		}
 		echo "</tbody></table></div>\n";
-		
+
 		if (!empty($keys)) {
 			echo '<p><b>Key:</b> ' . implode(', ', $keys) . "</p>\n";
 		}
@@ -129,13 +118,13 @@ class Fixtures_Renderer {
 			$this->date_heading($fixture_date);
 		}
 		echo '<tr>';
-	
+
 		// output the correct day/month - don't show again if unchanged
 		if ($this->query_type === 'all') {
 			if ($month !== $this->last_month || $day !== $this->last_day) {
 				$this->last_month = $month;
 				$this->last_day = $day;
-				
+
 				echo '<td>' . self::MONTHS[$month -1]
 					. '</td><td>' .$day . '</td>';
 			} else {
