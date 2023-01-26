@@ -18,6 +18,11 @@ Underscores is distributed under the terms of the GNU GPL v2 or later.
 
 	If you make changes to this file then make sure you minify it, and bump
 	the version number in functions.php to make sure browsers pick up the new version
+
+	Note to self: don't set left & right margin on blocks, or things which will
+	appear in the block editor at top level, unless you have to. e.g. don't use
+	"margin: 1.5em 0 1.5em 0;" as a shortcut to set top & bottom margins.
+	)
  */
 
 /* normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
@@ -304,7 +309,7 @@ textarea {
 
 /*
  * Add the correct display in Edge, IE 10 + , and Firefox.
-DS don't use 
+DS don't use
 
 menu {
 	display: block;
@@ -312,7 +317,7 @@ menu {
 
 /*
  * Add the correct display in all browsers.
-DS don't use 
+DS don't use
 
 summary {
 	display: list-item;
@@ -323,7 +328,7 @@ summary {
 
 /**
  * Add the correct display in IE 10 + .
-DS don't use 
+DS don't use
 
 template {
 	display: none;
@@ -423,7 +428,8 @@ button {
 	}
 }
 .entry-footer {
-	margin: 0.75em 0;
+	margin-top: 0.75em;
+	margin-bottom: 0.75em;
 }
 #page-footer {
 	margin-top: 1em;
@@ -508,7 +514,7 @@ button {
 		scroll-padding-top: 46px;
 	}
 }
-/* class names are short 
+/* class names are short
 mu = menu ul tag, mu0-1 = depth
 ma = menu a tag
 mp = menu parent, used for dropdown menu
@@ -608,7 +614,7 @@ ml0-1 = menu li tag with depth */
 	.menu-nav, .menu-wrapper, .mu {
 		background-color: #A91717;
 	}
-	.ma:hover, #search:hover { 
+	.ma:hover, #search:hover {
 		background-color: #d03030;
 	}
 	.mi0.open {
@@ -623,7 +629,7 @@ ml0-1 = menu li tag with depth */
 	/* No javascript so display menu on hover */
 	.no-js .ml0:hover > ul {
 		display: block
-	}	
+	}
 	/* level 3 if needed
 	.mu2 {
 		left: 100%;
@@ -669,7 +675,7 @@ ml0-1 = menu li tag with depth */
 		visibility: visible;
 	}
 	/* if they don't have javascript, then swap the order of the
-	menu and content area. The hamburger links to the menu, so 
+	menu and content area. The hamburger links to the menu, so
 	the user can click there to access it. */
 	.no-js > body {
 		display: flex;
@@ -791,7 +797,8 @@ ml0-1 = menu li tag with depth */
 /*--------------------- Footer & breadcrumbs -------------------*/
 
 .nav-list /* ul */ {
-	margin: 0.5em 0 0.67em 0;
+	margin-top: 0.5em;
+	margin-bottom: 0.67em;
 	padding: 0;
 	list-style-type: none;
 }
@@ -843,7 +850,8 @@ ml0-1 = menu li tag with depth */
 
 h1 {
 	font-size: 1.75em;
-	margin: 0 0 0.67em 0;
+	margin-top: 0;
+	margin-bottom: 0.67em;
 }
 h1, h2 {
 	padding-bottom: 0.1em;
@@ -854,7 +862,8 @@ h1, h2 {
 }
 h2 {
 	font-size: 1.5em;
-	margin: 1em 0 0.5em 0;
+	margin-top: 1em;
+	margin-bottom: 0.5em;
 }
 h1, h2, h3, h4, h5, h6 {
 	font-weight: 600;
@@ -870,11 +879,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 h3 {
 	font-size: 1.15em;
-	margin: 1.25em 0 0.67em 0;
+	margin-top: 1.25em;
+	margin-bottom: 0.67em;
 }
 h4 {
 	font-size: 1em;
-	margin: 1em 0;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 /*--------------------- Meta info -------------------*/
@@ -895,7 +906,8 @@ h4 {
 
 /* short names, prefix s=search, form/input/label/submit */
 .sf {
-	margin: 1.5em 0;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
 }
 .si {
 	width: 100%;
@@ -936,7 +948,8 @@ h4 {
 .rh {
 	font-size: 1.25em;
 	font-weight: normal;
-	margin: 0 0 3px 0;
+	margin-top: 0;
+	margin-bottom: 3px;
 }
 .ra {
 	text-decoration: none;
@@ -945,7 +958,8 @@ h4 {
 	text-decoration: underline;
 }
 .rd > p {
-	margin: 0;
+	margin-top: 0;
+	margin-bottom: 0;
 }
 
 /*--------------------- Links -------------------*/
@@ -965,6 +979,7 @@ a:visited {
 
 /*--------------- Paragraph -----------------------*/
 
+/* browsers may set figure left/right, and p should be 0 anyway */
 p, figure {
 	margin: 1em 0;
 }
@@ -995,9 +1010,6 @@ img {
 
 /*--------------- Forms/Buttons ----------------------*/
 
-form {
-	margin: 0;
-}
 .selform {
 	display: inline;
 	white-space: nowrap;
@@ -1085,7 +1097,6 @@ form {
 #semla_toc-nav {
 	background: #fafafa;
 	border: 1px solid #CCC;
-	margin: 0;
 	padding: 0.5em 0.75em 0 1em;
 }
 #semla_toc-nav > h4 {
@@ -1301,7 +1312,8 @@ li > ul, li > ol {
 /*--------------- Attribute-value field layout ----------*/
 
 .wp-block-semla-attr-value {
-	margin: 0.75em 0;
+	margin-top: 0.75em;
+	margin-bottom: 0.75em;
 }
 .avf-name {
 	font-weight: 600;
@@ -1432,10 +1444,12 @@ transparent, which forms the triangle. */
 /*--------------- Definition list defaults ----------*/
 
 dl {
-	margin: 1em 0;
+	margin-top: 1em;
+	margin-bottom: 1em;
 }
 .calendar {
-	margin: 1.5em 0;
+	margin-top: 1.5em;
+	margin-bottom: 1.5em;
 }
 .calendar > dd {
 	margin: .3em 0 .7em 30px;
@@ -1446,31 +1460,6 @@ dt {
 dd {
 	margin: 0 0 0.5em 30px;
 }
-@media (min-width: 480px) {
-	.table > dt {
-		float: left;
-		clear: left;
-		width: 13em;
-	}
-	.colons > dt::after {
-		content: ":";
-	}
-	.table > dd {
-		margin: 0 0 0 13.5em;
-	}
-}
-/* thin was only used on contacts page!
-@media (max-width: 479px) {
-	.thin > dd {
-		margin-left: 15px;
-	}
-}
-@media (max-width: 379px) {
-	.thin > dd {
-		margin-left: 0;
-	}
-}
- */
 
 /*--------------- Responsive -----------------*/
 
@@ -1497,7 +1486,7 @@ dd {
 	}
 	/* Replace text for small screens e.g.
 		<td data-sml-text="Welwyn"><span>Welwyn Warriors</span></td>
-		Need <span> wrapper for text so we can make that <span> not be 
+		Need <span> wrapper for text so we can make that <span> not be
 		displayed. There are other methods of doing that, but this
 		seems to be the simplest, albeit with a bit of extra markup.
 	*/
@@ -1516,7 +1505,8 @@ dd {
 }
 .share > h3 {
 	text-transform: uppercase;
-	margin: 0.75em 0 0.5em 0;
+	margin-top: 0.75em;
+	margin-bottom: 0.5em;
 }
 .share-link {
 	padding: 0.35em 0.7em;
@@ -1550,7 +1540,8 @@ dd {
    elements within are floated.
    The alternate id to do :after with clear: both;, which isn't as good  */
 .page-nav {
-	margin: 0 0 1.2em;
+	margin-top: 0;
+	margin-bottom: 1.2em;
 	overflow: hidden;
 }
 .hist-nav {
@@ -1593,64 +1584,6 @@ dd {
 	white-space: nowrap;
 }
 
-/*-------------- Captions ---------------------*/
-
-/* Needed by WordPress core */
-
-.wp-caption {
-	margin-bottom: 1.5em;
-	max-width: 100%;
-}
-.wp-caption img[class*="wp-image-"] {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-}
-.wp-caption .wp-caption-text {
-	margin: 0.8075em 0;
-}
-.wp-caption-text {
-	text-align: center;
-}
-
-/*-------------- Galleries ---------------------*/
-
-.gallery {
-	margin-bottom: 1.5em;
-}
-.gallery-item {
-	display: inline-block;
-	text-align: center;
-	vertical-align: top;
-	width: 100%;
-}
-.gallery-columns-2 .gallery-item {
-	max-width: 50%;
-}
-.gallery-columns-3 .gallery-item {
-	max-width: 33.33%;
-}
-.gallery-columns-4 .gallery-item {
-	max-width: 25%;
-}
-.gallery-columns-5 .gallery-item {
-	max-width: 20%;
-}
-.gallery-columns-6 .gallery-item {
-	max-width: 16.66%;
-}
-.gallery-columns-7 .gallery-item {
-	max-width: 14.28%;
-}
-.gallery-columns-8 .gallery-item {
-	max-width: 12.5%;
-}
-.gallery-columns-9 .gallery-item {
-	max-width: 11.11%;
-}
-.gallery-caption {
-	display: block;
-}
 
 /*-------------- Miscellaneous -----*/
 
@@ -1666,7 +1599,7 @@ abbr[title] {
 	margin-top: 0;
 }
 code {
-	user-select: all;	
+	user-select: all;
 }
 /* If javascript isn't active then they can't display the map anyway! */
 .no-js .gmap {
@@ -1689,11 +1622,13 @@ code {
 	overflow-x: auto;
 	background-color: #F7F7F9;
 	border: 1px solid #E1E1E8;
-	margin: 0.67em auto;
+	margin-top: 0.67em;
+	margin-bottom: 0.67em;
 	padding: 5px 8px;
 }
 hr {
-	margin: 0.67em 0;
+	margin-top: 0.67em;
+	margin-bottom: 0.67em;
 	border: 0;
 	border-top: 1px solid #ccc;
 }
