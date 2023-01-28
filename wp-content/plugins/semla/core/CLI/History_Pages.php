@@ -3,7 +3,7 @@ namespace Semla\CLI;
 /**
  * Create history pages for all tables/flags draws/results. Will overwrite page if already
  * exists.
- * 
+ *
  * This should only be need to run as part of the end of season process, or if the format
  * of any of the HTML has changed, e.g. if Cup_Draw_Renderer.php changes.
  */
@@ -34,14 +34,14 @@ class History_Pages {
 		self::insert_post([
 			'post_title'    => 'Plate Finals',
 			'post_name'     => 'plate-finals',
-			'post_content'  => "<!-- wp:list {\"spacing\":\"medium-spaced\"} -->\n" . '<ul class="medium-spaced">'
+			'post_content'  => '<ul class="medium-spaced">'
 				. '<li><a href="' . $url . '/history/plate-intermediate">Intermediate Plate</a></li>'
 				. '<li><a href="' . $url . '/history/plate-minor">Minor Plate</a></li>'
 				. '<li><a href="' . $url . '/history/plate-intermediate-east">Intermediate East Plate</a></li>'
 				. '<li><a href="' . $url . '/history/plate-intermediate-west">Intermediate West Plate</a></li>'
 				. '<li><a href="' . $url . '/history/plate-minor-east">Minor East Plate</a></li>'
 				. '<li><a href="' . $url . '/history/plate-minor-west">Minor West Plate</a></li>'
-				. '</ul>' . "\n<!-- /wp:list -->",
+				. '</ul>'
 			]);
 		Cache::clear_cache('hist');
 		WP_CLI::Success('History pages updated: ' . self::$inserted . ' pages inserted, '
