@@ -25,6 +25,12 @@ if [[ $# -eq 0 ]]; then
 	exit
 fi
 
+read -p "Are you sure you want to run the SQL in $FILE? <y/N> " prompt
+if [[ $prompt != "y" && $prompt != "Y" ]] ; then
+	echo 'Run SQL terminated by user.'
+	exit
+fi
+
 if [[ "$FILE" =~ \.gz$ ]]; then
 	gunzip < $FILE | mysql --defaults-extra-file=.my.cnf
 else
