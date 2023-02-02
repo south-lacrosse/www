@@ -23,9 +23,9 @@ class App_Admin {
 				case 'dashboard' :
 					self::init_dashboard();
 					break;
-				case 'post' :
-					self::init_post();
-					break;
+				// case 'post' :
+				// 	self::init_post();
+				// 	break;
 				case 'user':
 				case 'user-edit':
 				case 'profile':
@@ -61,6 +61,8 @@ class App_Admin {
 			// }, 99, 1 );
 		});
 
+		add_action ('enqueue_block_editor_assets',  [self::class, 'init_blocks']);
+
 		// Removes comments/discussion from admin menu
 		add_action('admin_menu', function() {
 			remove_menu_page( 'edit-comments.php' );
@@ -80,44 +82,29 @@ class App_Admin {
 		});
 	}
 
-	private static function init_post() {
+	public static function init_blocks() {
 		$plugin_dir = dirname(__DIR__);
-		// new/update post/page/cpt
-		$asset_file = include( $plugin_dir . '/blocks/index.asset.php');
-		$dependencies = $asset_file['dependencies'];
-		// by adding wp-edit-post as a dependency we make sure our
-		// script runs after the core blocks have been created, so we
-		// can then remove or change them if we want
-		if (!in_array('wp-edit-post', $dependencies)) {
-			$dependencies[] = 'wp-edit-post';
-		};
-		$base_url = plugins_url( 'blocks/', __DIR__ );
-		wp_register_script('semla-blocks-editor',
-			$base_url . 'index.js',
-			$dependencies,
-			$asset_file['version']);
-		wp_register_style('semla-blocks-editor',
-			$base_url . 'index.css',
-			[],
-			$asset_file['version']);
-		wp_register_style('semla-blocks-flags',
-			plugins_url( 'css/flags' . SEMLA_MIN . '.css', __DIR__ ),
-			[],
-			filemtime( $plugin_dir . '/css/flags' . SEMLA_MIN . '.css' ) );
-		// bit of a fudge. There is no semla/blocks block, but we use it
-		// to make sure our styles are loaded into the editor
-		register_block_type( 'semla/blocks', [
-			'editor_script' => 'semla-blocks-editor',
-			'editor_style'  => 'semla-blocks-editor',
-			'style'         => 'semla-blocks-flags',
-		] );
-		wp_add_inline_script('semla-blocks-editor',
+		$asset_file = include( $plugin_dir . '/blocks-core/core.asset.php');
+		if ($asset_file) {
+			$dependencies = $asset_file['dependencies'];
+			// by adding wp-edit-post as a dependency we make sure our
+			// script runs after the core blocks have been created, so we
+			// can then remove or change them if we want
+			if (!in_array('wp-edit-post', $dependencies)) {
+				$dependencies[] = 'wp-edit-post';
+			};
+			$base_url = plugins_url('/', __DIR__);
+			wp_enqueue_script('semla-blocks-core',
+				$base_url . 'blocks-core/core.js', $dependencies, $asset_file['version']);
+			wp_enqueue_style('semla-blocks-core',
+				$base_url . 'blocks-core/core.css', [], $asset_file['version']);
+			wp_enqueue_style('semla-flags',
+				$base_url . 'css/flags' . SEMLA_MIN . '.css', [], '1.0');
+		}
+		wp_add_inline_script('semla-location-editor-script',
 			'window.semla=window.semla||{};window.semla.gapi="'
 				. get_option('semla_gapi_key') . '"',
 			'before');
-		if (defined('SEMLA_LIVE_RELOAD')) {
-			wp_enqueue_script('livereload', SEMLA_LIVE_RELOAD, [], null);
-		}
 	}
 
 	private static function init_dashboard() {
@@ -139,10 +126,10 @@ class App_Admin {
 				if( $num_posts ) {
 					$published = intval( $num_posts->publish );
 					$post_type = get_post_type_object( $type );
-					
+
 					$text = '%s ' . ($published === 1 ? $post_type->labels->singular_name : $post_type->labels->name);
 					$text = sprintf( $text, number_format_i18n( $published ) );
-					
+
 					if ( current_user_can( $post_type->cap->edit_posts ) ) {
 						$items[] = sprintf( '<a class="%1$s-count" href="edit.php?post_type=%1$s">%2$s</a>', $type, $text ) . "\n";
 					} else {

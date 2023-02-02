@@ -10,7 +10,7 @@ use Semla\Utils\SMTP;
  */
 class App {
 	public static $post_types = [
-		[ 
+		[
 			'post_type' => 'clubs',
 			'name' => 'Club',
 			'args' => [
@@ -42,7 +42,7 @@ class App {
 
 	/**
 	 * Initialise the plugin. Called from init hook.
-	 * 
+	 *
 	 * IMPORTANT: if you add new custom post types or rewrite rules, then they
 	 * must be flushed before they will be effective. Go into Settings->Permalinks
 	 * and Save Changes, or use WP-CLI 'wp rewrite flush'. This should also be done
@@ -101,7 +101,7 @@ class App {
 				require __DIR__.'/admin-bar-menu.php';
 			});
 		}
-		
+
 		// don't rewrite content to fancy quotes, used on front and back ends
 		add_filter('run_wptexturize', '__return_false');
 		// Allow auto updates even though the WordPress folder is under Git control
@@ -109,7 +109,21 @@ class App {
 		add_filter( 'automatic_updates_is_vcs_checkout', '__return_false' );
 		add_filter( 'auto_update_plugin', '__return_true' );
 
-		
+		$block_dir = dirname(__DIR__) . '/blocks';
+		register_block_type( $block_dir . '/attr-value' );
+		register_block_type( $block_dir . '/calendar', [
+			'render_callback' => [Block_Calendar::class, 'render_callback'],
+		]);
+		register_block_type( $block_dir . '/data', [
+			'render_callback' => [Block_Data::class, 'render_callback'],
+		]);
+		register_block_type( $block_dir . '/location', [
+			'render_callback' => [Blocks::class, 'location'],
+		]);
+		register_block_type( $block_dir . '/toc', [
+			'render_callback' => [Blocks::class, 'toc'],
+		]);
+
 		if (is_admin()) {
 			App_Admin::init();
 			return;
@@ -158,7 +172,7 @@ class App {
 				'revisions'
 			]
 		], $args);
-		
+
 		// might as well always do this, as WP will set these anyway
 		if (!isset($args['labels'])) {
 			$args['labels'] = [
@@ -203,31 +217,5 @@ class App {
 				return $title;
 			});
 		}
-	}
-
-	/**
-	 * Register blocks. Don't do this if is_admin as that will run our blocks on the edit
-	 * post page, and that will run the queries, and enqueue scripts, which we don't want.
-	 * The blocks with server side rendering will be inserted into the edit post screen
-	 * using REST requests anyway
-	 */
-	public static function register_blocks() {
-		register_block_type( 'semla/data', [
-			'attributes' => [
-				'src' => [
-					'type' => 'string'
-				]
-			],
-			'render_callback' => [Block_Data::class, 'render_callback'],
-		]);
-		register_block_type( 'semla/calendar', [
-			'render_callback' => [Block_Calendar::class, 'render_callback'],
-		]);
-		register_block_type( 'semla/toc', [
-			'render_callback' => [Blocks::class, 'toc'],
-		]);
-		register_block_type( 'semla/location', [
-			'render_callback' => [Blocks::class, 'location'],
-		]);
 	}
 }

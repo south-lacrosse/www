@@ -108,9 +108,6 @@ define('SMTP_PASS', '<password for sending wordpress emails>');
 
 define('WP_HOME',WP_SITEURL);
 
-# LiveReload for blocks testing only! Works if "npm run serve" is running
-# define('SEMLA_LIVE_RELOAD', 'http://localhost:35729/livereload.js');
-
 /**
  * Change uploads to a different folder. Has to be relative to ABSPATH
  */

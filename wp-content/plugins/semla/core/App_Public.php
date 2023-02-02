@@ -47,7 +47,6 @@ class App_Public {
 			return;
 		}
 
-		App::register_blocks();
 		// Don't send pointless headers
 		remove_action('wp_head', 'wp_generator');
 		remove_action('wp_head', 'wlwmanifest_link');
@@ -64,19 +63,19 @@ class App_Public {
 		// 	});
 		// 	add_filter('show_admin_bar','__return_false');
 		// }
-	
+
 		// Remove the REST API lines from the HTTP Header
 		remove_action('template_redirect', 'rest_output_link_header', 11);
 		remove_action('wp_head', 'rest_output_link_wp_head');
 		// Remove oEmbed discovery links.
 		remove_action('wp_head', 'wp_oembed_add_discovery_links');
 		remove_action('wp_head', 'wp_oembed_add_host_js');
-	
+
 		remove_action('wp_head', 'print_emoji_detection_script', 7);
 		remove_action('wp_print_styles', 'print_emoji_styles');
 		add_filter('emoji_svg_url', '__return_false'); // stops prefetch being added
 		remove_filter('the_content_feed', 'wp_staticize_emoji');
-		// remove_filter('comment_text_rss', 'wp_staticize_emoji');	
+		// remove_filter('comment_text_rss', 'wp_staticize_emoji');
 		remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 
 		add_action('wp_head', function() {
@@ -94,6 +93,7 @@ class App_Public {
 				@readfile(__DIR__ . '/notices.html');
 			}
 		} );
+		// called from theme for history pages with flags on them
 		add_action( 'semla_flags_header', function() {
 			wp_enqueue_style( 'semla-flags', plugins_url('/css/flags' . SEMLA_MIN . '.css', __DIR__),
 				[], '1.0');
@@ -111,9 +111,9 @@ class App_Public {
 		});
 		// make sure scripts are async if marked as such
 		add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
-			return str_replace("#async'", "' async", $tag); 
+			return str_replace("#async'", "' async", $tag);
 		}, 10, 3 );
-		
+
 		// Remove author links. Lax theme already removes these, so check first
 		if (! current_theme_supports('semla')) {
 			add_filter( 'author_link', function() { return '#'; }, 99 );
@@ -144,7 +144,8 @@ class App_Public {
 			}
 			return;
 		}
-		if (is_page() && preg_match('/<!-- wp:semla\/(data|calendar) (.*) \/?-->/',
+		// . in regex won't match newline, and each block declaration is on 1 line
+		if (preg_match('/<!-- wp:semla\/(data|calendar) (.*) \/?-->/',
 				$post->post_content, $m)) {
 			$atts = json_decode($m[2], true);
 			$src = $atts['src'] ?? '';

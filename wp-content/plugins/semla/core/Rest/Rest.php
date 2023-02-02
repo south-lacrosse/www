@@ -1,11 +1,10 @@
 <?php
 namespace Semla\Rest;
 
-use Semla\App;
 use Semla\Data_Access\Competition_Group_Gateway;
 /**
  * Handle REST requests
- * 
+ *
  * semla/v1 endpoints:
  *      /clubs - html list of all clubs, with links to pages with club's
  *               services and team's services
@@ -14,7 +13,7 @@ use Semla\Data_Access\Competition_Group_Gateway;
  *      /clubs/Bath - details of all REST services for club
  *      /clubs/Bath/fixtures - html snippet, .json, or .js to embed
  *      /clubs/Bath/tables - html snippet, .json, or .js to embed
- * 
+ *
  *      /teams - html list of all teams, with links to fixtures and tables
  *      /teams/Bath - details of all REST services for team
  *      /teams/Bath/fixtures - html snippet, .json, or .js to embed
@@ -40,9 +39,8 @@ class Rest {
 	const SEMLA_ADMIN_BASE = 'semla-admin/v1';
 	public static $cache_tags = ['semla_data']; // can be overridden by routes
 	public static $cors_header = false;
-	
+
 	public static function init() {
-		App::register_blocks();
 		// if clubs have changed then purge pages/rest routes which use club data
 		add_action( 'save_post_clubs', function() {
 			do_action( 'litespeed_purge', 'semla_clubs' );
@@ -58,7 +56,7 @@ class Rest {
 		// Remove filter of the oEmbed result before any HTTP requests are made, i.e.
 		// if trying to embed from this site
 		remove_filter( 'pre_oembed_result', 'wp_filter_pre_oembed_result', 10 );
-		
+
 		// block REST access if not logged in, but not for 'semla' endpoints
 		add_filter( 'rest_authentication_errors', function( $result ) {
 			if ( ! empty( $result ) ) {
@@ -70,7 +68,7 @@ class Rest {
 			}
 			return $result;
 		});
-		
+
 		// send our responses in the right format
 		add_filter( 'rest_pre_serve_request', [self::class, 'pre_serve_request'], 10, 4 );
 
@@ -178,11 +176,11 @@ class Rest {
 	 * Hooks into the REST API output to send the response correctly. By default
 	 * WordPress will format the response as json, so here we make sure it's sent
 	 * as html or whatever is specified.
-	 * 
+	 *
 	 * We also send JSON responses to our own requests as we want to encode the json
 	 * so that numeric fields aren't sent as text, which won't happen using the WordPress
 	 * way as the PHP mysql interface always returns strings.
-	 * 
+	 *
 	 * @param bool              $served  Whether the request has already been served.
 	 * @param WP_HTTP_Response  $result  Result to send to the client. Usually a WP_REST_Response.
 	 * @param WP_REST_Request   $request Request used to generate the response.
