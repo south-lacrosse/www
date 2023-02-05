@@ -1,28 +1,33 @@
 #!/bin/bash
 
-# Go to the bin/backups/wordpress dir and make sure it is setup for Git
-# repo git@github.com:south-lacrosse/wordpress.git
+# This script goes to the ~/wordpress-config dir, which should contain the repo
+# git@github.com:south-lacrosse/wordpress-config.git. If it doesn't exist then
+# the repo will be cloned.
 
-# Then run $COMMAND, and update the repository if needed
+# Then run $COMMAND from that directory, and update the repository if needed. If
+# commands need to access the WordPress directory they should use $WP_DIR.
 
 # Must only be called from other scripts
 
 [[ -z $COMMAND ]] && { echo 'Error: No command specified'; exit 1; }
 
-cd $(dirname "${BASH_SOURCE[0]}")/backups || exit 1
-if [[ -z $(grep "^define.*WP_SITEURL.*www\.southlac" ../../wp-config.php) ]]; then
+BIN=$(dirname "${BASH_SOURCE[0]}")
+WP_DIR=$(realpath "$BIN/..")
+
+if [[ -z $(grep "^define.*WP_SITEURL.*www\.southlac" $WP_DIR/wp-config.php) ]]; then
 	echo 'Error: This script must only be run on the production website'
 	exit 1
 fi
 
-if [[ ! -d 'wordpress' ]]; then
-	echo 'No wordpress repo...cloning'
-	git clone git@github.com:south-lacrosse/wordpress.git || exit 1
+if [[ ! -d "~/wordpress-config" ]]; then
+	echo 'No wordpress-config repo...cloning'
+	git clone git@github.com:south-lacrosse/wordpress-config.git ~/wordpress-config || exit 1
+	chmod 700 ~/wordpress-config
 fi
 
-cd wordpress || exit 1
-if [[ -z $(git remote -v|grep git@github.com:south-lacrosse/wordpress.git) ]]; then
-	echo 'Error: backups/wordpress dir is not set up for the correct remote repository'
+cd ~/wordpress-config || exit 1
+if [[ -z $(git remote -v|grep git@github.com:south-lacrosse/wordpress-config.git) ]]; then
+	echo 'Error: ~/wordpress-config dir is not set up for the correct remote repository'
 	exit 1
 fi
 
