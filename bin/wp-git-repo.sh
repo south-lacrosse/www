@@ -19,7 +19,7 @@ if [[ -z $(grep "^define.*WP_SITEURL.*www\.southlac" $WP_DIR/wp-config.php) ]]; 
 	exit 1
 fi
 
-if [[ ! -d "~/wordpress-config" ]]; then
+if [[ ! -d ~/wordpress-config ]]; then
 	echo 'No wordpress-config repo...cloning'
 	git clone git@github.com:south-lacrosse/wordpress-config.git ~/wordpress-config || exit 1
 	chmod 700 ~/wordpress-config
