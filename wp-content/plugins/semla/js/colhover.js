@@ -9,7 +9,7 @@
  *
  * The .hover class can then be styled to highlight the column
  * Format of table must be table>tbody>tr>td
- * 
+ *
  * Used on fixtures grid so uses can highlight row and column at the same time.
  */
 (function () {

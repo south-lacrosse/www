@@ -1,7 +1,7 @@
 /**
  * IMPORTANT: If you change this remember to bump the version number
  * in the Block_Calendar.php
- * 
+ *
  * Display a Google Calendar
  */
 /* global gapi */
@@ -63,7 +63,7 @@
 
   /* Gets the first link from text. To extract multiple add g option */
   function extractLink(str) {
-    var found = str.match(/(\b(https?):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/i);
+    var found = str.match(/(\b(https?):\/\/[-A-Z0-9+&@#/%?=~_|!:,.;]*[-A-Z0-9+&@#/%=~_|])/i);
     return found ? found[0] : false;
   }
 

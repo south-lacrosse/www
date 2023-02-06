@@ -2,7 +2,6 @@
  * IMPORTANT: If you change this remember to bump the version number in
  * the plugin. Just search for "js/map" to find the reference.
  */
-/* eslint no-alert: "off", no-mixed-operators: "off" */
 (function () {
   'use strict';
   var mapDiv, mapKeyDiv, footer, searchBox, mapPaddingAndBorders, map, mapContainerDiv = null,
@@ -180,7 +179,7 @@
     if (status === google.maps.GeocoderStatus.OK) {
       showNearestClubs(results[0].geometry.location);
     } else {
-      alert(GEOCODER_STATUS_DESCRIPTION[status]);
+      console.log(GEOCODER_STATUS_DESCRIPTION[status]);
     }
   }
 

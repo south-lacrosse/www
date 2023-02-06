@@ -1,7 +1,7 @@
 /**
  * IMPORTANT: Bump the version number in the plugin (search for "js/toc")
  * if you make anything other than cosmetic changes to this file,
- * 
+ *
  * Add toggle link for table of contents. It is placed just before the ul
  */
 (function () {
