@@ -8,7 +8,7 @@
 # Backs up everything which may change on a daily basis and cannot be easily
 # recreated - so core WordPress tables along with sl_* tables
 
-# Will backup to bin/backups/ and to Google Drive for weekly/monthly
+# Will backup to bin/backups/, and for weekly/monthly run off-site-backup.sh
 
 if [[ $# -gt 1 ]]; then
 	echo "Usage: $0 [daily|monthly|weekly]"
@@ -70,20 +70,4 @@ PATTERN="db-*$1.sql.gz"
 # Only save production backups to Google Drive
 [[ -z $(grep "^define.*WP_SITEURL.*www\.southlac" ../wp-config.php) ]] && exit
 
-# rclone is in $HOME/bin, but that isn't on the $PATH in cron jobs, so try to find
-# it here if necessary
-RCLONE=rclone
-if ! [[ -x "$(command -v rclone)" ]]; then
-	if ! [[ -x "$(command -v $HOME/bin/rclone)" ]]; then
-		echo 'Error: cannot fine rclone.'
-		exit 1
-	fi
-	RCLONE=$HOME/bin/rclone
-fi
-
-echo "Copying $BACKUP_FILE to Google Drive"
-$RCLONE copy "$BACKUP_FILE" "g:backups/"
-
-echo "Deleting $PATTERN older than $DAYS days from Google Drive"
-# -vv --dry-run
-$RCLONE delete g:backups --include "/$PATTERN" --min-age ${DAYS}d
+./off-site-backup.sh $1
