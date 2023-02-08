@@ -2,7 +2,7 @@
  * IMPORTANT: Bump the version number in the plugin (search for "js/colhover")
  * if you make anything other than cosmetic changes to this file,
  *
- * This script adds 'hover' class to all td cells in the same column within a table whish has
+ * This script adds 'hover' class to all td cells in the same column within a table which has
  * class 'col-hover'.
  * The first column is excluded as that's assumed to be a row header.
  * Only cells within tbody are affected, and will work with multiple tables on the same page.
@@ -60,7 +60,7 @@
     }
   }
 
-  // Returns the reletive position of a node within it's parent
+  // Returns the relative position of a node within it's parent
   function position(node) {
     var children = node.parentNode.childNodes;
     var num = 0;

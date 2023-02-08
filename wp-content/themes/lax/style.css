@@ -1096,6 +1096,9 @@ search <input> = */
 #semla_toc {
 	background: #fff;
 }
+#semla_toc:not(:first-child) {
+	margin-top: 1em;
+}
 #semla_toc-nav {
 	background: #fafafa;
 	border: 1px solid #CCC;

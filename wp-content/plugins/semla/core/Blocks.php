@@ -31,15 +31,4 @@ class Blocks {
 		}
 		return '';
 	}
-
-	public static function toc($atts, $content) {
-		self::enqueue_script('toct','1.0',true);
-		return $content;
-	}
-
-	private static function enqueue_script($src,$ver,$async=false) {
-		wp_enqueue_script( 'semla-' . $src,
-			plugins_url('js/' . $src . SEMLA_MIN . '.js' . ($async ? '#async' : '')
-				, __DIR__), [],  $ver, true );
-	}
 }

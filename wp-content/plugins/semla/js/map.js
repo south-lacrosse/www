@@ -179,7 +179,7 @@
     if (status === google.maps.GeocoderStatus.OK) {
       showNearestClubs(results[0].geometry.location);
     } else {
-      console.log(GEOCODER_STATUS_DESCRIPTION[status]);
+      alert(GEOCODER_STATUS_DESCRIPTION[status]);
     }
   }
 

@@ -120,9 +120,7 @@ class App {
 		register_block_type( $block_dir . '/location', [
 			'render_callback' => [Blocks::class, 'location'],
 		]);
-		register_block_type( $block_dir . '/toc', [
-			'render_callback' => [Blocks::class, 'toc'],
-		]);
+		register_block_type( $block_dir . '/toc' );
 
 		if (is_admin()) {
 			App_Admin::init();
