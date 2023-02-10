@@ -15,8 +15,26 @@ class App {
 			'name' => 'Club',
 			'args' => [
 				'menu_icon' => 'dashicons-shield',
+				'template' => [
+					[ 'core/heading', [
+						'content' => 'Location',
+					] ],
+					[ 'semla/location' ],
+					[ 'core/heading', [
+						'content' => 'Club Information',
+					] ],
+					[ 'semla/attr-value', [
+						'attr' => 'Colours',
+					] ],
+					[ 'core/heading', [
+						'content' => '{Team Name} Team Information',
+					] ],
+					[ 'semla/attr-value', [
+						'attr' => 'Captain',
+					] ],
+				],
 			],
-			'dashicon_code' => 'f332'
+			'dashicon_code' => 'f332',
 		],
 		/* Note: history pages won't be shown in the WP Admin menu because of the capabilities set.
 		 * To enable people to edit either remove the capability_type so anyone with access to
@@ -171,35 +189,39 @@ class App {
 			]
 		], $args);
 
-		// might as well always do this, as WP will set these anyway
+		// WP sets these to post/page not cpt name by default
 		if (!isset($args['labels'])) {
+			$single_lc = strtolower($single_name);
+			$plural_lc = strtolower($plural_name);
 			$args['labels'] = [
 				'name' => $plural_name,
 				'singular_name' => $single_name,
 				'add_new' => 'Add New',
-				'add_new_item' => "Add a New $single_name",
+				'add_new_item' => "Add New $single_name",
 				'edit_item' => "Edit $single_name",
 				'new_item' => "New $single_name",
 				'view_item' => "View $single_name",
 				'view_items' => "View $plural_name",
 				'search_items' => "Search $plural_name",
-				'not_found' => "No $plural_name Found",
-				'not_found_in_trash' => "No $plural_name Found In Trash",
+				'not_found' => "No $plural_lc found.",
+				'not_found_in_trash' => "No $plural_lc found in Trash.",
 				'parent_item_colon' => "Parent $single_name",
-				'all_items' => "All $plural_name",
-				'archives' => "All $plural_name",
+				'all_items' => $plural_name,
+				'archives' => $plural_name,
 				'attributes' => "$single_name Attributes",
-				'insert_into_item' => "Insert into $single_name",
-				'uploaded_to_this_item' => "Uploaded to this $single_name",
-				'filter_items_list' => "Filter $plural_name list",
+				'insert_into_item' => "Insert into $single_lc",
+				'uploaded_to_this_item' => "Uploaded to this $single_lc",
+				'filter_items_list' => "Filter $plural_lc list",
 				'items_list_navigation' => "$plural_name list navigation",
 				'items_list' =>  "$plural_name list",
-				'menu_name' => $plural_name,
 				'item_published' => "$single_name published.",
 				'item_published_privately' => "$single_name published privately.",
 				'item_reverted_to_draft' => "$single_name reverted to draft.",
 				'item_scheduled' => "$single_name scheduled.",
 				'item_updated' => "$single_name updated.",
+				'item_link' => "$single_name Link",
+				'item_link_description' => "A link to a $single_lc.",
+				'menu_name' => $plural_name,
 				'name_admin_bar' => $single_name,
 			];
 		}
