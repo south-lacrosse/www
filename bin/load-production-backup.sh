@@ -13,18 +13,18 @@ if [[ $# -ne 1 ]]; then
 	exit 1
 fi
 if [[ "$1" == '--latest' ]]; then
-	FILE=$(ls -t ~/public_html/bin/backups/db-*.sql.gz | head -1)
-	if [[ -z "$FILE" ]] ; then
+	file=$(ls -t ~/public_html/bin/backups/db-*.sql.gz | head -1)
+	if [[ -z "$file" ]] ; then
 		echo 'Cannot find latest production backup.'
 		exit 1
 	fi
-	FILE=$(realpath "$FILE")
+	file=$(realpath "$file")
 else
 	if [[ ! -f "$1" ]] ; then
 		echo "Backup file $1 does not exist."
 		exit 1
 	fi
-	FILE=$(realpath "$1")
+	file=$(realpath "$1")
 fi
 
 cd $(dirname "$0")
@@ -43,16 +43,16 @@ if [[ ${#URL} != ${#WWW} ]]; then
 	exit 1
 fi
 echo -e "Current website is \e[93m$URL\e[0m"
-read -p "Load database from production backup $FILE? <y/N> " prompt
+read -p "Load database from production backup $file? <y/N> " prompt
 if [[ $prompt != "y" && $prompt != "Y" ]] ; then
 	echo 'Load terminated by user.'
 	exit
 fi
 source ./db-creds.sh
-if [[ "$FILE" =~ \.gz$ ]]; then
-	gunzip < $FILE | sed "s/$WWW/$URL/g" | mysql --defaults-extra-file=.my.cnf
+if [[ "$file" =~ \.gz$ ]]; then
+	gunzip < "$file" | sed "s/$WWW/$URL/g" | mysql --defaults-extra-file=.my.cnf
 else
-	sed "s/$WWW/$URL/g" $FILE | mysql --defaults-extra-file=.my.cnf
+	sed "s/$WWW/$URL/g" "$file" | mysql --defaults-extra-file=.my.cnf
 fi
 # need to purge menu cache in case it's changed in the DB
 wp semla purge menu

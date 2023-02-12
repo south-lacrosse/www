@@ -13,7 +13,7 @@ if [[ $# -eq 1 ]]; then
 		echo "File $1 does not exist."
 		exit 1
 	fi
-	FILE=$(realpath "$1")
+	file=$(realpath "$1")
 fi
 
 cd $(dirname "$0")
@@ -25,14 +25,14 @@ if [[ $# -eq 0 ]]; then
 	exit
 fi
 
-read -p "Are you sure you want to run the SQL in $FILE? <y/N> " prompt
+read -p "Are you sure you want to run the SQL in $file? <y/N> " prompt
 if [[ $prompt != "y" && $prompt != "Y" ]] ; then
 	echo 'Run SQL terminated by user.'
 	exit
 fi
 
-if [[ "$FILE" =~ \.gz$ ]]; then
-	gunzip < $FILE | mysql --defaults-extra-file=.my.cnf
+if [[ "$file" =~ \.gz$ ]]; then
+	gunzip < "$file" | mysql --defaults-extra-file=.my.cnf
 else
-	mysql --defaults-extra-file=.my.cnf < $FILE
+	mysql --defaults-extra-file=.my.cnf < "$file"
 fi

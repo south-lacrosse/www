@@ -29,13 +29,11 @@ define('LAX_ACTIVE_SIDEBAR', LAX_SIDEBAR && is_active_sidebar('sidebar-1'));
 add_action('after_setup_theme', function() {
 	global $content_width;
 
-	/* Set the $content_width for things such as video embeds. */
+	// Set the $content_width for things such as video embeds.
+	// Don't make too wide otherwise the video will take up an inordinate amount
+	// of space on the page
 	if ( !isset( $content_width ) ) {
-		if (is_single() && !is_active_sidebar('sidebar-1')) {
-			$content_width = 740;
-		} else {
-			$content_width = 640;
-		}
+		$content_width = 640;
 	}
 
 	// don't add new global styles added in WP 5.8 for blocks
@@ -102,8 +100,6 @@ function lax_admin() {
 		// TODO: should probably split styles need for editor and not, e.g.
 		// all menu styling isn't needed for the editor
 		add_editor_style('style' . SEMLA_MIN . '.css');
-		// editor only styles
-		add_editor_style('editor-style' . SEMLA_MIN . '.css');
 	});
 
 	// if menu changes get rid of our cached versions

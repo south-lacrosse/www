@@ -26,8 +26,16 @@ class App {
 					[ 'semla/attr-value', [
 						'attr' => 'Colours',
 					] ],
+					[ 'semla/attr-value', [
+						'attr' => 'Club Links',
+						'value' => 'Add Website and Facebook links'
+					] ],
 					[ 'core/heading', [
 						'content' => '{Team Name} Team Information',
+					] ],
+					[ 'semla/attr-value', [
+						'attr' => 'Fixtures',
+						'value' => 'Add Fixtures and Results link here'
 					] ],
 					[ 'semla/attr-value', [
 						'attr' => 'Captain',
@@ -137,6 +145,9 @@ class App {
 		]);
 		register_block_type( $block_dir . '/location', [
 			'render_callback' => [Blocks::class, 'location'],
+		]);
+		register_block_type( $block_dir . '/map', [
+			'render_callback' => [Blocks::class, 'map'],
 		]);
 		register_block_type( $block_dir . '/toc' );
 
