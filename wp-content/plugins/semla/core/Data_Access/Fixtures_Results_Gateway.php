@@ -6,6 +6,7 @@ use Semla\Render\Fixtures_Renderer;
  * Fixtures/results data access
  */
 class Fixtures_Results_Gateway {
+	private $options;
 
 	/**
 	 * Get data for select boxes for results page for a year.
@@ -104,7 +105,7 @@ class Fixtures_Results_Gateway {
 		$dates = [];
 		$rows = $wpdb->get_col(
 			'SELECT match_date FROM slc_fixture_date ORDER BY match_date');
-		if ($wpdb->last_error) return false;			
+		if ($wpdb->last_error) return false;
 		foreach ( $rows as $row ) {
 			$userDate = date('d M Y', strtotime($row));
 			$dates[$userDate] = $row;
@@ -251,7 +252,7 @@ class Fixtures_Results_Gateway {
 	private static function get_where_dates($dates,$prefix='') {
 		$today_datetime = new \DateTime('now', new \DateTimeZone('Europe/London'));
 		$today = $today_datetime->format('Y-m-d');
-    
+
 		$count = count($dates);
 		if ($count <= 1) return '';
 		if ($count === 2 || $today < $dates[1]) {

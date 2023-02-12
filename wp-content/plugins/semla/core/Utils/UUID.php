@@ -11,9 +11,9 @@
  *
  * @author Andrew Moore
  * @link http://www.php.net/manual/en/function.uniqid.php#94959
- * 
+ *
  * Usage:
- * 
+ *
  *   Name-based UUID:
  *
  *     $v3uuid = UUID::v3('1546058f-5a25-4334-85ae-e68f2a44bbaf', 'SomeRandomString');
@@ -30,15 +30,15 @@ class UUID
 	const NS_URL     = '6ba7b811-9dad-11d1-80b4-00c04fd430c8'; // URL
 	const NS_ISO_OID = '6ba7b812-9dad-11d1-80b4-00c04fd430c8'; // ISO OID
     const NS_X500_DN = '6ba7b814-9dad-11d1-80b4-00c04fd430c8'; // X.500 DN (in DER or a text output format)
-	
+
 	/**
 	 * Generate v3 UUID
 	 *
-	 * Version 3 UUIDs are named based. They require a namespace (another 
-	 * valid UUID) and a value (the name). Given the same namespace and 
+	 * Version 3 UUIDs are named based. They require a namespace (another
+	 * valid UUID) and a value (the name). Given the same namespace and
 	 * name, the output is always the same.
-	 * 
-	 * @param	uuid	$namespace
+	 *
+	 * @param	string	$namespace
 	 * @param	string	$name
 	 */
 	public static function v3($namespace, $name)
@@ -52,7 +52,7 @@ class UUID
 		$nstr = '';
 
 		// Convert Namespace UUID to bits
-		for($i = 0; $i < strlen($nhex); $i+=2) 
+		for($i = 0; $i < strlen($nhex); $i+=2)
 		{
 			$nstr .= chr(hexdec($nhex[$i].$nhex[$i+1]));
 		}
@@ -83,12 +83,12 @@ class UUID
 	}
 
 	/**
-	 * 
+	 *
 	 * Generate v4 UUID
-	 * 
+	 *
 	 * Version 4 UUIDs are pseudo-random.
 	 */
-	public static function v4() 
+	public static function v4()
 	{
 		return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
 
@@ -114,15 +114,15 @@ class UUID
 
 	/**
 	 * Generate v5 UUID
-	 * 
-	 * Version 5 UUIDs are named based. They require a namespace (another 
-	 * valid UUID) and a value (the name). Given the same namespace and 
+	 *
+	 * Version 5 UUIDs are named based. They require a namespace (another
+	 * valid UUID) and a value (the name). Given the same namespace and
 	 * name, the output is always the same.
-	 * 
-	 * @param	uuid	$namespace
+	 *
+	 * @param	string	$namespace
 	 * @param	string	$name
 	 */
-	public static function v5($namespace, $name) 
+	public static function v5($namespace, $name)
 	{
 		if(!self::is_valid($namespace)) return false;
 
@@ -133,7 +133,7 @@ class UUID
 		$nstr = '';
 
 		// Convert Namespace UUID to bits
-		for($i = 0; $i < strlen($nhex); $i+=2) 
+		for($i = 0; $i < strlen($nhex); $i+=2)
 		{
 			$nstr .= chr(hexdec($nhex[$i].$nhex[$i+1]));
 		}

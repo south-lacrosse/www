@@ -4,6 +4,16 @@ namespace Semla\Render;
 use Semla\Utils\Util;
 
 class Fixtures_Renderer {
+	private $query_type;
+	private $options;
+	private $date_in_heading;
+	private $show_competition;
+	private $show_round;
+	private $has_fixture = false;
+	private $last_date = null;
+	private $last_year = null;
+	private $last_month = null;
+	private $last_day = null;
 
 	const MONTHS = ['<abbr title="January">Jan</abbr>', '<abbr title="February">Feb</abbr>',
 		'<abbr title="March">Mar</abbr>', '<abbr title="April">Apr</abbr>',
@@ -19,11 +29,6 @@ class Fixtures_Renderer {
 		$this->date_in_heading = $type === 'date' || $type === 'default';
 		$this->show_competition = $type !== 'comp';
 		$this->show_round = ! $this->show_competition && $is_cup;
-		$this->has_fixture = false;
-		$this->last_date = null;
-		$this->last_year = null;
-		$this->last_month = null;
-		$this->last_day = null;
 
 		foreach ( $rows as $row ) {
 			$this->check_date_change($row->match_date);

@@ -16,6 +16,11 @@ use Semla\Utils\Block_Util;
 class Block_Data {
 	private static $instance;
 	private $gateway;
+	private $year;
+	private $options;
+	private $fix_res; // "Fixtures" or "Results"
+	private $type;
+	private $arg;
 
 	public static function get_instance() {
 		null === self::$instance and self::$instance = new self;
@@ -118,7 +123,7 @@ class Block_Data {
 			}
 		}
 		// Note: these errors won't happen for links within the site, but malicious programs
-		// may try to inject parameters 
+		// may try to inject parameters
 		if (!$this->type) {
 			// all query args invalid, so redirect to page without any args
 			wp_redirect( get_permalink() );
