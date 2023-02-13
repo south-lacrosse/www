@@ -90,11 +90,15 @@ class Fixtures_Renderer {
 		if ($year == 0) {
 			if ($type === 'team') {
 				$cal_url = site_url( rest_get_url_prefix() . '/semla/v1/teams/' . urlencode($arg) . '/fixtures.ics');
-				echo '<p class="no-print">Go to <a href="clubs/'.$options['team_club'][$arg].'">club page</a> or '
-				. '<b>Subscribe:</b> <a href="' . $cal_url . '">iCalendar link</a>'
-				. ' | <a rel="nofollow" href="http://www.google.com/calendar/render?cid='
-				. rawurlencode($cal_url) . '">add to Google Calendar</a></p>'."\n";
-			} elseif ($type === 'club') {
+				echo '<p class="no-print">';
+				if (!empty($options['team_club'][$arg])) {
+					echo 'Go to <a href="clubs/'.$options['team_club'][$arg].'">club page</a> or ';
+
+				}
+				echo '<b>Subscribe:</b> <a href="' . $cal_url . '">iCalendar link</a>'
+					. ' | <a rel="nofollow" href="http://www.google.com/calendar/render?cid='
+					. rawurlencode($cal_url) . '">add to Google Calendar</a></p>'."\n";
+			} elseif ($type === 'club' && !empty($options['club'][$arg]->club_page)) {
 				echo '<p class="no-print">Go to <a href="clubs/'.$options['club'][$arg]->club_page.'">club page</a></p>'."\n";
 			}
 		}
@@ -185,7 +189,7 @@ class Fixtures_Renderer {
 		if ($team && isset($this->options['team'][$team])) {
 			if (!empty($this->options['team'][$team]) ) {
 				$short = $this->options['team'][$team];
-				if ($addLink) {
+				if ($addLink && !empty($this->options['team_club'][$team])) {
 					$uri = $this->options['team_club'][$team];
 					echo "<td$extra><a class=\"tb-link no-ul\" href=\"/clubs/$uri\" data-sml-text=\"$short\"><span>$team</span></a></td>\n";
 				} else {
