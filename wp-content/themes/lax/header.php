@@ -2,7 +2,7 @@
 /**
  * This is the template that displays all of the <head> section and everything up until
  * the main content area
- * 
+ *
  * Note: quite a bit of info is hardcoded. Since this is a custom theme
  * for only this site, and hardcoding stops database lookups
  *
@@ -23,7 +23,7 @@
 <?php wp_head(); ?>
 <?php if (defined('SEMLA_ANALYTICS')) : ?>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?= SEMLA_ANALYTICS ?>"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','<?= SEMLA_ANALYTICS ?>');</script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<?= SEMLA_ANALYTICS ?>');</script>
 <?php endif; ?>
 <script>var d=document.documentElement;"addEventListener"in window&&(d.className="js"),"undefined"!=typeof SVGRect&&(d.className+=" svg");</script>
 <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
