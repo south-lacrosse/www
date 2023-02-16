@@ -39,6 +39,9 @@ add_action('after_setup_theme', function() {
 	// don't add new global styles added in WP 5.8 for blocks
 	remove_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles' );
 
+	// Don't allow users to add new block templates in the editor
+	remove_theme_support( 'block-templates' );
+
 	// Let WordPress manage the document title.
 	add_theme_support('title-tag');
 
