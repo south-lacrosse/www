@@ -61,7 +61,7 @@ class App_Admin {
 			// }, 99, 1 );
 		});
 
-		add_action ('enqueue_block_editor_assets',  [self::class, 'init_blocks']);
+		add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
 
 		// Removes comments/discussion from admin menu
 		add_action('admin_menu', function() {
@@ -82,16 +82,17 @@ class App_Admin {
 		});
 	}
 
-	public static function init_blocks() {
+	public static function enqueue_block_editor_assets() {
 		$plugin_dir = dirname(__DIR__);
 		$asset_file = include( $plugin_dir . '/blocks-core/core.asset.php');
 		if ($asset_file) {
 			$dependencies = $asset_file['dependencies'];
-			// by adding wp-edit-post as a dependency we make sure our
+			// by adding wp-edit-{screen} as a dependency we make sure our
 			// script runs after the core blocks have been created, so we
 			// can then remove or change them if we want
-			if (!in_array('wp-edit-post', $dependencies)) {
-				$dependencies[] = 'wp-edit-post';
+			$edit_dependency = 'wp-edit-' . get_current_screen()->base;
+			if (!in_array($edit_dependency, $dependencies)) {
+				$dependencies[] = $edit_dependency;
 			};
 			$base_url = plugins_url('/', __DIR__);
 			wp_enqueue_script('semla-blocks-core',
