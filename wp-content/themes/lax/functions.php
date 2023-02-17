@@ -1,18 +1,7 @@
 <?php
 /**
- * Sets up theme defaults and registers support for various WordPress features.
- *
- * Note that this function is hooked into the after_setup_theme hook, which
- * runs before the init hook. The init hook is too late for some features, such
- * as indicating support for post thumbnails.
- *
- * Note on theme.json (since comments aren't allowed in json files). That file
- * seriously restricts the ability of the editor to change the styling of the site,
- * so you can't change font size, colors etc. If you want to enable that then you
- * may need to update this theme, or use another one.
- *
+ * Theme functions
  * @link https://developer.wordpress.org/themes/basics/theme-functions/
- * @package Lax
  */
 
 // default to no sidebar, can be overridden in wp-config.php
@@ -20,11 +9,10 @@ if (!defined('LAX_SIDEBAR')) define('LAX_SIDEBAR', false);
 define('LAX_ACTIVE_SIDEBAR', LAX_SIDEBAR && is_active_sidebar('sidebar-1'));
 
 /**
- * Sets up theme defaults and registers support for various WordPress features.
+ * Set up theme defaults and register support for various WordPress features.
  *
- * Note that this function is hooked into the after_setup_theme hook, which
- * runs before the init hook. The init hook is too late for some features, such
- * as indicating support for post thumbnails.
+ * after_setup_theme runs before the init hook, which is too late for some
+ * features, such as indicating support for post thumbnails.
  */
 add_action('after_setup_theme', function() {
 	global $content_width;
@@ -38,20 +26,14 @@ add_action('after_setup_theme', function() {
 
 	// don't add new global styles added in WP 5.8 for blocks
 	remove_action( 'wp_enqueue_scripts', 'wp_enqueue_global_styles' );
-
 	// Don't allow users to add new block templates in the editor
 	remove_theme_support( 'block-templates' );
 
-	// Let WordPress manage the document title.
+	// Let WordPress manage the document title in <head>
 	add_theme_support('title-tag');
-
 	add_theme_support('responsive-embeds');
-
-	// Add default posts RSS feed links to head.
-	// add_theme_support('automatic-feed-links');
-	// If above enabled need to disable comments RSS feed link
-	// add_filter('feed_links_show_comments_feed', '__return_false');
-
+	// Don't output 'type="text/css"' etc on styles/scripts
+	add_theme_support('html5', ['style', 'script']);
 	// register that this theme supports the SEMLA plugin
 	//  check the plugin for current_theme_supports to see where used
 	add_theme_support('semla');
@@ -68,15 +50,6 @@ add_action('after_setup_theme', function() {
 		'popular' => 'Popular Links',
 		'social' => 'Social Links',
 	]);
-
-	/*
-	 * Switch default core markup to output valid HTML5.
-	 * Not used 'comment-list', 'comment-form',
-	 */
-	add_theme_support('html5', ['search-form', 'gallery', 'caption', 'style', 'script']);
-
-	// Add theme support for selective refresh for widgets.
-	// add_theme_support('customize-selective-refresh-widgets');
 
 	if (is_admin()) {
 		lax_admin();
@@ -96,8 +69,6 @@ add_action('after_setup_theme', function() {
 });
 
 function lax_admin() {
-	// add_action('current_screen', function(\WP_Screen $screen) {
-	// 	if ($screen->base === 'post') { // edit post/page/etc
 	add_action ('enqueue_block_editor_assets', function() {
 		add_theme_support('editor-styles');
 		// TODO: should probably split styles need for editor and not, e.g.
