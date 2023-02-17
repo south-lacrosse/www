@@ -164,10 +164,14 @@ class Block_Data {
 	}
 
 	public function fixtures_results() {
-		if (defined('REST_REQUEST') && REST_REQUEST) {
-			// For REST requests we won't have parsed any params. If fixtures/results
-			// need to be served over REST then this will need to be addressed.
-			return '<p>Fixtures/results cannot be processed over REST.</p>';
+		if (is_admin() || (defined('REST_REQUEST') && REST_REQUEST)) {
+			// For REST/editor requests we won't have parsed any params, so fake it here
+			$this->year = 0;
+			$this->type = 'default';
+			$this->arg = '';
+			$this->gateway = new Fixtures_Results_Gateway();
+			$this->options = $this->gateway->get_fixtures_options();
+			$this->fix_res ='Fixtures';
 		}
 		if ($this->options === false) return DB_Util::db_error();
 		if ($this->year) {
