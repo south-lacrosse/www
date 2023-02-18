@@ -2,9 +2,6 @@
 /**
  * Front page template (i.e. the "Home" page). Should be a page, but also caters for
  * when WP is set to display posts on the front page.
- *
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @package Lax
  */
 if ( 'posts' == get_option( 'show_on_front' ) ) {
 	include( get_home_template() );

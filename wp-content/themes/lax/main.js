@@ -1,9 +1,9 @@
 /**
  * IMPORTANT: Bump the version number in footer.php if you change this file.
- * 
+ *
  * Main javascript for our theme. Handles dropdown menu, pullout menu for small screens,
  * tabs, and toggling collapses.
- * 
+ *
  * This code tries to use older javascript syntax so it will run on anything which has
  * addEventListener (so IE9+ and everything else).
  */
@@ -65,7 +65,7 @@
       hideDropdown();
     } else {
       if (!addedListeners) {
-        // We want to set passive property on touchevent listeners as that guarantees to the
+        // We want to set passive property on touch event listeners as that guarantees to the
         // browser that we won't preventDefault, and therefore improves scroll performance.
         // Since only modern browsers support this we need to test via a getter in the
         // options object to see if the passive property is accessed, and if so change the
@@ -127,7 +127,7 @@
       hideDropdown();
     }
   }
-  
+
   /**
    * For keyboard users we close the dropdown if focus is moved away from
    * opened dropdown. That way when a uses tabs down a dropdown and onto
@@ -234,7 +234,7 @@
     }
     setMenuParentTabIndex(-1); // a11y no tabbing onto menu parent as they are all open
     lastMenuLink.addEventListener('keydown', moveFocusToTop, false);
-    // Seperate class for visible as we want the menu to be visible immediately
+    // Separate class for visible as we want the menu to be visible immediately
     // in order to set focus on it, but we have a transition on the slide out.
     // On close the the visible class is removed on a timer otherwise the slide
     // in transition doesn't work
@@ -279,21 +279,21 @@
   function hidePulloutMenu() {
     menu.className = menu.className.replace(/ show/g, '');
     showMenuBtn.setAttribute('aria-expanded', 'false');
-    showMenuBtn.focus(); // a11y focus 
+    showMenuBtn.focus(); // a11y focus
     doc.body.style = '';
     pulloutTimeout = setTimeout(setMenuInvisible, 300);
     isPulloutMenuOpen = false;
   }
 
   function setMenuInvisible() {
-    menu.className = menu.className.replace(/ visible/g, '');    
+    menu.className = menu.className.replace(/ visible/g, '');
   }
 
   function onResize() {
     // if the user resizes then the menu could flip from dropdown to pullout,
     // or vice-versa, based on a media query, which could result in weird
     // situations if either menu is open, so to be on the safe side we just
-    // close eveything and remove any listeners which change behaviour
+    // close everything and remove any listeners which change behaviour
     if (shownDropdown) hideDropdown();
     if (isPulloutMenuOpen) hidePulloutMenu();
     if (lastMenuLink) {

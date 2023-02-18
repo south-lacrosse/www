@@ -1,12 +1,7 @@
 <?php
 /**
  * Template part for displaying results in archive pages
- *
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @link http://microformats.org/wiki/hentry
- * @package Lax
  */
-
 ?>
 <article id="post-<?php the_ID(); ?>">
 <div class="rd">

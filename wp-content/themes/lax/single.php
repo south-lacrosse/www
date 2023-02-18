@@ -1,11 +1,9 @@
 <?php
 /**
  * The template for displaying all single posts
- *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
- * @package Lax
  */
-// only place get_the_post_navigation() used - if this changes
+
+ // only place get_the_post_navigation() used - if this changes
 // move to functions.php
 add_filter('navigation_markup_template', function() {
 	return '<nav class="page-nav">
@@ -28,10 +26,6 @@ while (have_posts()) {
 	if ($nav) {
 		echo '<hr>', $nav;
 	}
-	// If comments are open or we have at least one comment, load up the comment template.
-// 	if (comments_open() || get_comments_number()) {
-// 		comments_template();
-// 	}
 } ?>
 </main>
 <?php

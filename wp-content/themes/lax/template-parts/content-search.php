@@ -1,10 +1,6 @@
 <?php
 /**
  * Template part for displaying results in search pages
- *
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @link http://microformats.org/wiki/hentry
- * @package Lax
  */
 
 ?>

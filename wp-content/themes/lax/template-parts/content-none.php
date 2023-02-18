@@ -1,14 +1,11 @@
 <?php
 /**
  * Template part for displaying a message that posts cannot be found
- *
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @package Lax
  */
 ?>
 <section>
 <?php
-get_search_form();
+require dirname(__DIR__) . '/searchform.php';
 if (is_search()) : ?>
 <h3>Sorry, no matches found.</h3>
 <h3>Search Suggestions:</h3>

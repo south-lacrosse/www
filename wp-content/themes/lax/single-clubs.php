@@ -1,9 +1,6 @@
 <?php
 /**
  * Template for a single club
- *
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @package Lax
  */
 
 $team = '';

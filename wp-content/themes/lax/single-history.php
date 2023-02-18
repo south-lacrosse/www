@@ -1,10 +1,7 @@
 <?php
 /**
- * Template for a single history page - basically the same as page, except it will
- * add breadcrumbs, and also flags css if needed
- *
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @package Lax
+ * Template for a single history page - basically the same as page, except it
+ * will add breadcrumbs, and also flags css if needed
  */
 
 global $post;
@@ -21,10 +18,6 @@ do_action('semla_history_breadcrumbs');
 while (have_posts()) {
 	the_post();
 	get_template_part('template-parts/content', 'page');
-// If comments are open or we have at least one comment, load up the comment template.
-// 	if (comments_open() || get_comments_number()) {
-// 		comments_template();
-// 	}
 } ?>
 </main>
 <?php

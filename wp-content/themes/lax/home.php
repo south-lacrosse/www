@@ -1,9 +1,6 @@
 <?php
 /**
  * Blog posts index template
- * 
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @package Lax
  */
 
 get_header(); ?>

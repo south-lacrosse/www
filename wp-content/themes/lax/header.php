@@ -7,14 +7,7 @@
  * for only this site, and hardcoding stops database lookups
  *
  * If the CSS changes then update the version in ?ver=1.0
- *
- * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
- * @package Lax
  */
-// if comments are enabled then uncomment this
-// if (is_singular() && comments_open() && get_option('thread_comments')) {
-// 	wp_enqueue_script('comment-reply');
-// }
 ?><!DOCTYPE html>
 <html class="no-js" lang="en">
 <head>

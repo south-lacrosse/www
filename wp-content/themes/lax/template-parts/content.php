@@ -1,9 +1,6 @@
 <?php
 /**
  * Template part for displaying posts
- * @link https://codex.wordpress.org/Template_Hierarchy
- * @link http://microformats.org/wiki/hentry
- * @package Lax
  */
 
 $is_post = 'post' === get_post_type();
@@ -38,13 +35,13 @@ endif; ?>
 </div>
 <?php
 lax_entry_footer();
-if ($is_post && is_single() && get_post_status() === 'publish') : 
+if ($is_post && is_single() && get_post_status() === 'publish') :
 	$url = urlencode(esc_url(get_permalink())); ?>
 <div class="share">
 <h3>Share</h3>
 <a class="share-link tw" href="https://twitter.com/intent/tweet?url=<?= $url ?>&amp;text=<?= urlencode(get_the_title()) ?>" rel="nofollow">Twitter</a>
 <a class="share-link fb" href="https://www.facebook.com/sharer/sharer.php?u=<?= $url ?>" rel="nofollow">Facebook</a>
 </div>
-<?php 
+<?php
 endif; ?>
 </article>

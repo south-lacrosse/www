@@ -4,7 +4,7 @@
  * main css and qualify everything by '.admin-bar xxx' but that just
  * adds extra complexity to 0.01% of pages.
  */
- /** Pullout menu - need to set height to account for admin bar */
+ /** Pull out menu - need to set height to account for admin bar */
 .js .menu-wrapper {
 	height: calc(100% - var(--wp-admin--admin-bar--height));
 }

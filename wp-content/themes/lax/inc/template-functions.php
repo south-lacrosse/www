@@ -4,11 +4,11 @@
  */
 
 /**
- * Prints HTML with meta information for the current post-date/time and author.
+ * Prints the current post's date/time and author
  */
 function lax_posted_on() {
 ?>
-<div class="entry-meta meta"><?php 
+<div class="entry-meta meta"><?php
 	$time_string = '<time class="published updated" datetime="%1$s">%2$s</time>';
 	if (get_the_time('U') !== get_the_modified_time('U')) {
 		$time_string = '<time class="published" datetime="%1$s">%2$s</time><time class="updated" datetime="%3$s">%4$s</time>';
@@ -29,7 +29,7 @@ function lax_posted_on() {
 }
 
 /**
- * Prints HTML with meta information for the categories, tags and comments.
+ * Prints categories and tags for posts
  */
 function lax_entry_footer() {
 ?>
@@ -48,13 +48,6 @@ function lax_entry_footer() {
 			echo '<i class="icon icon-tags"></i>', $tags_list;
 		}
 	}
-
-	// if (!is_single() && !post_password_required() && (comments_open() || get_comments_number())) {
-	// 	echo '<span class="comments-link">';
-	// 	comments_popup_link('Leave a Comment<span class="screen-reader-text"> on '
-	// 		. get_the_title() . '</span>');
-	// 	echo '</span>';
-	// }
 ?>
 </footer>
 <?php
@@ -62,14 +55,14 @@ function lax_entry_footer() {
 
 /**
  * Load cached menu, or regenerate it
- * 
+ *
  * wp_nav_menu executes 4 queries, which returns a load of data, so menus are cached here.
  */
 function lax_menu($menu_name) {
 	$menu_file = dirname(__DIR__ ) . '/template-parts/menu-' . $menu_name . '.html';
 	if (!@readfile($menu_file)) {
 		add_filter('semla_change_the_title', '__return_false');
-		ob_start(); 
+		ob_start();
 		if ($menu_name === 'main') {
 			require_once __DIR__.'/Walker_Main_Menu.php';
 			wp_nav_menu([
@@ -141,7 +134,7 @@ function lax_breadcrumbs() {
 }
 
 /**
- * Prints HTML for numbered pagination links
+ * Prints numbered pagination links
  */
 function lax_posts_navigation() {
 	global $wp_query;
