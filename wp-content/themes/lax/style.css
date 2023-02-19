@@ -741,19 +741,10 @@ figure > table:last-child {
 
 /*--------------- Images -----------------------*/
 
+/* fit images to container */
 img {
-	/* fit images to container */
 	max-width: 100%;
 	height: auto;
-	border: 0;
-}
-#content img {
-	border: 1px solid #333;
-}
-.border {
-	border: 1px solid #333;
-	/* Think images with borders resize if border-box */
-	box-sizing: content-box;
 }
 
 /*--------------- Forms/Buttons ----------------------*/
