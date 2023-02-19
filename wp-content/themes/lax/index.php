@@ -12,7 +12,7 @@
  */
 
 get_header(); ?>
-<main id="content"<?php if (LAX_ACTIVE_SIDEBAR) echo ' class="with-sidebar"';?>>
+<main id="content">
 <?php
 if (have_posts()) :
 	if (is_home() && !is_front_page()) : ?>
@@ -30,5 +30,4 @@ else :
 endif; ?>
 </main>
 <?php
-get_sidebar();
 get_footer();

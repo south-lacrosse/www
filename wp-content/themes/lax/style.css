@@ -154,16 +154,6 @@ button {
 		padding-left: 1.5em;
 		padding-right: 1.5em;
 	}
-	/* #content */.with-sidebar {
-		float: left;
-		width: 66%;
-	}
-	#sidebar {
-		display: block;
-		width: 33%;
-		float: left;
-		padding-left: 1em;
-	}
 	/* We float left here as recent posts block has clear:both, so if we float left & right then
 		the block will be below the sidebar! See https://alistapart.com/article/negativemargins/ */
 	/* #content */.with-mini-tables {
@@ -631,7 +621,7 @@ h1, h2, h3, h4, h5, h6 {
 /* h2 */.flags-rounds {
 	margin-top: 2em;
 }
-#data-area > h2, #sidebar > h2 {
+#data-area > h2 {
 	margin-top: 0;
 }
 h3 {

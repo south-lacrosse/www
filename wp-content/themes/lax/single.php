@@ -16,7 +16,7 @@ add_filter('navigation_markup_template', function() {
 
 get_header();
 ?>
-<main id="content"<?php if (LAX_ACTIVE_SIDEBAR) echo ' class="with-sidebar"';?>>
+<main id="content">
 <?php
 while (have_posts()) {
 	the_post();
@@ -35,5 +35,4 @@ while (have_posts()) {
 } ?>
 </main>
 <?php
-get_sidebar();
 get_footer();

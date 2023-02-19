@@ -4,10 +4,6 @@
  * @link https://developer.wordpress.org/themes/basics/theme-functions/
  */
 
-// default to no sidebar, can be overridden in wp-config.php
-if (!defined('LAX_SIDEBAR')) define('LAX_SIDEBAR', false);
-define('LAX_ACTIVE_SIDEBAR', LAX_SIDEBAR && is_active_sidebar('sidebar-1'));
-
 /**
  * Set up theme defaults and register support for various WordPress features.
  *
@@ -109,25 +105,6 @@ add_action('wp_enqueue_scripts', function() {
 		, ['lax-style'], '1.0');
 	}
 });
-
-/**
- * Register widget area.
- *
- * @link https://developer.wordpress.org/themes/functionality/sidebars/#registering-a-sidebar
- */
-if (LAX_SIDEBAR) {
-	add_action('widgets_init', function() {
-		register_sidebar([
-			'name'          => 'Sidebar',
-			'id'            => 'sidebar-1',
-			'description'   => 'Add widgets here.',
-			'before_widget' => '<section id="%1$s" class="%2$s">',
-			'after_widget'  => '</section>',
-			'before_title'  => '<h2>',
-			'after_title'   => '</h2>',
-		]);
-	});
-}
 
 function lax_delete_menu_cache() {
 	@unlink(__DIR__.'/template-parts/menu-main.html');
