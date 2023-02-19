@@ -6,7 +6,7 @@
 $is_post = 'post' === get_post_type();
 $class = $is_post ? ' with-byline' : '';
 ?>
-<article id="post-<?php the_ID(); ?>" class="hentry">
+<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 <?php if ($is_post) : ?>
 <header>
 <?php

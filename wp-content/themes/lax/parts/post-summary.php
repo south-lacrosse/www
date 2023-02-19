@@ -3,7 +3,7 @@
  * Display post summary with link to post. Used for search and archive
  */
 ?>
-<article id="post-<?php the_ID(); ?>">
+<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 <div class="rd">
 <h3 class="rh"><a href="<?= esc_url(get_permalink()) ?>" class="ra"><?php the_title(); ?></a></h3>
 <p><?php

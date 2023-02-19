@@ -16,7 +16,7 @@ require __DIR__ . '/parts/header.php'; ?>
 do_action('semla_notices');
 while (have_posts()) :
 	the_post();?>
-<article id="post-<?php the_ID(); ?>" class="hentry">
+<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 <div class="entry-content">
 <?php
 	the_content();
