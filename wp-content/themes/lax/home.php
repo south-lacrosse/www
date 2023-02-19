@@ -3,7 +3,7 @@
  * Blog posts index template
  */
 
-get_header(); ?>
+require __DIR__ . '/parts/header.php'; ?>
 <main id="content">
 <?php
 if (have_posts()) : ?>
@@ -13,14 +13,12 @@ if (have_posts()) : ?>
 <?php
 	while (have_posts()) {
 		the_post();
-		// Include the Post-Format-specific template for the content.
-		// get_template_part('template-parts/content', get_post_format());
-		get_template_part('template-parts/content', 'archive');
+		require __DIR__ . '/parts/post-summary.php';
 	}
 	lax_posts_navigation();
 else :
-	get_template_part('template-parts/content', 'none');
+	require __DIR__ . '/parts/nothing-found.php';
 endif; ?>
 </main>
 <?php
-get_footer();
+require __DIR__ . '/parts/footer.php';

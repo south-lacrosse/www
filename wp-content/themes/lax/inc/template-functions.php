@@ -59,7 +59,7 @@ function lax_entry_footer() {
  * wp_nav_menu executes 4 queries, which returns a load of data, so menus are cached here.
  */
 function lax_menu($menu_name) {
-	$menu_file = dirname(__DIR__ ) . '/template-parts/menu-' . $menu_name . '.html';
+	$menu_file = dirname(__DIR__ ) . '/parts/menu-' . $menu_name . '.html';
 	if (!@readfile($menu_file)) {
 		add_filter('semla_change_the_title', '__return_false');
 		ob_start();

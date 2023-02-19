@@ -5,7 +5,7 @@
 ?>
 <section>
 <?php
-require dirname(__DIR__) . '/searchform.php';
+require __DIR__ . '/searchform.php';
 if (is_search()) : ?>
 <h3>Sorry, no matches found.</h3>
 <h3>Search Suggestions:</h3>

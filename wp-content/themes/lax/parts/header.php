@@ -1,7 +1,7 @@
 <?php
 /**
- * This is the template that displays all of the <head> section and everything up until
- * the main content area
+ * Displays all of the <head> section and everything up until the main content
+ * area
  *
  * Note: quite a bit of info is hardcoded. Since this is a custom theme
  * for only this site, and hardcoding stops database lookups

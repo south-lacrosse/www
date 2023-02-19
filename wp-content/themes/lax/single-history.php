@@ -10,15 +10,15 @@ if (strpos($post->post_content, 'class="flags"') !== false) {
 	do_action('semla_flags_header');
 }
 
-get_header();
+require __DIR__ . '/parts/header.php';
 do_action('semla_history_breadcrumbs');
 ?>
 <main id="content">
 <?php
 while (have_posts()) {
 	the_post();
-	get_template_part('template-parts/content', 'page');
+	require __DIR__ . '/parts/content-page.php';
 } ?>
 </main>
 <?php
-get_footer();
+require __DIR__ . '/parts/footer.php';

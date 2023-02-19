@@ -1,6 +1,6 @@
 <?php
 /**
- * Template part for displaying results in archive pages
+ * Display post summary with link to post. Used for search and archive
  */
 ?>
 <article id="post-<?php the_ID(); ?>">

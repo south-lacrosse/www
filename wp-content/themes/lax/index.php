@@ -1,9 +1,9 @@
 <?php
 /**
- * The main template file
+ * The main template file. In this theme should never get here as everything is
+ * catered for in the other templates.
  */
-
-get_header(); ?>
+require __DIR__ . '/parts/header.php'; ?>
 <main id="content">
 <?php
 if (have_posts()) :
@@ -14,12 +14,12 @@ if (have_posts()) :
 	while (have_posts()) {
 		the_post();
 		// Include the Post-Format-specific template for the content.
-		get_template_part('template-parts/content', get_post_format());
+		get_template_part('parts/content', get_post_format());
 	}
 	lax_posts_navigation();
 else :
-	get_template_part('template-parts/content', 'none');
+	require __DIR__ . '/parts/nothing-found.php';
 endif; ?>
 </main>
 <?php
-get_footer();
+require __DIR__ . '/parts/footer.php';

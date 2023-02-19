@@ -3,19 +3,19 @@
  * The template for displaying search results pages
  */
 
-get_header(); ?>
+require __DIR__ . '/parts/header.php'; ?>
 <main id="content">
 <?php
 if (have_posts()) :
-	require __DIR__ . '/searchform.php';
+	require __DIR__ . '/parts/searchform.php';
 	while (have_posts()) {
 		the_post();
-		get_template_part('template-parts/content', 'search');
+		require __DIR__ . '/parts/post-summary.php';
 	}
 	lax_posts_navigation();
 else :
-	get_template_part('template-parts/content', 'none');
+	require __DIR__ . '/parts/nothing-found.php';
 endif; ?>
 </main>
 <?php
-get_footer();
+require __DIR__ . '/parts/footer.php';

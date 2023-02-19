@@ -107,9 +107,9 @@ add_action('wp_enqueue_scripts', function() {
 });
 
 function lax_delete_menu_cache() {
-	@unlink(__DIR__.'/template-parts/menu-main.html');
-	@unlink(__DIR__.'/template-parts/menu-popular.html');
-	@unlink(__DIR__.'/template-parts/menu-social.html');
+	@unlink(__DIR__.'/parts/menu-main.html');
+	@unlink(__DIR__.'/parts/menu-popular.html');
+	@unlink(__DIR__.'/parts/menu-social.html');
 }
 
 if (!is_admin() && !defined('WP_CLI')) {

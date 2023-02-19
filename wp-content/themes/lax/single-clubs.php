@@ -4,12 +4,12 @@
  */
 
 $team = '';
-get_header(); ?>
+require __DIR__ . '/parts/header.php'; ?>
 <main id="content">
 <?php
 while (have_posts()) {
 	the_post();
-	get_template_part('template-parts/content', 'page');
+	require __DIR__ . '/parts/content-page.php';
 	$team = get_the_title();
 }
 if ($team) {
@@ -23,4 +23,4 @@ if ($team) {
 <p class="noprint">Is this information wrong? If so please email <a href="mailto:webmaster@southlacrosse.org.uk<?= $subject ?>">webmaster@southlacrosse.org.uk</a>.</p>
 </main>
 <?php
-get_footer();
+require __DIR__ . '/parts/footer.php';
