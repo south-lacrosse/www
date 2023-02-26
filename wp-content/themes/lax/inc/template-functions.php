@@ -165,8 +165,9 @@ function lax_posts_navigation() {
 ?>
 <hr>
 <nav class="page-nav paging">
+<h2 class="screen-reader-text">Page Links</h2>
 <span class="box">Page <?= $current ?> of <?= $total ?></span>
-<?php 	if ($current > 1 && $total > 3) {
+<?php 	if ($current > 3) {
 			echo '<a class="no-ul box" href="', $page_1, '"';
 			if ($current === 2) {
 				echo ' rel="prev"';
@@ -175,27 +176,25 @@ function lax_posts_navigation() {
 		}
 		foreach ($page_links as $page_link) {
 			$page = $current + $page_link['rel'];
-			if ($page > $total) {
+			if ($page <= 0 || $page > $total) {
 				continue;
 			}
-			if ($page > 0) {
-				if ($page_link['rel'] === 0) {
-					echo '<span class="box grey">', $page, "</span>\n";
+			if ($page_link['rel'] === 0) {
+				echo '<span class="box grey">', $page, "</span>\n";
+			} else {
+				$label = $page_link['label'] ?? '';
+				if ($label === '..') {
+					echo '<span class="box">', $label, "</span>\n";
 				} else {
-					$label = $page_link['label'] ?? '';
-					if ($label === '..') {
-						echo '<span class="box">', $label, "</span>\n";
-					} else {
-						echo '<a class="no-ul box" href="',
-							$page === 1 ? $page_1 : str_replace('%#%', $page, $base),
-							'"';
-						if ($page_link['rel'] === -1) {
-							echo ' rel="prev"';
-						} elseif ($page_link['rel'] === 1) {
-							echo ' rel="next"';
-						}
-						echo '>', ($label ? $label : $page), "</a>\n";
+					echo '<a class="no-ul box" href="',
+						$page === 1 ? $page_1 : str_replace('%#%', $page, $base),
+						'"';
+					if ($page_link['rel'] === -1) {
+						echo ' rel="prev"';
+					} elseif ($page_link['rel'] === 1) {
+						echo ' rel="next"';
 					}
+					echo '>', ($label ? $label : $page), "</a>\n";
 				}
 			}
 		}
