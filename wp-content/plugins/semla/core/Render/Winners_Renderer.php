@@ -84,9 +84,9 @@ class Winners_Renderer {
 
 	private static function click_instruction($type) {
 		if ($type === 'league') {
-			echo "<p>Click the year for full tables.</p>\n";
+			echo "<p class=\"no-print\">Click the year for full tables.</p>\n";
 		} elseif ($type === 'cup') {
-			echo "<p>Click the year for the complete draw.</p>\n";
+			echo "<p class=\"no-print\">Click the year for the complete draw.</p>\n";
 		}
 	}
 
@@ -117,7 +117,7 @@ class Winners_Renderer {
 		echo self::do_variable_year($prev_year,$cols,$row_comps,$comps,$has_data,$full_page);
 		echo "</tbody></table></div>\n";
 	}
-	
+
 	private static function do_variable_year($year, $cols, $row_comps, $comps, $has_data, $full_page) {
 		$header = implode(',',$row_comps);
 		if ($header <> self::$prev_header) {

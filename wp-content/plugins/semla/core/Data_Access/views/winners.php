@@ -31,7 +31,7 @@ if ($comp->group_id && $next_prevs) {
 	echo "</nav>\n";
 }
 if ($with_data) {
-	echo "<p>Click the year for the complete draw.</p>\n";
+	echo "<p class=\"no-print\">Click the year for the complete draw.</p>\n";
 }
 if ($comp->head_to_head && count($wins) > 0) {
 	arsort($wins);
