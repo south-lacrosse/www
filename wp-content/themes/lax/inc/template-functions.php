@@ -168,11 +168,7 @@ function lax_posts_navigation() {
 <h2 class="screen-reader-text">Page Links</h2>
 <span class="box">Page <?= $current ?> of <?= $total ?></span>
 <?php 	if ($current > 3) {
-			echo '<a class="no-ul box" href="', $page_1, '"';
-			if ($current === 2) {
-				echo ' rel="prev"';
-			}
-			echo ">« First</a>\n";
+			echo '<a class="no-ul box" href="', $page_1, "\">« First</a>\n";
 		}
 		foreach ($page_links as $page_link) {
 			$page = $current + $page_link['rel'];
@@ -188,22 +184,13 @@ function lax_posts_navigation() {
 				} else {
 					echo '<a class="no-ul box" href="',
 						$page === 1 ? $page_1 : str_replace('%#%', $page, $base),
-						'"';
-					if ($page_link['rel'] === -1) {
-						echo ' rel="prev"';
-					} elseif ($page_link['rel'] === 1) {
-						echo ' rel="next"';
-					}
-					echo '>', ($label ? $label : $page), "</a>\n";
+						'">', ($label ? $label : $page), "</a>\n";
 				}
 			}
 		}
 		if ($current < $total - 2) {
-			echo '<a class="no-ul box" href="', str_replace('%#%', $total, $base), '"';
-			if ($current === $total - 1) {
-				echo ' rel="next"';
-			}
-			echo ">Last »</a>\n";
+			echo '<a class="no-ul box" href="', str_replace('%#%', $total, $base),
+				"\">Last »</a>\n";
 		} ?>
 </nav>
 <?php
