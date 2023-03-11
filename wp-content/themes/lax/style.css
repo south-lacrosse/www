@@ -1209,10 +1209,10 @@ dd {
 
 /*--------------- Responsive -----------------*/
 
-/* Allow tables to be scollable, and not overflow the screen. overflow-x on
+/* Allow tables to be scrollable, and not overflow the screen. overflow-x on
 	tables does nothing, so you need an enclosing div.
-   If a table is inside a div then the margins aren't collapsed to the next
-	element, so fix that here */
+   If a table is inside a div with overflow-x then the margins aren't collapsed
+    to the next element, so correct that here */
 .scrollable {
    overflow-x: auto;
    margin-bottom: 1.25em;
