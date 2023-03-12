@@ -20,7 +20,7 @@ class Table_Gateway {
 			$rows = $wpdb->get_results( $wpdb->prepare(
 				'SELECT c.section_name as name, t.comp_id, t.position, t.team,
 					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
-					t.points_deducted, t.points, t.divider, t.form
+					t.points_deducted, t.points, t.divider, t.form, t.tiebreaker
 				FROM slc_table AS t, sl_competition AS c
 				WHERE c.id = t.comp_id AND c.group_id = %d
 				ORDER BY c.seq, c.id, t.position', $league_id));
@@ -48,7 +48,7 @@ class Table_Gateway {
 			$rows = $wpdb->get_results( $wpdb->prepare(
 				'SELECT c.section_name as name, t.comp_id, t.position, t.team,
 					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
-					t.points_deducted, t.points, t.points_avg, t.divider
+					t.points_deducted, t.points, t.points_avg, t.divider, t.tiebreaker
 				FROM slh_table AS t, sl_competition AS c
 				WHERE c.id = t.comp_id AND t.year = %d AND c.group_id = %d
 				ORDER BY c.seq, c.id, t.position', $year, $league_id));
@@ -77,7 +77,7 @@ class Table_Gateway {
 					ELSE c.name	END as name,
 					t.comp_id, t.position, t.team,
 					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
-					t.points_deducted, t.points, t.divider, t.form
+					t.points_deducted, t.points, t.divider, t.form, t.tiebreaker
 				FROM slc_table AS t, slc_table AS t2, sl_competition AS c
 				WHERE t2.team = %s
 				AND t.comp_id = t2.comp_id
@@ -89,7 +89,7 @@ class Table_Gateway {
 					ELSE c.name	END as name,
 					t.comp_id, t.position, t.team,
 					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
-					t.points_deducted, t.points, t.divider, t.form
+					t.points_deducted, t.points, t.divider, t.form, t.tiebreaker
 				FROM slc_table AS t,
 				(SELECT DISTINCT t2.comp_id FROM slc_table AS t2, slc_team AS tm
 					WHERE t2.team = tm.name AND tm.club = %s) AS comps
@@ -130,6 +130,9 @@ class Table_Gateway {
 			if ($row->points_deducted) {
 				$has_points_deducted = true;
 			}
+			if (!$row->tiebreaker) {
+				unset($row->tiebreaker);
+			}
 		}
 		if ($comp_id) {
 			$tables[] = self::table_from_teams($table_name, $teams, $has_points_deducted);
@@ -141,7 +144,7 @@ class Table_Gateway {
 		if (!$has_points_deducted) {
 			foreach($teams as $key => $value){
 				unset($teams[$key]->points_deducted);
-			}						
+			}
 		}
 		return ['name' => $table_name, 'teams' => $teams];
 	}
@@ -193,7 +196,7 @@ class Table_Gateway {
 		DB_Util::add_table_to_rename('deduction');
 		return true;
 	}
-	
+
 	public static function save_tables($tables) {
 		global $wpdb;
 		// points deducted and points are decimal(4,1) in history as there were

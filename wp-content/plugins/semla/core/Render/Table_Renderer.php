@@ -40,6 +40,7 @@ class Table_Renderer {
 		}
 		$comp_id = 0;
 		$teams = [];
+		$has_tiebreaker = 0;
 		foreach ( $rows as $row ) {
 			if ($row->comp_id <> $comp_id) {
 				if ($comp_id) {
@@ -52,6 +53,9 @@ class Table_Renderer {
 				$teams = [];
 			}
 			$teams[] = $row;
+			if ($row->tiebreaker) {
+				$has_tiebreaker = true;
+			}
 		}
 		if ($comp_id) {
 			echo self::table($teams[0]->name, $teams, $year,$links);
@@ -59,8 +63,11 @@ class Table_Renderer {
 				echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
 			}
 		}
+		if ($has_tiebreaker) {
+			echo "\n<p><i>*</i> = position changed because of results between teams</p>";
+		}
 	}
-	
+
 	/**
 	 * Render a single league table
 	 * @param string $division_name
@@ -81,14 +88,15 @@ class Table_Renderer {
 			if ($team->points_deducted > 0)
 				$deducted_col = true;
 		}
-		
+
 		// Note: id is not put on table as we can't style the table to cater for the position="sticky"
 		// menu (by default the target will be at the top of the viewport, but this is underneath the
 		// sticky menu), so we add a div as the target.
 		// Also we can't put scrollable on that div as the style for scrollable also makes the
 		// offset for the sticky menu not work.
 		echo '<div id="' . Util::make_id($division_name) . '"><div class="scrollable">'
-			. '<table class="table-data "><caption><span class="caption-text">'	. $division_name . "</span></caption>\n<thead><tr>"
+			. '<table class="table-data "><caption><span class="caption-text">'
+			. $division_name . "</span></caption>\n<thead><tr>"
 			. '<th></th><th class="left">Team</th><th><abbr title="Matches played">P</abbr></th>';
 		if ($wdl_cols)
 			echo '<th><abbr title="Matches won">W</abbr></th><th><abbr title="Matches drawn">D</abbr></th>'
@@ -109,7 +117,8 @@ class Table_Renderer {
 			echo '<th class="hide-sml">Form</th>';
 		echo "</tr></thead>\n<tbody>\n";
 		foreach ($teams as $team) {
-			echo '<tr' . (!empty($team->divider) ? ' class="divider"' : '') .  '><td>' . $team->position . '</td><td class="left">';
+			echo '<tr' . (!empty($team->divider) ? ' class="divider"' : '')
+				.  '><td>' . $team->position . '</td><td class="left">';
 			if (!$links) {
 				echo $team->team;
 			} elseif ($year == 0) {
@@ -121,12 +130,16 @@ class Table_Renderer {
 			} else {
 				echo $team->team;
 			}
+			if ($team->tiebreaker) echo '<sup>*</sup>';
 			echo '</td><td>' . $team->played . '</td>';
 			if ($wdl_cols)
-				echo '<td>' . $team->won . '</td><td>' . $team->drawn . '</td><td>' . $team->lost . '</td>';
+				echo '<td>' . $team->won . '</td><td>' . $team->drawn . '</td><td>'
+					. $team->lost . '</td>';
 			if ($fa_cols)
-				echo '<td class="hide-sml">' . $team->goals_for . '</td><td class="hide-sml">' . $team->goals_against
-					. '</td><td class="hide-sml">' . ($team->goals_for - $team->goals_against) . '</td>';
+				echo '<td class="hide-sml">' . $team->goals_for
+					. '</td><td class="hide-sml">' . $team->goals_against
+					. '</td><td class="hide-sml">' . ($team->goals_for - $team->goals_against)
+					. '</td>';
 			if ($goal_avg_col) {
 				if (isset($team->goal_avg)) {
 					$val = number_format($team->goal_avg,2);
