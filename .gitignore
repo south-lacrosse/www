@@ -1,10 +1,13 @@
 /*
+!/.vscode/
 !/.gitignore
+!/.editorconfig
 !/.htaccess-semla
+!/.prettierignore
+!/.prettierrc
 !/*.png
 !/browserconfig.xml
 !/favicon.ico
-!/.editorconfig
 !/LICENSE
 !/README.md
 !/redirect.php

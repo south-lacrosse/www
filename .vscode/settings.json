@@ -1,0 +1,3 @@
+{
+	"eslint.nodePath": "../../../www-dev/node_modules"
+}
