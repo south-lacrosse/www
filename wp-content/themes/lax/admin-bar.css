@@ -4,7 +4,7 @@
  * main css and qualify everything by '.admin-bar xxx' but that just
  * adds extra complexity to 0.01% of pages.
  */
- /** Pull out menu - need to set height to account for admin bar */
+/** Pull out menu - need to set height to account for admin bar */
 .js .menu-wrapper {
 	height: calc(100% - var(--wp-admin--admin-bar--height));
 }
@@ -31,14 +31,15 @@
  WP goes to position:absolute for the admin menu at 600px, so we do the same.
  We also don't set the header to fixed if height < 500px  */
 @media screen and (max-width: 600px),
-screen and (max-height: 499px) and (min-width: 601px) and (max-width: 679px) {
+	screen and (max-height: 499px) and (min-width: 601px) and (max-width: 679px) {
 	body > header {
 		position: static;
 	}
 	.middle {
 		margin-top: 0;
 	}
-	.js .menu-wrapper, #search {
+	.js .menu-wrapper,
+	#search {
 		top: calc(3px + var(--wp-admin--admin-bar--height));
 	}
 	#search {
@@ -55,7 +56,8 @@ screen and (max-height: 499px) and (min-width: 601px) and (max-width: 679px) {
 		/* scroll-padding-top added by WP handles everything else */
 		top: var(--wp-admin--admin-bar--height);
 	}
-	.js .menu-wrapper, #search {
+	.js .menu-wrapper,
+	#search {
 		top: calc(3px + var(--wp-admin--admin-bar--height));
 	}
 }

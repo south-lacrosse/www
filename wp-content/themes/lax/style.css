@@ -45,14 +45,16 @@ hr {
 }
 /* pre set later */
 /* abbr[title] set later */
-b, strong {
+b,
+strong {
 	font-weight: 600; /* was bolder */
 }
 /* code set later */
 small {
 	font-size: 80%;
 }
-sub, sup {
+sub,
+sup {
 	font-size: 75%;
 	line-height: 0;
 	position: relative;
@@ -64,36 +66,45 @@ sub {
 sup {
 	top: -0.5em;
 }
-button, input, optgroup, select, textarea {
+button,
+input,
+optgroup,
+select,
+textarea {
 	font-family: inherit;
 	font-size: 100%;
 	line-height: 1.15;
 	margin: 0;
 }
-button, input {
+button,
+input {
 	overflow: visible;
 }
-button, select {
+button,
+select {
 	text-transform: none;
 }
-button, [type="button"],
-[type="submit"] {
+button,
+[type='button'],
+[type='submit'] {
 	-webkit-appearance: button;
 }
-button::-moz-focus-inner, [type="button"]::-moz-focus-inner,
-[type="submit"]::-moz-focus-inner {
+button::-moz-focus-inner,
+[type='button']::-moz-focus-inner,
+[type='submit']::-moz-focus-inner {
 	border-style: none;
 	padding: 0;
 }
-button:-moz-focusring, [type="button"]:-moz-focusring,
-[type="submit"]:-moz-focusring {
+button:-moz-focusring,
+[type='button']:-moz-focusring,
+[type='submit']:-moz-focusring {
 	outline: 1px dotted ButtonText;
 }
-[type="search"] {
+[type='search'] {
 	-webkit-appearance: textfield;
 	outline-offset: 0; /* was -2px; */
 }
-[type="search"]::-webkit-search-decoration {
+[type='search']::-webkit-search-decoration {
 	-webkit-appearance: none;
 }
 
@@ -103,18 +114,21 @@ html {
 	/* all % sizes include border and padding */
 	box-sizing: border-box;
 	/* shows at bottom of page if body is not long enough */
-	background-color: #BEC3C6;
+	background-color: #bec3c6;
 	/* System fonts see https://booking.design/implementing-system-fonts-on-booking-com-a-lesson-learned-bdc984df627f */
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-		Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu,
+		Cantarell, 'Helvetica Neue', sans-serif;
 	font-size: 16px;
 }
-code, pre {
-	font-family: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+code,
+pre {
+	font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
 	font-size: 1em;
 }
 /* Allow components to rework box sizing - probably needed for Gmaps etc */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
 	box-sizing: inherit;
 }
 
@@ -156,7 +170,8 @@ button {
 	}
 	/* We float left here as recent posts block has clear:both, so if we float left & right then
 		the block will be below the sidebar! See https://alistapart.com/article/negativemargins/ */
-	/* #content */.with-mini-tables {
+	/* #content */
+	.with-mini-tables {
 		margin-right: -14.5em;
 		float: left;
 		width: 100%;
@@ -181,7 +196,7 @@ button {
 #page-footer {
 	margin-top: 1em;
 	padding: 1em;
-	background-color: #333F48;
+	background-color: #333f48;
 	color: #fff;
 	clear: both;
 }
@@ -207,14 +222,14 @@ button {
 .pop-a {
 	margin-left: 0.6em;
 	padding: 0.35em;
-	color: #092A56;
+	color: #092a56;
 	text-decoration: none;
 }
 .pop-a:hover {
 	text-decoration: underline;
 }
 .pop-a:visited {
-	color: #092A56;
+	color: #092a56;
 }
 #search {
 	width: 2.5rem;
@@ -290,7 +305,7 @@ ml0-1 = menu li tag with depth */
 		height: 45px;
 	}
 	.main-header {
-		background-color: #F6F6F6;
+		background-color: #f6f6f6;
 	}
 	.banner {
 		line-height: 45px;
@@ -321,11 +336,13 @@ ml0-1 = menu li tag with depth */
 		display: block;
 		padding: 0.5em 0.6em;
 	}
-	.ma, .ma:visited {
+	.ma,
+	.ma:visited {
 		color: #fff;
 	}
 	/* look like it's clicked */
-	.ma:not(.mp):active, #search:active {
+	.ma:not(.mp):active,
+	#search:active {
 		position: relative;
 		top: 1px;
 	}
@@ -358,24 +375,27 @@ ml0-1 = menu li tag with depth */
 	li:last-child > .mu1 {
 		right: 0;
 	}
-	.menu-nav, .menu-wrapper, .mu {
-		background-color: #A91717;
+	.menu-nav,
+	.menu-wrapper,
+	.mu {
+		background-color: #a91717;
 	}
-	.ma:hover, #search:hover {
+	.ma:hover,
+	#search:hover {
 		background-color: #d03030;
 	}
 	.mi0.open {
 		background-color: #bd2b2b; /* #760000; */
 	}
 	.ml1 {
-		border-top: 1px solid #900000;/*  #9D0A0E;*/
+		border-top: 1px solid #900000; /*  #9D0A0E;*/
 	}
 	.ma[rel]::after {
 		background-image: url(img/external-link.svg);
 	}
 	/* No javascript so display menu on hover */
 	.no-js .ml0:hover > ul {
-		display: block
+		display: block;
 	}
 	/* level 3 if needed
 	.mu2 {
@@ -411,7 +431,7 @@ ml0-1 = menu li tag with depth */
 		height: 100%;
 		overflow-y: auto;
 		overflow-x: hidden;
-		transition: left .3s;
+		transition: left 0.3s;
 		z-index: 3;
 		/* don't display:none as that ruins the animation, but need to
 		 stop focus onto hidden elements, so we use visible */
@@ -451,9 +471,10 @@ ml0-1 = menu li tag with depth */
 		margin-top: 0;
 	}
 	.banner {
-		background-color: #A91717;
+		background-color: #a91717;
 	}
-	#show-menu, #close-menu {
+	#show-menu,
+	#close-menu {
 		background-position: 50% 50%;
 		background-repeat: no-repeat;
 	}
@@ -501,7 +522,7 @@ ml0-1 = menu li tag with depth */
 		width: 0;
 		opacity: 0;
 		background-color: #000;
-		transition: opacity .3s;
+		transition: opacity 0.3s;
 	}
 	.js .menu-wrapper {
 		background-color: #fff;
@@ -527,9 +548,10 @@ ml0-1 = menu li tag with depth */
 		pointer-events: none;
 	}
 	.ma:not(.mp) {
-		border-bottom: 2px solid #A91717;
+		border-bottom: 2px solid #a91717;
 	}
-	.ma, .ma:visited {
+	.ma,
+	.ma:visited {
 		color: #333;
 	}
 	.mu1 {
@@ -559,7 +581,7 @@ ml0-1 = menu li tag with depth */
 	margin-bottom: 0;
 }
 .breadcrumbs > li + li::before {
-	content: " > ";
+	content: ' > ';
 	padding: 0 5px;
 }
 .soc-h {
@@ -600,9 +622,10 @@ h1 {
 	margin-top: 0;
 	margin-bottom: 0.67em;
 }
-h1, h2 {
+h1,
+h2 {
 	padding-bottom: 0.1em;
-	border-bottom: 1px solid #EEE;
+	border-bottom: 1px solid #eee;
 }
 .with-byline {
 	margin-bottom: 0.2em;
@@ -612,13 +635,20 @@ h2 {
 	margin-top: 1em;
 	margin-bottom: 0.5em;
 }
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-weight: 600;
 }
-/* h2 */.after-nav {
+/* h2 */
+.after-nav {
 	margin-top: 0.5em;
 }
-/* h2 */.flags-rounds {
+/* h2 */
+.flags-rounds {
 	margin-top: 2em;
 }
 #data-area > h2 {
@@ -675,7 +705,8 @@ h4 {
 		width: 100%;
 		max-width: 640px;
 	}
-	.ss, .sl {
+	.ss,
+	.sl {
 		display: table-cell;
 	}
 	.btn.ss {
@@ -715,7 +746,7 @@ a {
 	color: #003399;
 }
 a:visited {
-	color: #551A8B;
+	color: #551a8b;
 }
 /* link on team name in fixtures */
 .no-ul {
@@ -728,7 +759,9 @@ a:visited {
 /*--------------- Paragraph -----------------------*/
 
 /* browsers may set figure left/right, and p should be 0 anyway */
-p, figure, .wp-block-pullquote {
+p,
+figure,
+.wp-block-pullquote {
 	margin: 1em 0;
 }
 figure > table:last-child {
@@ -758,7 +791,8 @@ img {
 }
 /* Button appearance, used for "All fixtures" <a> and
 search <input> = */
-.btn, a.btn {
+.btn,
+a.btn {
 	padding: 4px 8px;
 	margin-bottom: 0;
 	font-weight: normal;
@@ -769,20 +803,22 @@ search <input> = */
 	text-decoration: none;
 	color: #333;
 	border: 1px solid #ccc;
-	background-color: #F1F1F1;
+	background-color: #f1f1f1;
 }
 .btn:hover {
 	background-color: #e6e6e6;
 	border-color: #adadad;
 }
-.btn:active, .btn.active {
+.btn:active,
+.btn.active {
 	outline: 0;
-	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-	box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+	-webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+	box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 	background-color: #e6e6e6;
 	border-color: #adadad;
 }
-.btn.active:hover, .btn.active:focus {
+.btn.active:hover,
+.btn.active:focus {
 	background-color: #d4d4d4;
 	border-color: #8c8c8c;
 }
@@ -837,7 +873,7 @@ search <input> = */
 }
 #semla_toc-nav {
 	background: #fafafa;
-	border: 1px solid #CCC;
+	border: 1px solid #ccc;
 	padding: 0.5em 0.75em 0 1em;
 }
 #semla_toc-nav > h4 {
@@ -885,17 +921,21 @@ table {
 	border-spacing: 0;
 	margin-bottom: 1.25em;
 }
-th, td {
+th,
+td {
 	padding: 0.3125em 0.75em;
 }
 @media screen and (max-width: 679px) {
-	th, td {
+	th,
+	td {
 		padding: 0.3125em 0 0.3125em 0.75em;
 	}
-	th:first-child, td:first-child {
+	th:first-child,
+	td:first-child {
 		padding-left: 0;
 	}
-	.is-style-boxed-striped td, .is-style-boxed-striped th {
+	.is-style-boxed-striped td,
+	.is-style-boxed-striped th {
 		padding: 0.3125em;
 	}
 }
@@ -909,14 +949,17 @@ thead {
 th {
 	text-align: left;
 }
-.is-style-lined td, .is-style-lined th {
+.is-style-lined td,
+.is-style-lined th {
 	/* override wp-block-table borders */
 	border: 0;
 }
-.is-style-boxed-striped td, .is-style-boxed-striped th {
+.is-style-boxed-striped td,
+.is-style-boxed-striped th {
 	border: 1px solid #ddd;
 }
-.is-style-lined tbody th, .is-style-lined td {
+.is-style-lined tbody th,
+.is-style-lined td {
 	border-top: 1px solid #ddd;
 }
 .is-style-boxed-striped tbody tr:nth-of-type(odd) {
@@ -929,7 +972,8 @@ th {
 }
 
 /* first one is for wordpress */
-.compact > table, .compact {
+.compact > table,
+.compact {
 	width: auto;
 }
 
@@ -954,7 +998,8 @@ th {
 	color: #333;
 	text-decoration: none;
 }
-.table-data > caption > a:visited, .table-data > caption > a:active {
+.table-data > caption > a:visited,
+.table-data > caption > a:active {
 	color: #333;
 }
 .table-data th {
@@ -972,7 +1017,8 @@ th.left {
 	padding: 3px;
 	border-bottom: 1px solid #ededed;
 }
-.table-data > tbody > tr:hover, .hover {
+.table-data > tbody > tr:hover,
+.hover {
 	background-color: #f7f7f5;
 }
 tr.divider > td {
@@ -981,17 +1027,24 @@ tr.divider > td {
 /* fixtures */
 /* leave td as this ensures the same priority than .table-data td rule,
 	but these win as they appear later */
-th.min-width, col.min-width {
+th.min-width,
+col.min-width {
 	width: 1%;
 }
-th.home, th.away, th.comp, col.home, col.away {
+th.home,
+th.away,
+th.comp,
+col.home,
+col.away {
 	width: 30%;
 }
-th.home, td.home {
+th.home,
+td.home {
 	padding-right: 1.5em;
 	text-align: right;
 }
-th.away, td.away {
+th.away,
+td.away {
 	padding-left: 1.5em;
 	text-align: left;
 }
@@ -1006,7 +1059,7 @@ td.comp {
 .hl {
 	background-color: #ffa;
 }
-tr:hover>.hl {
+tr:hover > .hl {
 	background-color: #f6f7b2;
 }
 th.no-bb {
@@ -1022,19 +1075,23 @@ th.no-bb {
 	border-left: 1px solid #ededed;
 }
 
-
 /* link colors */
-th > a:link, th > a:visited, .table-data a:link, .table-data a:visited {
+th > a:link,
+th > a:visited,
+.table-data a:link,
+.table-data a:visited {
 	color: #333;
 }
 
 /*--------------- Lists ------------------------*/
 
-ul, ol {
+ul,
+ol {
 	margin-top: 0.67em;
 	margin-bottom: 0.67em;
 }
-li > ul, li > ol {
+li > ul,
+li > ol {
 	margin-top: 0;
 	margin-bottom: 0;
 }
@@ -1079,7 +1136,8 @@ li > ul, li > ol {
 		table-layout: fixed; /* quick rendering */
 		width: 100%;
 	}
-	.avf-same-line > .avf-name, .avf-same-line > .avf-value {
+	.avf-same-line > .avf-name,
+	.avf-same-line > .avf-value {
 		display: table-cell;
 		vertical-align: top;
 	}
@@ -1087,7 +1145,7 @@ li > ul, li > ol {
 		width: 12em;
 	}
 	.avf-same-line > .avf-name::after {
-		content: ":";
+		content: ':';
 	}
 	.avf-same-line > .avf-value {
 		margin-left: 0;
@@ -1118,9 +1176,9 @@ li > ul, li > ol {
 	height: 1.5em;
 	background-repeat: no-repeat;
 	background-position: center;
-	transition: all .35s;
+	transition: all 0.35s;
 	background-image: url(img/plus.png);
-	content: ""; /* won't display if there's no content! */
+	content: ''; /* won't display if there's no content! */
 }
 .svg .acrd-btn::after {
 	background-image: url(img/plus.svg);
@@ -1198,7 +1256,7 @@ dl {
 	margin-bottom: 1.5em;
 }
 .calendar > dd {
-	margin: .3em 0 .7em 30px;
+	margin: 0.3em 0 0.7em 30px;
 }
 dt {
 	font-weight: 600;
@@ -1214,8 +1272,8 @@ dd {
    If a table is inside a div with overflow-x then the margins aren't collapsed
     to the next element, so correct that here */
 .scrollable {
-   overflow-x: auto;
-   margin-bottom: 1.25em;
+	overflow-x: auto;
+	margin-bottom: 1.25em;
 }
 .scrollable > table:last-child {
 	margin-bottom: 0;
@@ -1259,7 +1317,8 @@ dd {
 	color: #fff;
 	text-decoration: none;
 }
-.share-link:hover, .share-link:active {
+.share-link:hover,
+.share-link:active {
 	color: #fff;
 }
 .share-link:active {
@@ -1267,15 +1326,17 @@ dd {
 	top: 1px;
 }
 .tw {
-	background-color: #41B7D8;
+	background-color: #41b7d8;
 }
-.tw:hover, .tw:active {
+.tw:hover,
+.tw:active {
 	background-color: #279ebf;
 }
 .fb {
-	background-color: #3B5997;
+	background-color: #3b5997;
 }
-.fb:hover, .fb:active {
+.fb:hover,
+.fb:active {
 	background-color: #2d4372;
 }
 
@@ -1325,11 +1386,10 @@ dd {
 	line-height: 3;
 }
 .box {
-	border: 1px solid #D0CECF;
+	border: 1px solid #d0cecf;
 	padding: 5px 7px;
 	white-space: nowrap;
 }
-
 
 /*-------------- Miscellaneous -----*/
 
@@ -1366,13 +1426,14 @@ code {
 }
 .wp-block-code {
 	overflow-x: auto;
-	background-color: #F7F7F9;
-	border: 1px solid #E1E1E8;
+	background-color: #f7f7f9;
+	border: 1px solid #e1e1e8;
 	margin-top: 0.67em;
 	margin-bottom: 0.67em;
 	padding: 5px 8px;
 }
-hr, .wp-block-separator {
+hr,
+.wp-block-separator {
 	margin-top: 0.67em;
 	margin-bottom: 0.67em;
 	border: 0;
@@ -1381,7 +1442,8 @@ hr, .wp-block-separator {
 .wp-block-separator:not(.is-style-wide):not(.is-style-dots) {
 	width: 100px;
 }
-.wp-block-embed figcaption, .wp-block-image figcaption {
+.wp-block-embed figcaption,
+.wp-block-image figcaption {
 	color: #555;
 	font-size: 13px;
 	/* text-align: center; */
@@ -1395,15 +1457,15 @@ hr, .wp-block-separator {
 	}
 }
 .spinner-border {
-	color: #6c757d!important;
+	color: #6c757d !important;
 	display: inline-block;
 	width: 2rem;
 	height: 2rem;
 	vertical-align: text-bottom;
-	border: .25em solid currentColor;
+	border: 0.25em solid currentColor;
 	border-right-color: transparent;
 	border-radius: 50%;
-	animation: spinner-border .75s linear infinite;
+	animation: spinner-border 0.75s linear infinite;
 }
 mark {
 	background-color: #0277bd;
@@ -1426,56 +1488,62 @@ mark.tag {
 .wp-block-pullquote {
 	border-top: 4px solid;
 	border-bottom: 4px solid;
-	color: currentColor
+	color: currentColor;
 }
 .wp-block-pullquote__citation,
 .wp-block-pullquote cite,
 .wp-block-pullquote footer {
 	color: currentColor;
 	text-transform: uppercase;
-	font-size: .8125em;
-	font-style: normal
+	font-size: 0.8125em;
+	font-style: normal;
 }
 .wp-block-quote {
-	border-left: .25em solid;
+	border-left: 0.25em solid;
 	margin: 0 0 1.75em;
-	padding-left: 1em
+	padding-left: 1em;
 }
 .wp-block-quote cite,
 .wp-block-quote footer {
 	color: currentColor;
-	font-size: .8125em;
+	font-size: 0.8125em;
 	position: relative;
-	font-style: normal
+	font-style: normal;
 }
 .wp-block-quote.has-text-align-right {
 	border-left: none;
-	border-right: .25em solid;
+	border-right: 0.25em solid;
 	padding-left: 0;
-	padding-right: 1em
+	padding-right: 1em;
 }
 .wp-block-quote.has-text-align-center {
 	border: none;
-	padding-left: 0
+	padding-left: 0;
 }
 .wp-block-quote.is-large,
 .wp-block-quote.is-style-large,
 .wp-block-quote.is-style-plain {
-	border: none
+	border: none;
 }
 
 /*--------------- Icons ------------------------*/
 
-.icon, a[href^="mailto"]::before, a[href^="tel"]::before, .ma[rel]::after {
+.icon,
+a[href^='mailto']::before,
+a[href^='tel']::before,
+.ma[rel]::after {
 	vertical-align: middle;
 	display: inline-block;
 	background-position: center;
 	background-repeat: no-repeat;
 }
-.icon, a[href^="mailto"]::before, a[href^="tel"]::before {
+.icon,
+a[href^='mailto']::before,
+a[href^='tel']::before {
 	margin-right: 0.35em;
 }
-.avf-value > a[href^="mailto"]::before, a.icon[href^="mailto"]::before {
+.avf-value > a[href^='mailto']::before,
+a.icon[href^='mailto']::before {
 	background-image: url(img/email.svg);
 	width: 1.15em;
 	height: 1.15em;
@@ -1486,9 +1554,10 @@ mark.tag {
 	width: 1.19em;
 	height: 1.15em;
 }
-.avf-value > a[href^="tel"]::before, a.icon[href^="tel"]::before {
+.avf-value > a[href^='tel']::before,
+a.icon[href^='tel']::before {
 	background-image: url(img/phone.svg);
-	width: 0.90em;
+	width: 0.9em;
 	height: 1.15em;
 	content: ''; /* need content or it won't display */
 }
@@ -1540,7 +1609,7 @@ mark.tag {
 	/* Above WP toolbar. */
 }
 /* Do not show the outline on the skip link target. */
-#content[tabindex="-1"]:focus {
+#content[tabindex='-1']:focus {
 	outline: 0;
 }
 
@@ -1548,31 +1617,39 @@ mark.tag {
 
 @media print {
 	html {
-		font-family: Georgia, "Times New Roman", Times, serif;
+		font-family: Georgia, 'Times New Roman', Times, serif;
 	}
-	body > header, nav, body > footer, .no-print, #semla_toc {
+	body > header,
+	nav,
+	body > footer,
+	.no-print,
+	#semla_toc {
 		display: none;
 	}
 	body {
 		color: black;
 	}
-	a:link, a:visited {
+	a:link,
+	a:visited {
 		color: black !important;
 		text-decoration: none !important;
 	}
 	.clubs-list td:nth-child(2) > a::after {
-		content: " (" attr(href) ") ";
+		content: ' (' attr(href) ') ';
 		font-size: 0.8em;
 		font-weight: normal;
 	}
 	/* show cells even if hide-sml kicks in */
-	.table-data th.hide-sml, .table-data td.hide-sml {
+	.table-data th.hide-sml,
+	.table-data td.hide-sml {
 		display: table-cell;
 	}
 	/* Display background images for things like phone, email */
-	.acrd-btn::after, a::before, .icon {
+	.acrd-btn::after,
+	a::before,
+	.icon {
 		print-color-adjust: exact !important;
-		-webkit-print-color-adjust: exact !important;   /* Chrome, Safari */
-		color-adjust: exact !important;				 /*Firefox*/
+		-webkit-print-color-adjust: exact !important; /* Chrome, Safari */
+		color-adjust: exact !important; /*Firefox*/
 	}
 }
