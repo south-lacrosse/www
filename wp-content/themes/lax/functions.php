@@ -67,9 +67,7 @@ add_action('after_setup_theme', function() {
 function lax_admin() {
 	add_action ('enqueue_block_editor_assets', function() {
 		add_theme_support('editor-styles');
-		// TODO: should probably split styles need for editor and not, e.g.
-		// all menu styling isn't needed for the editor
-		add_editor_style('style' . SEMLA_MIN . '.css');
+		add_editor_style('editor-style' . SEMLA_MIN . '.css');
 	});
 
 	// if menu changes get rid of our cached versions
