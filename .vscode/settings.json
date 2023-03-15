@@ -1,3 +1,6 @@
 {
-	"eslint.nodePath": "../../../www-dev/node_modules"
+	"eslint.nodePath": "../../../www-dev/node_modules",
+    "eslint.options": {
+        "resolvePluginsRelativeTo": "../../../www-dev"
+    }
 }

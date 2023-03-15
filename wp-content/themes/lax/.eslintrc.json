@@ -5,9 +5,5 @@
 	"parserOptions": {
 		"ecmaVersion": 5
 	},
-	"globals": {
-		"google": true,
-		"SemlaClubs": true
-	},
 	"extends": ["eslint:recommended", "plugin:prettier/recommended"]
 }
