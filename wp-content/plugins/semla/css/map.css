@@ -2,7 +2,7 @@
 	If you make changes to this file then make sure you bump the version number
 	in the plugin. Just search for "css/map"
  */
- #map-container {
+#map-container {
 	margin-top: 0.4em;
 	width: 100%;
 	position: relative;
@@ -19,7 +19,8 @@ div#map img {
 	border: 0;
 }
 @media screen and (max-width: 749px) {
-	#map-key, #toggle-key {
+	#map-key,
+	#toggle-key {
 		display: none;
 	}
 }
@@ -55,7 +56,9 @@ div#map img {
 #clubs-list > li:hover {
 	cursor: pointer;
 }
-#clubs-list > li:hover, .map-ctl-text:hover, .hover {
+#clubs-list > li:hover,
+.map-ctl-text:hover,
+.hover {
 	background-color: #f1f1f1;
 }
 .selected {
@@ -67,11 +70,11 @@ div#map img {
 }
 .map-ctl-text {
 	cursor: pointer;
-	text-align: center; 
-	color: #000; 
-	font-family: Roboto,Arial,sans-serif;
+	text-align: center;
+	color: #000;
+	font-family: Roboto, Arial, sans-serif;
 	user-select: none;
-	font-size: 11px; 
+	font-size: 11px;
 	background-color: #fff;
 	padding: 8px;
 	border-radius: 2px;
@@ -83,12 +86,12 @@ div#map img {
 #search-wrapper {
 	margin: 10px;
 	background-color: #fff;
-	border: 1px solid #ccc;	
+	border: 1px solid #ccc;
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 #search-box {
 	font-size: 14px;
-	font-family: Roboto,Arial,sans-serif;
+	font-family: Roboto, Arial, sans-serif;
 	padding: 5px 0 5px 5px;
 	border: 0;
 }
@@ -96,7 +99,7 @@ div#map img {
 	outline: none;
 }
 #search-reset {
-	font-family: Roboto,Arial,sans-serif;
+	font-family: Roboto, Arial, sans-serif;
 	font-size: 14px;
 	font-weight: bold;
 	padding: 5px 10px;
@@ -107,7 +110,8 @@ div#map img {
 	color: #000;
 }
 @media print {
-	#map, #map-key {
+	#map,
+	#map-key {
 		overflow: hidden;
 	}
 }

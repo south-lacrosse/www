@@ -1,11 +1,11 @@
-
 /* *********  IMPORTANT ************
 	If you make changes to this file then make sure you bump the version number
 	in the plugin. Just search for "css/flags"
  */
 
 /*--------------- Flags -----------------*/
-.flags, .flags > li > ul {
+.flags,
+.flags > li > ul {
 	margin: 0;
 	padding: 0;
 	white-space: nowrap;
@@ -144,8 +144,9 @@ r5 (1088 - 48) / 2 = 520
 	border-bottom: 1px solid #404040;
 	top: 0;
 }
-.down, .up {
-	border-right: 1px solid #404040
+.down,
+.up {
+	border-right: 1px solid #404040;
 }
 .line2 {
 	width: 10px;
@@ -200,7 +201,9 @@ r5 (1088 - 48) / 2 = 520
 		min-width: 1178px;
 		/* 188*5 + 168 + 50 for padding */
 	}
-	.rounds-6 #banner, .rounds-6 #menu, .rounds-6 #page {
+	.rounds-6 #banner,
+	.rounds-6 #menu,
+	.rounds-6 #page {
 		max-width: 1178px;
 	}
 }

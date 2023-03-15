@@ -12,6 +12,7 @@
 !/wp-content/themes/
 /wp-content/themes/*
 !/wp-content/themes/lax/
+/wp-content/themes/lax/editor-style.css
 /wp-content/themes/lax/parts/
 
 *.min.css
