@@ -87,6 +87,7 @@
 				// passive var.
 				try {
 					var opts = Object.defineProperty({}, 'passive', {
+						// eslint-disable-next-line getter-return
 						get: function () {
 							// the passive property has been accessed, so we can pass the passive option
 							// in addEventListener
@@ -95,6 +96,7 @@
 					});
 					win.addEventListener('testPassive', null, opts);
 					win.removeEventListener('testPassive', null, opts);
+					// eslint-disable-next-line no-empty
 				} catch (e) {}
 				// Note: we just add the following listeners. It might seem better to
 				// add/remove them when the dropdown is shown/hidden, but the way touch
@@ -199,8 +201,8 @@
 				tab.setAttribute('aria-selected', 'false');
 			}
 		}
-		var pane = doc.getElementById(target.getAttribute('aria-controls'));
-		pane.className += ' show';
+		var showPane = doc.getElementById(target.getAttribute('aria-controls'));
+		showPane.className += ' show';
 		target.className += ' active';
 		target.setAttribute('aria-selected', 'true');
 	}
