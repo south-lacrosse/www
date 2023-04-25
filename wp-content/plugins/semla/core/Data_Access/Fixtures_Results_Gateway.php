@@ -43,21 +43,14 @@ class Fixtures_Results_Gateway {
 			"SELECT c.id,
 				CASE WHEN c.group_id = 1 THEN c.section_name
 					ELSE c.name	END AS name,
-                IF (c.type = 'cup',1,0) AS is_cup
-			FROM
-				(SELECT DISTINCT r.comp_id
-							FROM slh_result AS r
-							WHERE r.year = %d) as yc
-				, sl_competition AS c
-			WHERE c.id = yc.comp_id
-			AND c.type IN ('league','league-prelim','cup')
+				IF (c.type = 'cup',1,0) AS is_cup, hc.where_clause
+			FROM slh_competition as hc, sl_competition AS c
+			WHERE hc.year = %d AND c.id = hc.id
+			AND (c.type = 'cup' OR c.type LIKE 'league%')
 			ORDER BY c.seq", $year));
 		if ($wpdb->last_error) return false;
 		foreach ( $rows as $row ) {
-			$comps[$row->name] = $row->id;
-            if ($row->is_cup) {
-                $cups[$row->id] = 1;
-            }
+			$comps[$row->name] = [$row->is_cup, $row->where_clause];
 		}
 
 		// date
@@ -73,7 +66,6 @@ class Fixtures_Results_Gateway {
 		$data = [
 			'team' => $teams,
 			'comp' => $comps,
-			'cup' => $cups,
 			'date' => $dates
 		];
 		Cache::write_cache_value($resource, $data, 'hist');
@@ -115,10 +107,32 @@ class Fixtures_Results_Gateway {
 		$clubs = Club_Team_Gateway::get_clubs_teams(true);
 		if ($clubs === false) return false;
 		$data['club'] = $clubs;
-		$comps = Competition_Gateway::get_current_competitions();
-		if ($comps === false) return false;
-		$data['comp'] = $comps[0];
-		$data['cup'] = $comps[1];
+
+		// competition
+		$rows = $wpdb->get_results(
+			"SELECT name, is_cup, where_clause
+			FROM (
+				SELECT CASE WHEN c.group_id = 1 THEN c.section_name
+					ELSE c.name END AS name,
+					0 AS is_cup, c.seq, d.where_clause
+				FROM sl_competition AS c, slc_division AS d
+				WHERE c.id = d.comp_id
+				UNION
+				SELECT CASE WHEN c.group_id = 1 THEN c.section_name
+					ELSE c.name END AS name,
+					1 AS is_cup, c.seq, CONCAT('=',c.id) AS where_clause
+				FROM sl_competition AS c, slc_cup_draw AS cd
+				WHERE cd.round = 1 AND cd.match_num = 1
+				AND c.id = cd.comp_id
+				) a
+			ORDER BY seq");
+		if ($wpdb->last_error) return false;
+		$comps = [];
+		foreach ( $rows as $row ) {
+			$comps[$row->name] = [$row->is_cup, $row->where_clause];
+		}
+
+		$data['comp'] = $comps;
 		$data['date'] = $dates;
 		Cache::write_cache_value($resource, $data);
 		$this->options = $data;
@@ -148,7 +162,7 @@ class Fixtures_Results_Gateway {
 		}
 		$sql .= ' AS f';
 		$order_by = ' ORDER BY f.id';
-		$is_cup = false;
+		$is_cup = $has_ladders = false;
 		switch ($type) {
 			case 'team':
 				$query = $wpdb->prepare($sql
@@ -173,19 +187,12 @@ class Fixtures_Results_Gateway {
 				$query = "$sql WHERE {$yr_and}f.match_date='$date'$order_by";
 				break;
 			case 'comp':
-				$comp_id = $this->options['comp'][$arg];
-				$is_cup = !empty($this->options['cup'][$comp_id]);
-				if (!$year) {
-					$ladder = false;
-					@include __DIR__ . '/ladder.php';
-					if (!$ladder) {
-						$query =  "$sql WHERE {$yr_and}f.comp_id=$comp_id$order_by";
-					} else {
-						$query =  "$sql WHERE $yr_and(f.comp_id=$comp_id OR f.comp_id2=$comp_id)$order_by";
-					}
-				} else {
-					$query =  "$sql WHERE $yr_and(f.comp_id=$comp_id OR f.comp_id2=$comp_id)$order_by";
+				list ($is_cup, $where) = $this->options['comp'][$arg];
+				if ($where[0] !== '=') {
+					$has_ladders = true;
+					$where = ' ' . $where;
 				}
+				$query =  "$sql WHERE {$yr_and}f.comp_id$where$order_by";
 				break;
 			case 'all':
 				if (!$year) {
@@ -206,7 +213,7 @@ class Fixtures_Results_Gateway {
 		if ($wpdb->last_error) return DB_Util::db_error();
 		if (count($rows) === 0) return '';
 		ob_start();
-		(new Fixtures_Renderer())->fixtures($year, $rows, $type, $arg, $is_cup, $this->options);
+		(new Fixtures_Renderer())->fixtures($year, $rows, $type, $arg, $is_cup, $has_ladders, $this->options);
 		return ob_get_clean();
 	}
 

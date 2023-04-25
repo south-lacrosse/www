@@ -32,7 +32,7 @@ SELECT 'Inserting results' as '';
 INSERT INTO `slh_result`
 (`year`,`match_date`,`comp_id`,`comp_id2`,`competition`,`home`,`away`,`home_goals`,`away_goals`,
 `result`,`home_points`,`away_points`,`points_multi`)
-SELECT @end_year,	`match_date`, `comp_id`, `comp_id2`,
+SELECT @end_year,	`match_date`, `comp_id`,
 	`competition`, `home`, `away`, `home_goals`, `away_goals`, `result`,
 	`home_points`, `away_points`, `points_multi`
 FROM `slc_fixture` ORDER BY `id`;
@@ -55,6 +55,16 @@ INSERT INTO `slh_remarks`
 (`year`, `comp_id`, `remarks`)
 SELECT @end_year, `comp_id`, `remarks`
 from `slc_remarks`;
+
+SELECT 'Inserting competitions' as '';
+INSERT INTO `slh_competition`
+(`year`, `comp_id`, `where_clause`)
+SELECT @end_year, comp_id, CONCAT('=',comp_id) FROM slc_ladder
+UNION 
+SELECT @end_year, comp_id, where_clause FROM slc_division
+UNION
+SELECT @end_year, comp_id, CONCAT('=',comp_id) FROM slc_cup_draw WHERE round = 1 AND match_num = 1
+ORDER BY comp_id;
 
 -- League winners
 SELECT 'Inserting league winners' as '';

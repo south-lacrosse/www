@@ -22,12 +22,12 @@ class Fixtures_Renderer {
 		'<abbr title="September">Sep</abbr>', '<abbr title="October">Oct</abbr>',
 		'<abbr title="November">Nov</abbr>', '<abbr title="December">Dec</abbr>'];
 
-	public function fixtures($year, $rows, $type, $arg, $is_cup, $options) {
+	public function fixtures($year, $rows, $type, $arg, $is_cup, $has_ladders, $options) {
 		$keys = [];
 		$this->query_type = $type;
 		$this->options = $options;
 		$this->date_in_heading = $type === 'date' || $type === 'default';
-		$this->show_competition = $type !== 'comp';
+		$this->show_competition = $has_ladders || $type !== 'comp';
 		$this->show_round = ! $this->show_competition && $is_cup;
 
 		foreach ( $rows as $row ) {

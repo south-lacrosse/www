@@ -1,7 +1,8 @@
 <?php
 namespace Semla\Data_Access;
+use Semla\Render\Fixtures_Grid_Renderer;
 /**
- * Data access for the fixtures & results
+ * Data access for fixtures & results
  */
 class Fixtures_Gateway {
 	/** Return html for fixtures grid */
@@ -12,28 +13,23 @@ class Fixtures_Gateway {
 		if ($wpdb->last_error) return DB_Util::db_error();
 		if (!$divisions) return;
 		foreach ($divisions as $division) {
-			$comp_ids[] = $division->comp_id;
+			$comp_ids[] = $division->id;
 		}
 		$comp_ids = implode(',',$comp_ids);
 		if ($year === 0) {
-			$ladder = false;
-			@include __DIR__ . '/ladder.php';
 			$rows = $wpdb->get_results(
 				"SELECT CONCAT(comp_id,'|',home,'|',away) AS comp_ha, match_date, result, points_multi
 					FROM slc_fixture
-					WHERE comp_id IN ($comp_ids)"
-					. ($ladder ? " OR comp_id2 IN ($comp_ids)" : ''));
+					WHERE comp_id IN ($comp_ids)");
 		} else {
 			$rows = $wpdb->get_results( $wpdb->prepare(
 				"SELECT CONCAT(comp_id,'|',home,'|',away) AS comp_ha, match_date, result, points_multi
 					FROM slh_result
 					WHERE year = %d AND comp_id IN ($comp_ids)", $year));
-				// . ($ladder ? " OR comp_id2 IN ($comp_ids)" : ''));
 		}
 		if ($wpdb->last_error) return DB_Util::db_error();
 
-		$fixtures = [];
-		$postponed_fixtures = [];
+		$fixtures = $postponed_fixtures = [];
 		foreach ($rows as $row) {
 			if ($row->result && strpos('RA',substr($row->result,0,1)) !== false) {
 				$postponed_fixtures[$row->comp_ha] = $row->result;
@@ -43,11 +39,11 @@ class Fixtures_Gateway {
 		}
 
 		ob_start();
-		require __DIR__ . '/views/fixtures-grid.php';
+		Fixtures_Grid_Renderer::grid($year, $divisions, $fixtures, $postponed_fixtures);
 		return ob_get_clean();
 	}
 	
-	public static function save_fixtures($rows, $ladder) {
+	public static function save_fixtures($rows) {
 		global $wpdb;
 
 		$result = DB_Util::create_table('new_fixture',
@@ -55,7 +51,6 @@ class Fixtures_Gateway {
 			`match_date` DATE NOT NULL,
 			`match_time` TIME NOT NULL,
 			`comp_id` SMALLINT UNSIGNED NOT NULL,
-			`comp_id2` SMALLINT UNSIGNED NOT NULL,
 			`competition` VARCHAR(40) NOT NULL,
 			`home` VARCHAR(50) NOT NULL,
 			`away` VARCHAR(50) NOT NULL,
@@ -67,22 +62,22 @@ class Fixtures_Gateway {
 			`away_points` TINYINT,
 			`points_multi` TINYINT NOT NULL,
 			PRIMARY KEY (id),
-			UNIQUE KEY `date_id` (`match_date`, `id`)'
-			. ($ladder ? '' : ', UNIQUE KEY `comp_idx` (`comp_id`,`id`)'));
+			UNIQUE KEY `date_id` (`match_date`, `id`),
+			UNIQUE KEY `comp_idx` (`comp_id`,`id`)');
 		if ($result === false) return false;
 		foreach ( $rows as $key => $row ) {
 			unset($row['sort']);
 			unset($row['sort2']);
-			$values[] = $wpdb->prepare( '(%s,%s,%d,%d,%s,%s,%s,', array_slice($row,0,7))
+			$values[] = $wpdb->prepare( '(%s,%s,%d,%s,%s,%s,', array_slice($row,0,6))
+				. ($row[6] === null ? 'null' : $row[6]) . ','
 				. ($row[7] === null ? 'null' : $row[7]) . ','
-				. ($row[8] === null ? 'null' : $row[8]) . ','
-				. ($row[9] === null ? 'null' : $wpdb->prepare( '%s', $row[9]))
-				. $wpdb->prepare( ',%s,', $row[10])
-				. ($row[11] === null ? 'null' : $row[11]) . ','
-				. ($row[12] === null ? 'null' : $row[12])
-				. ",$row[13])";
+				. ($row[8] === null ? 'null' : $wpdb->prepare( '%s', $row[8]))
+				. $wpdb->prepare( ',%s,', $row[9])
+				. ($row[10] === null ? 'null' : $row[10]) . ','
+				. ($row[11] === null ? 'null' : $row[11])
+				. ",$row[12])";
 		}
-		$query = 'INSERT INTO new_fixture (match_date, match_time, comp_id, comp_id2, competition, home, away,
+		$query = 'INSERT INTO new_fixture (match_date, match_time, comp_id, competition, home, away,
 			home_goals, away_goals, venue, result, home_points, away_points, points_multi) VALUES ';
 		$query .= implode( ",\n", $values );
 		$result = $wpdb->query($query);

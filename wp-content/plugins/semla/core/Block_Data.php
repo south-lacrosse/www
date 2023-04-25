@@ -27,9 +27,7 @@ class Block_Data {
 		return self::$instance;
 	}
 	public function parse_query_args($src) {
-		if (!$src) {
-			wp_die('Block_Data missing src attribute.');
-		}
+		if (!$src) wp_die('Block_Data missing src attribute.');
 		$split = explode(',',$src);
 		$method = "$split[0]_args";
 		if (method_exists($this, $method)) {
