@@ -430,7 +430,8 @@ th {
 	text-align: left;
 }
 .is-style-lined td,
-.is-style-lined th {
+.is-style-lined th,
+.wp-block-table thead {
 	/* override wp-block-table borders */
 	border: 0;
 }
