@@ -20,7 +20,7 @@ if ($team) {
 ?>
 <hr>
 <p class="entry-meta meta">Updated: <?= esc_html(get_the_modified_date('j M Y')) ?></p>
-<p class="noprint">Is this information wrong? If so please email <a href="mailto:webmaster@southlacrosse.org.uk<?= $subject ?>">webmaster@southlacrosse.org.uk</a>.</p>
+<p class="no-print">Is this information wrong? If so please email <a href="mailto:semla.secretary@southlacrosse.org.uk<?= $subject ?>">semla.secretary@southlacrosse.org.uk</a>.</p>
 </main>
 <?php
 require __DIR__ . '/parts/footer.php';
