@@ -89,7 +89,7 @@ class Fixtures_Renderer {
 		}
 		if ($year == 0) {
 			if ($type === 'team') {
-				$cal_url = site_url( rest_get_url_prefix() . '/semla/v1/teams/' . urlencode($arg) . '/fixtures.ics');
+				$cal_url = site_url( rest_get_url_prefix() . '/semla/v1/teams/' . str_replace(' ','_',$arg) . '/fixtures.ics');
 				echo '<p class="no-print">';
 				if (!empty($options['team_club'][$arg])) {
 					echo 'Go to <a href="clubs/'.$options['team_club'][$arg].'">club page</a> or ';

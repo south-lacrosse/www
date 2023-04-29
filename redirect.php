@@ -40,11 +40,11 @@ if ($extension === 'html') {
         }
         $redirects = [
             // '/rest/clubs/spencer/fixtures' => '/api/semla/v1/clubs/Spencer/fixtures',
-            
+
             '/history/flags-int' => '/history/flags-intermediate',
             '/developers' => '/data-resources',
             '/links' => '/about#Other-Useful-Websites',
-            
+
             '/clubs/poi' => '/data-resources#Club-GPS-Location-Data',
             '/history/county' => '/history/southern-counties',
             '/history/division3-knockout-trophy' => '/history/division-3-knockout-trophy',
@@ -103,6 +103,7 @@ if ($extension === 'html') {
 } elseif ($extension === 'ics') {
     $uri = preg_replace('!/fixtures_([^/\.]*)\.ics$!',
         '/api/semla/v1/teams/$1/fixtures.ics', $uri, 1);
+    $uri = str_replace(['%2b','%2B','+'],'_', $uri);
 } elseif ($extension === 'pl') {
     if ($uri === '/search/search.pl') $uri = '/search';
 } elseif ($extension === 'php') {

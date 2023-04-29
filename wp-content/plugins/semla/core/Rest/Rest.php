@@ -24,7 +24,11 @@ use Semla\Data_Access\Competition_Group_Gateway;
  *
  * semla-admin/v1: JSON endpoints to supply data for our custom blocks
  *      /leagues-cups
-  */
+ *
+ * Note: the previous version used "+" for space in the club/team names. That is
+ * a bad practice, so now "_" is used, but since it may have been used for calendars
+ * the "+" urls are still allowed.
+ */
 class Rest {
 	const TAG_LINE = '<p class="sl-tagline"><small>Data provided by <a href="https://www.southlacrosse.org.uk/">southlacrosse.org.uk</a></small></p>';
 	const CONTENT_TYPES = [
@@ -83,7 +87,7 @@ class Rest {
 			'callback' => [Teams_Services::class, 'teams_list'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+ ]+)', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+_]+)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_info'],
 			'args' => [
@@ -95,7 +99,8 @@ class Rest {
 			],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+% ]+)/fixtures.ics', [
+		// allow % as some calendar apps rewrite "+" to %2b
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+_%]+)/fixtures.ics', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_fixtures_ics'],
 			'args' => [
@@ -105,7 +110,7 @@ class Rest {
 			],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+ ]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+_]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class,'team_fixtures_tables'],
 			'args' => [
@@ -130,7 +135,7 @@ class Rest {
 			'callback' => [Clubs_Services::class, 'clubs_txt'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w\+ ]+)', [
+		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w\+_]+)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Clubs_Services::class, 'club_info'],
 			'args' => [
@@ -140,7 +145,7 @@ class Rest {
 			],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w\+ ]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
+		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w\+_]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Clubs_Services::class,'club_fixtures_tables'],
 			'args' => [
@@ -192,14 +197,15 @@ class Rest {
 		|| !str_starts_with($request->get_route(), self::SEMLA_PREFIX) ) {
 			return $served;
 		}
-		// handle our own errors. JSON and js will get json, text/html gets html,
-		// everything else gets a text response
+		// handle our own errors
 		if ($result->status != 200) {
-			if (str_starts_with($request['content_type'], 'app') ) {
-				$request['content_type'] = 'application/json';
-			} elseif ($request['content_type'] !== 'text/html') {
-				$request['content_type'] = 'text/plain';
-			}
+			// content type may not have been set if validation failed so set here
+			$extension = pathinfo($request->get_route(), PATHINFO_EXTENSION);
+			$request['content_type'] = match($extension) {
+				'' => 'text/html',
+				'json' => 'application/json',
+				default => 'text/plain'
+			};
 		}
 
 		if (! headers_sent() ) {
@@ -254,6 +260,13 @@ class Rest {
 			echo $data;
 		}
 		return true;
+	}
+
+	public static function decode_club_team($value) {
+		// Allow old format with + for spaces, as well as the better new version with _
+		// Some calendar apps replace + with %2b, so we need to decode the url, then
+		// also substitute the +
+		return str_replace(['_','+'],' ',urldecode($value));
 	}
 
 	public static function leagues_cups( \WP_REST_Request $request ) {

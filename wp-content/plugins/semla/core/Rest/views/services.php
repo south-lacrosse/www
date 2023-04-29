@@ -1,6 +1,9 @@
 <?php
-$type = isset($team) ? 'team' : 'club';
-$url = rest_url($request->get_route()); ?>
+$url = rest_url($request->get_route());
+// fix in case old format with + for space in route is used - make sure links
+// use _
+$url = str_replace('+','_',$url);
+ ?>
 <p>Below you will find links to the REST services available for the <?= $type ?>.
 If you simply want to embed the <?= $type ?>'s fixtures or tables in your website
 <a href="#embed">scroll down</a>.
@@ -8,7 +11,7 @@ If you simply want to embed the <?= $type ?>'s fixtures or tables in your websit
 <tr><th>Fixtures</th>
 <td><a href="<?= $url ?>/fixtures">HTML snippet</a></td>
 <td><a href="<?= $url ?>/fixtures.json">JSON</a></td>
-<?php if (isset($team)) : ?>
+<?php if ($type ==='team') : ?>
 <td><a href="<?= $url ?>/fixtures.ics">iCalendar</a></td>
 <?php endif; ?>
 </tr>

@@ -3,6 +3,6 @@
 <table>
 <tbody>
 <?php foreach ($teams as $team) : ?>
-<tr><td><a href="<?= $url . urlencode($team) ?>"><?= $team ?></a></td>
+<tr><td><a href="<?= $url . urlencode(str_replace(' ','_',$team)) ?>"><?= $team ?></a></td>
 <?php endforeach; ?>
 </tbody></table>

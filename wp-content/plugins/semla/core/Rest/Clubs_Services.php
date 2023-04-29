@@ -7,7 +7,7 @@ use Semla\Data_Access\Rest_Fixtures_Gateway;
 use Semla\Data_Access\Table_Gateway;
 /**
  * Handle club REST requests
- * 
+ *
  *	  /clubs - html list of all clubs, with links to clubs fixtures and tables, and teams
  *	  /clubs.txt - text list of all clubs
  *	  /clubs.gpx - GPS data in gpx format
@@ -16,8 +16,11 @@ use Semla\Data_Access\Table_Gateway;
  *	  /clubs/Bath/tables
  */
 class Clubs_Services {
+	private static $club;
+
 	public static function validate_club($value, $request, $param) {
-		return Club_Team_Gateway::validate_club(urldecode($value));
+		self::$club = Rest::decode_club_team($value);
+		return Club_Team_Gateway::validate_club(self::$club);
 	}
 
 	public static function clubs_list( \WP_REST_Request $request ) {
@@ -63,9 +66,9 @@ class Clubs_Services {
 		$error = Rest:: validate_content_type($request);
 		if ($error) return $error;
 		Rest::$cors_header = true;
-		$club = $request['club'];
-		$title = 'Services for ' . urldecode($club) . ' Club';
+		$title = 'Services for ' . self::$club . ' Club';
 		$parent = 'Clubs';
+		$type = 'club';
 		ob_start();
 		require __DIR__.'/views/info-header.php';
 		require __DIR__.'/views/services.php';
@@ -77,18 +80,17 @@ class Clubs_Services {
 		$error = Rest::validate_content_type($request);
 		if ($error) return $error;
 		Rest::$cors_header = true;
-		$club = urldecode($request['club']);
 		$extension = empty($request['extension']) ? '.html' : $request['extension'];
 		// .js sends html, the javascript to display it is added in Rest->pre_serve_request
 		if ($extension === '.js') $extension = '.html';
 		if ($request['type'] === 'tables') {
-			$data = Table_Gateway::get_tables_for_team_club('club',$club,$extension);
+			$data = Table_Gateway::get_tables_for_team_club('club',self::$club,$extension);
 			if ($data === false) return Rest::db_error();
 			if ($extension === '.html') {
 				$data = Rest_Util::update_tables_classes_for_rest($data, isset($request['classes']));
 			}
 		} else {
-			$data = Rest_Fixtures_Gateway::get_fixtures('club',$club,$extension);
+			$data = Rest_Fixtures_Gateway::get_fixtures('club',self::$club,$extension);
 			if ($data === false) return Rest::db_error();
 		}
 		if ($extension !== '.json') {
