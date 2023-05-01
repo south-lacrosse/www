@@ -115,7 +115,7 @@ class Cup_Draw_Renderer {
 				if ($prev_round) {
 					echo '</tbody></table></div>' . "\n";
 				}
-				echo '<div class="scrollable"><table class="table-data"><caption><span class="caption-text">' . self::ROUNDS_LONG[$round + $offset]
+				echo '<div class="scrollable"><table class="table-data cup-draw"><caption><span class="caption-text">' . self::ROUNDS_LONG[$round + $offset]
 					. (isset($match->match_date) ? ', ' . date('j M Y', strtotime($match->match_date)) : '')
 					. '</span></caption>';
 				if ($round === $final_round) {

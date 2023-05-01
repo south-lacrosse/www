@@ -33,7 +33,7 @@ class Table_Renderer {
 		echo "</nav>\n";
 	}
 
-	public static function tables($rows, $year = 0, $remarks = null, $links = false) {
+	public static function tables($rows, $year = 0, $remarks = null, $add_links_class = false) {
 		if (count($rows) === 0) {
 			echo '<p>No League data</p>';
 			return;
@@ -44,7 +44,7 @@ class Table_Renderer {
 		foreach ( $rows as $row ) {
 			if ($row->comp_id <> $comp_id) {
 				if ($comp_id) {
-					echo self::table($teams[0]->name, $teams, $year, $links);
+					echo self::table($teams[0]->name, $teams, $year, $add_links_class);
 				}
 				if (isset($remarks[$comp_id])) {
 					echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
@@ -58,7 +58,7 @@ class Table_Renderer {
 			}
 		}
 		if ($comp_id) {
-			echo self::table($teams[0]->name, $teams, $year,$links);
+			echo self::table($teams[0]->name, $teams, $year, $add_links_class);
 			if (isset($remarks[$comp_id])) {
 				echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
 			}
@@ -70,12 +70,8 @@ class Table_Renderer {
 
 	/**
 	 * Render a single league table
-	 * @param string $division_name
-	 * @param array $teams teams in table, already sorted
-	 * @param number $year, 0 for current
-	 * @return string
 	 */
-	private static function table($division_name, $teams, $year, $links ) {
+	private static function table($division_name, $teams, $year, $add_links_class) {
 		$team0 = $teams[0];
 		$wdl_cols = $team0->won > 0 || !$year ? true : false;
 		$fa_cols = $team0->goals_for > 0 ? true : false;
@@ -85,8 +81,22 @@ class Table_Renderer {
 		$form_col = isset($team0->form) ? true : false;
 		$deducted_col = false;
 		foreach ( $teams as $team ) {
-			if ($team->points_deducted > 0)
+			if ($team->points_deducted > 0) {
 				$deducted_col = true;
+				break;
+
+			}
+		}
+		if (!$add_links_class) {
+			$class = '';
+		} else {
+			if ($year === 0) {
+				$class = ' league-table-current';
+			} elseif (!$wdl_cols && !$fa_cols) {
+				$class = ' league-table-thin';
+			} else {
+				$class = ' league-table';
+			}
 		}
 
 		// Note: id is not put on table as we can't style the table to cater for the position="sticky"
@@ -95,8 +105,8 @@ class Table_Renderer {
 		// Also we can't put scrollable on that div as the style for scrollable also makes the
 		// offset for the sticky menu not work.
 		echo '<div id="' . Util::make_id($division_name) . '"><div class="scrollable">'
-			. '<table class="table-data "><caption><span class="caption-text">'
-			. $division_name . "</span></caption>\n<thead><tr>"
+			. '<table class="table-data' . $class . '"><caption><span class="caption-text">'
+			. "$division_name</span></caption>\n<thead><tr>"
 			. '<th></th><th class="left">Team</th><th><abbr title="Matches played">P</abbr></th>';
 		if ($wdl_cols)
 			echo '<th><abbr title="Matches won">W</abbr></th><th><abbr title="Matches drawn">D</abbr></th>'
@@ -119,7 +129,7 @@ class Table_Renderer {
 		foreach ($teams as $team) {
 			echo '<tr' . (!empty($team->divider) ? ' class="divider"' : '')
 				.  '><td>' . $team->position . '</td><td class="left">';
-			if (!$links) {
+			if (!$add_links_class) {
 				echo $team->team;
 			} elseif ($year == 0) {
 				echo '<a class="tb-link" href="/fixtures?team='

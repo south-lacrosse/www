@@ -1089,6 +1089,29 @@ th > a:visited,
 	color: #333;
 }
 
+.league-table-current {
+	max-width: 55rem;
+}
+.league-table {
+	max-width: 45rem;
+}
+.league-table-thin {
+	max-width: 22rem;
+}
+.fixtures-all,
+.fixtures-comp,
+.fixtures-date,
+.fixtures-default {
+	max-width: 45rem;
+}
+.fixtures-club,
+.fixtures-team {
+	max-width: 50rem;
+}
+.cup-draw {
+	max-width: 35rem;
+}
+
 /*--------------- Lists ------------------------*/
 
 ul,

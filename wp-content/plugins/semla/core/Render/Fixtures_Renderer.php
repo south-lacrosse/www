@@ -164,7 +164,8 @@ class Fixtures_Renderer {
 		if ($this->query_type === 'date') {
 			echo '<hr>';
 		}
-		echo "\n" . '<div class="scrollable"><table class="table-data fixtures">';
+		echo "\n" . '<div class="scrollable"><table class="table-data fixtures-'
+			. $this->query_type . '">';
 		if ($this->query_type !== 'date') {
 			echo '<caption><span class="caption-text">';
 			if ($this->date_in_heading) {

@@ -117,7 +117,7 @@ pre {
 	font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
 	font-size: 1em;
 }
-/* Allow components to rework box sizing - probably needed for Gmaps etc */
+/* Allow components to rework box sizing */
 *,
 *::before,
 *::after {
@@ -139,11 +139,9 @@ button {
 	margin: 0 auto;
 }
 .middle {
-	padding-left: 0.75em;
-	padding-right: 0.75em;
+	padding: 0.5em 0.75em 0 0.75em;
 }
 #content {
-	padding-top: 0.5em;
 	/* Make sure really long text doesn't overflow the container, e.g. URLs
 		can be pretty long */
 	/* These are technically the same, but use both as older browsers use one, modern another */
@@ -562,6 +560,29 @@ th > a:visited,
 .table-data a:link,
 .table-data a:visited {
 	color: #333;
+}
+
+.league-table-current {
+	max-width: 55rem;
+}
+.league-table {
+	max-width: 45rem;
+}
+.league-table-thin {
+	max-width: 22rem;
+}
+.fixtures-all,
+.fixtures-comp,
+.fixtures-date,
+.fixtures-default {
+	max-width: 45rem;
+}
+.fixtures-club,
+.fixtures-team {
+	max-width: 50rem;
+}
+.cup-draw {
+	max-width: 35rem;
 }
 
 /*--------------- Lists ------------------------*/
