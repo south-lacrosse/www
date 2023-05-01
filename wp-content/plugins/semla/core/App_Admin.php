@@ -14,6 +14,19 @@ class App_Admin {
 		add_filter('emoji_svg_url', '__return_false'); // stops prefetch being added
 		remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 
+		// stop queries to count comments, which are called when menu is displayed
+		add_filter('wp_count_comments', function() {
+			return (object) [
+				'approved'       => 0,
+				'moderated'      => 0,
+				'spam'           => 0,
+				'trash'          => 0,
+				'post-trashed'   => 0,
+				'total_comments' => 0,
+				'all'            => 0,
+			];
+		});
+
 		// add our admin menu pages
 		Admin_Menu::init();
 
