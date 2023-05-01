@@ -88,7 +88,7 @@ class Fixtures_Grid_Renderer {
 			$shown = true;
 			if ($row->result) {
 				if ($row->result[0] === 'C') {
-					echo '<abbr title="Cancelled">Canc.</abbr>';
+					echo 'Canc.';
 					self::$keys['C'] = '<i>Canc.</i> = Cancelled';
 				} else {
 					echo $row->result;
@@ -107,11 +107,11 @@ class Fixtures_Grid_Renderer {
 	private static function render_postponed($postponed_fixture, $extra = '') {
 		switch ($postponed_fixture[0]) {
 			case 'R':
-				echo '<abbr title="Rearranged/postponed">R - R</abbr>';
+				echo 'R - R';
 				self::$keys['R'] = '<i>R - R</i> = Rearranged/postponed';
 				break;
 			case 'A' :
-				echo '<abbr title="Abandoned">Aband.</abbr>';
+				echo 'Aband.';
 				self::$keys['A'] = '<i>Aband.</i> = Abandoned';
 				break;
 			default:
