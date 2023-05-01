@@ -39,6 +39,9 @@ class App_Admin {
 				// case 'post' :
 				// 	self::init_post();
 				// 	break;
+				case 'edit':
+					require __DIR__ . '/Admin/post-list.php';
+					break;
 				case 'user':
 				case 'user-edit':
 				case 'profile':
