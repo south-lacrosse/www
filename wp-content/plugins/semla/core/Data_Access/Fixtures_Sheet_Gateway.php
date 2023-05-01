@@ -4,8 +4,6 @@ namespace Semla\Data_Access;
  * Update current database tables from the Fixtures Google Sheet.
  */
 use Semla\Cache;
-use Semla\Data_Access\Competition_Gateway;
-use Semla\Data_Access\Cup_Draw_Gateway;
 use Semla\Utils\Net_Util;
 use WP_Error;
 
