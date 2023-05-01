@@ -23,7 +23,7 @@ class User_Profile_Extras {
 		add_action('edit_user_profile', [self::class, 'show_fields']);
 
 		// and again for the update part
-		add_action( 'personal_options_update',  [self::class, 'save_fields'] ); 
+		add_action( 'personal_options_update',  [self::class, 'save_fields'] );
 		add_action( 'edit_user_profile_update',  [self::class, 'save_fields'] );
 	}
 
@@ -39,12 +39,12 @@ class User_Profile_Extras {
 				return '';
 			}
 		}, 10, 3 );
-		add_filter( 'manage_users_columns', function($defaults) {
-			$defaults['semla_user_disabled'] = 'Disabled';
-			return $defaults;
+		add_filter( 'manage_users_columns', function($columns) {
+			$columns['semla_user_disabled'] = 'Disabled';
+			return $columns;
 		});
-		add_action( 'admin_footer-users.php', function() {
-			echo '<style type="text/css">.fixed .column-semla_user_disabled{width:74px;text-align:center}</style>';
+		add_action( 'admin_head-users.php', function() {
+			echo '<style>.fixed .column-semla_user_disabled{width:74px;text-align:center}</style>';
 		});
 	}
 
@@ -69,10 +69,10 @@ class User_Profile_Extras {
 		</tr>
 	<tbody>
 </table>
-<?php		
+<?php
 		return;
 	}
-	
+
 	public static function save_fields( $user_id ) {
 		// check user_id = 1 so we don't disable the main Administrator
 		if ( ! current_user_can( 'edit_users' ) || $user_id === 1)
