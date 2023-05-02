@@ -14,6 +14,9 @@
 .flags {
 	/* force font size so that we know widths and heights below will work */
 	font-size: 14px;
+	/* scroll each competition individually */
+	overflow-x: auto;
+	padding-bottom: 0.5em;
 }
 .flags li {
 	margin: 0;
@@ -52,19 +55,19 @@
 	position: absolute;
 	right: 0;
 }
-/* laying out 
+/* laying out
 
-	go for 68px high for match in 1st round (48px match, 10px padding ablove & below
-	
+	68px high for match in 1st round (48px per match, 10px padding above & below)
+
 r1 68 - 48 = 20/2 = 10
 r2 (136 - 48) / 2= 44
 r3 (272 - 48) / 2 = 112
 r4 (544 - 48) / 2 = 248
 r5 (1088 - 48) / 2 = 520
+r6 (2176 - 48) / 2 = 1064
  */
 
 /* don't have any extraneous space on the bottom */
-
 .flags > li > ul > li:last-child {
 	padding-bottom: 0;
 }
@@ -101,11 +104,17 @@ r5 (1088 - 48) / 2 = 520
 	padding-top: 238px;
 }
 .r5 > li {
-	padding-top: 510px;
-	/* only 1 r5, so just remove default r1 padding, so 520 - 10 */
+	padding: 520px 0;
 }
-/* class empty-match1 is when round1 match1 is empty, so remove empty space at top 
-	- subtract .r2 padding from normal padding value */
+.r5 > li:first-child {
+	padding-top: 510px;
+}
+.r6 > li {
+	padding-top: 1054px;
+	/* only 1 r6, so no need to for bottom padding */
+}
+/* class empty-match1 is when round1 match1 is empty, so remove empty space at top
+   padding-top = normal padding - 44 (.r2 padding) */
 .empty-match1.r1 > li:first-child {
 	height: 24px;
 }
@@ -118,8 +127,11 @@ r5 (1088 - 48) / 2 = 520
 .empty-match1.r4 > li:first-child {
 	padding-top: 204px;
 }
-.empty-match1.r5 > li {
+.empty-match1.r5 > li:first-child {
 	padding-top: 476px;
+}
+.empty-match1.r6 > li {
+	padding-top: 1020px;
 }
 /* lines to join to next round */
 .line1 {
@@ -155,7 +167,8 @@ r5 (1088 - 48) / 2 = 520
 	right: 0;
 	bottom: 0;
 }
-/* height of line to connect round: is padding + 1/2 .match-panel height (48/2=24px) */
+/* height of line to connect round: is padding + 1/2 .match-panel height (48/2=24px)
+  (or just double previous round) */
 .r1 > li > .line1 {
 	height: 34px;
 }
@@ -168,42 +181,16 @@ r5 (1088 - 48) / 2 = 520
 .r4 > li > .line1 {
 	height: 272px;
 }
-@media screen and (max-width: 679px) {
-	/* IF we want each competition to scroll individually */
-	.flags {
-		overflow-x: auto;
-		padding-bottom: 0.5em;
-	}
+.r5 > li > .line1 {
+	height: 544px;
 }
 @media screen and (min-width: 680px) {
-	/* final round is 168, other rounds 188 */
-	.rounds-1 {
-		min-width: 193px;
-		/* 168 + 25 for padding */
-	}
-	.rounds-2 {
-		min-width: 381px;
-		/* 188*1 + 168 + 25 for padding */
-	}
-	.rounds-3 {
-		min-width: 569px;
-		/* 188*2 + 168 + 25 for padding */
-	}
-	.rounds-4 {
-		min-width: 782px;
-		/* 188*3 + 168 + 50 for padding */
-	}
-	.rounds-5 {
-		min-width: 970px;
-		/* 188*4 + 168 + 50 for padding */
-	}
-	.rounds-6 {
-		min-width: 1178px;
-		/* 188*5 + 168 + 50 for padding */
-	}
-	.rounds-6 #banner,
-	.rounds-6 #menu,
-	.rounds-6 #page {
-		max-width: 1178px;
+	/* final round is 168 wide, other rounds 188
+		so calc = ((rounds - 1) * 188) + 168
+		5 rounds = 920 which is < the 980px max content width, but for 6 rounds
+		we change to show all flags if possible
+	 */
+	.rounds-6 .inner {
+		max-width: 1156px; /* 188*5 + 168 + padding */
 	}
 }

@@ -10,9 +10,13 @@ class Fixtures_Grid_Renderer {
 		foreach ($divisions as $division) {
 			$not_ladder = empty($division->teams2);
 			$teams = explode('|', $division->teams);
+			// Don't put scrollable on the root div as the style for scrollable also makes the
+			// offset for the sticky menu not work as a link target.
 			echo '<div id="' . esc_attr(str_replace(' ','-',$division->section_name))
-				. '"><div class="scrollable"><table class="table-data grid col-hover"><caption><span class="caption-text">'
-				. $division->section_name . "</span></caption>\n" . '<thead><tr><th class="no-bb"></th><th colspan="';
+				. '" class="alignwide"><div class="scrollable">'
+				. '<table class="table-data grid col-hover"><caption><span class="caption-text">'
+				. $division->section_name . "</span></caption>\n"
+				. '<thead><tr><th class="no-bb"></th><th colspan="';
 			if ($not_ladder) {
 				echo count($teams) . '">Away</th></tr><tr><th>Home</th>';
 				foreach (explode('|', $division->minimals) as $key => $minimal) {

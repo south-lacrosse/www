@@ -58,7 +58,7 @@ class Table_Gateway {
 		if ($year) {
 			Table_Renderer::year_navigation($page, $grid_page, $year, $years);
 		}
-		Table_Renderer::tables($rows, $year, $remarks, true);
+		Table_Renderer::tables($rows, false, $year, $remarks);
 		return ob_get_clean();
 	}
 
@@ -104,7 +104,7 @@ class Table_Gateway {
 			return Rest_Util::json_encode($tables);
 		}
 		ob_start();
-		Table_Renderer::tables($rows);
+		Table_Renderer::tables($rows, true);
 		return ob_get_clean();
 	}
 

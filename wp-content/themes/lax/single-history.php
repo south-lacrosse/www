@@ -5,7 +5,7 @@
  */
 
 global $post;
-if (strpos($post->post_content, 'class="flags"') !== false) {
+if (strpos($post->post_content, '<ul class="flags') !== false) {
 	// need to signal plugin to add flags styles
 	do_action('semla_flags_header');
 }

@@ -17,7 +17,8 @@
 			"text": false
 		},
 		"layout": {
-			"contentSize": "980px"
+			"contentSize": "720px",
+			"wideSize": "980px"
 		},
 		"typography": {
 			"customFontSize": false,

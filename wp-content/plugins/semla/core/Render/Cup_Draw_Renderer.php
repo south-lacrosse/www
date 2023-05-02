@@ -195,12 +195,16 @@ class Cup_Draw_Renderer {
 
 		$match0 = $matches[0];
 		$section = !empty($match0->section_name);
+		// note: flags MUST be first class as history update checks for 'ul class="flags'
+		// to add css
 		if ($section) {
-			echo '<section id="' . Util::make_id($match0->section_name) . '">'
+			echo '<section class="alignwide" id="' . Util::make_id($match0->section_name) . '">'
 				. '<h2' . ($h2_class ? ' class="' . $h2_class . '"' : '') . '>'
-				. $match0->section_name . "</h2>\n";
+				. $match0->section_name . "</h2>\n"
+				. '<ul class="flags">' . "\n";
+		} else {
+			echo '<ul class="flags alignwide">' . "\n";
 		}
-		echo '<ul class="flags">' . "\n";
 		$prev_round = 0;
 		$last_match = 0;
 		// if the top match in round 1 doesn't exist then lose the whitespace that would create

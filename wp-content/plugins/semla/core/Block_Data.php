@@ -72,7 +72,7 @@ class Block_Data {
 	 */
 	private function clubs_map_args() {
 		wp_enqueue_style( 'semla-map', plugins_url('/css/map' . SEMLA_MIN . '.css', __DIR__),
-			[], '1.0');
+			[], '1.1');
 		wp_enqueue_script( 'semla-map',
 			plugins_url('js/map' . SEMLA_MIN . '.js', __DIR__),
 			[], '1.0', true );
@@ -177,7 +177,7 @@ class Block_Data {
 		} else {
 			$selects = ['team' => 'team', 'club' => 'club', 'comp' => 'competition','date' => 'date'];
 		}
-		$html = '<div class="big no-print">Display ';
+		$html = '<div class="big no-print alignwide">Display ';
 		if ($this->type !== 'all') {
 			$html .= '<a href="?all=1" class="btn">All ' . $this->fix_res . '</a>'. "\n";
 		}
@@ -201,15 +201,7 @@ class Block_Data {
 	 * Just need to enqueue the css here so the CSS appears in the head, and set the body class
 	 */
 	private function curr_flags_args($group_id) {
-		wp_enqueue_style( 'semla-flags', plugins_url('/css/flags' . SEMLA_MIN . '.css', __DIR__),
-			[], '1.0');
-		add_filter( 'body_class', function( $classes ) {
-			$rounds = get_option('semla_max_flags_rounds');
-			if ($rounds) {
-				$classes[] = "rounds-$rounds";
-			}
-			return $classes;
-		});
+		App_Public::enqueue_flags_css(get_option('semla_max_flags_rounds'));
 	}
 	private function curr_flags($group_id) {
 		return Cup_Draw_Gateway::get_draws(0,$group_id);

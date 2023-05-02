@@ -5,6 +5,7 @@
 #map-container {
 	margin-top: 0.4em;
 	width: 100%;
+	max-width: 100%;
 	position: relative;
 	z-index: 0;
 }

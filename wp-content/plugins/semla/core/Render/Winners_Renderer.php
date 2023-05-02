@@ -21,7 +21,7 @@ class Winners_Renderer {
 		if ($with_data) {
 			self::click_instruction($type);
 		}
-		echo '<div class="scrollable"><table class="is-style-boxed-striped">'
+		echo '<div class="alignwide scrollable"><table class="is-style-boxed-striped">'
 			, "\n<thead><tr><th>Year</th>";
 		foreach ($comps as $comp) {
 			self::column_heading($comp);
@@ -126,7 +126,7 @@ class Winners_Renderer {
 			} else {
 				echo "</tbody></table></div>\n";
 			}
-			echo '<div class="scrollable"><table class="is-style-boxed-striped">'
+			echo '<div class="alignwide scrollable"><table class="is-style-boxed-striped">'
 				. "\n<thead><tr><th>Year</th>";
 			foreach ($row_comps as $comp_id) {
 				self::column_heading($comps[$comp_id]);

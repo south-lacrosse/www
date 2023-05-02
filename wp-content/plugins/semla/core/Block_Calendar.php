@@ -48,7 +48,7 @@ class Block_Calendar {
 			Block_Util::preconnect_hints(['apis.google.com', 'content.googleapis.com']);
 		}
 	}
-	
+
 	public static function render_callback( $atts )  {
 		if (isset($atts['cid'])) {
 			$cid = $atts['cid'];
@@ -59,8 +59,9 @@ class Block_Calendar {
 				. self::$calEnhanced . ";</script>\n";
 			$html .= '<p>You can <a rel="nofollow" href="https://calendar.google.com/calendar?cid='
 				. str_replace('=','',base64_encode($cid)) . '">add to your Google Calendar</a>, or if you'
-				. ' have other calendar software then you can subscribe to <em>https://calendar.google.com/calendar/ical/'
-				. urlencode($cid) . '/public/basic.ics</em></p>' . "\n";
+				. ' have other calendar software then you can subscribe to:</p>' . "\n";
+			$html.=  '<p class="alignwide"><em>https://calendar.google.com/calendar/ical/'
+			. urlencode($cid) . '/public/basic.ics</em></p>' . "\n";
 			return $html;
 		}
 	}

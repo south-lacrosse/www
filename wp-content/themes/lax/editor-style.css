@@ -135,11 +135,26 @@ button {
 	line-height: 1.5;
 }
 .inner {
-	max-width: 980px;
+	max-width: 1028px; /* 980 + .middle largest padding */
 	margin: 0 auto;
 }
 .middle {
 	padding: 0.5em 0.75em 0 0.75em;
+}
+.entry-content > * {
+	max-width: 720px; /* 45 rem */
+}
+.alignwide {
+	max-width: 100%;
+}
+/**
+ * Keep a bit of a margin so we don't get a horizontal scrollbar
+ */
+.entry-content > .alignfull {
+	margin-left: calc(50% - 50vw + 1em);
+	margin-right: calc(50% - 50vw + 1em);
+	max-width: calc(100vw - 2em);
+	width: 100vw;
 }
 #content {
 	/* Make sure really long text doesn't overflow the container, e.g. URLs
@@ -345,6 +360,7 @@ a.btn {
 
 #semla_toc {
 	background: #fff;
+	display: inline-block;
 }
 #semla_toc:not(:first-child) {
 	margin-top: 1em;
@@ -377,18 +393,10 @@ a.btn {
 #semla_toc-list li {
 	margin-bottom: 0.5em;
 }
-@media (min-width: 640px) {
+@media (min-width: 720px) {
 	#semla_toc {
 		padding: 0 0 1em 1em;
 		float: right;
-	}
-}
-@media (max-width: 639px) {
-	#semla_toc {
-		display: inline-block;
-	}
-	.no-js #semla_toc {
-		display: none;
 	}
 }
 
@@ -408,8 +416,8 @@ td {
 	td {
 		padding: 0.3125em 0 0.3125em 0.75em;
 	}
-	th:first-child,
-	td:first-child {
+	.is-style-lined th:first-child,
+	.is-style-lined td:first-child {
 		padding-left: 0;
 	}
 	.is-style-boxed-striped td,
@@ -840,6 +848,7 @@ code {
 	border: 1px;
 }
 .wp-block-code {
+	max-width: 820px; /* wider than default content width, but not alignwide */
 	overflow-x: auto;
 	background-color: #f7f7f9;
 	border: 1px solid #e1e1e8;

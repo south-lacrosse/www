@@ -95,16 +95,8 @@ class App_Public {
 		} );
 		// called from theme for history pages with flags on them
 		add_action( 'semla_flags_header', function() {
-			wp_enqueue_style( 'semla-flags', plugins_url('/css/flags' . SEMLA_MIN . '.css', __DIR__),
-				[], '1.0');
-			add_filter( 'body_class', function( $classes ) {
-				global $post;
-				$rounds = get_post_meta($post->ID, '_semla_max_flags_rounds', true);
-				if ($rounds) {
-					$classes[] = "rounds-$rounds";
-				}
-				return $classes;
-			});
+			global $post;
+			self::enqueue_flags_css(get_post_meta($post->ID, '_semla_max_flags_rounds', true));
 		});
 		add_action( 'semla_mini_tables', function() {
 			echo Table_Gateway::get_mini_tables();
@@ -162,6 +154,17 @@ class App_Public {
 			// Add tags to cached pages
 			add_action( 'litespeed_tag_finalize', function() use ($tag) {
 				do_action( 'litespeed_tag_add', $tag );
+			});
+		}
+	}
+
+	public static function enqueue_flags_css($rounds) {
+		wp_enqueue_style( 'semla-flags', plugins_url('/css/flags' . SEMLA_MIN . '.css', __DIR__),
+			[], '1.1');
+		if ($rounds) {
+			add_filter( 'body_class', function( $classes ) use ($rounds) {
+				$classes[] = "rounds-$rounds";
+				return $classes;
 			});
 		}
 	}

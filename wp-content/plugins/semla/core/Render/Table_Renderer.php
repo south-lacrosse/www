@@ -33,7 +33,7 @@ class Table_Renderer {
 		echo "</nav>\n";
 	}
 
-	public static function tables($rows, $year = 0, $remarks = null, $add_links_class = false) {
+	public static function tables($rows, $for_rest, $year = 0, $remarks = null) {
 		if (count($rows) === 0) {
 			echo '<p>No League data</p>';
 			return;
@@ -44,7 +44,7 @@ class Table_Renderer {
 		foreach ( $rows as $row ) {
 			if ($row->comp_id <> $comp_id) {
 				if ($comp_id) {
-					echo self::table($teams[0]->name, $teams, $year, $add_links_class);
+					echo self::table($teams[0]->name, $teams, $year, $for_rest);
 				}
 				if (isset($remarks[$comp_id])) {
 					echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
@@ -58,7 +58,7 @@ class Table_Renderer {
 			}
 		}
 		if ($comp_id) {
-			echo self::table($teams[0]->name, $teams, $year, $add_links_class);
+			echo self::table($teams[0]->name, $teams, $year, $for_rest);
 			if (isset($remarks[$comp_id])) {
 				echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
 			}
@@ -71,7 +71,7 @@ class Table_Renderer {
 	/**
 	 * Render a single league table
 	 */
-	private static function table($division_name, $teams, $year, $add_links_class) {
+	private static function table($division_name, $teams, $year, $for_rest) {
 		$team0 = $teams[0];
 		$wdl_cols = $team0->won > 0 || !$year ? true : false;
 		$fa_cols = $team0->goals_for > 0 ? true : false;
@@ -87,7 +87,7 @@ class Table_Renderer {
 
 			}
 		}
-		if (!$add_links_class) {
+		if ($for_rest) {
 			$class = '';
 		} else {
 			if ($year === 0) {
@@ -104,8 +104,10 @@ class Table_Renderer {
 		// sticky menu), so we add a div as the target.
 		// Also we can't put scrollable on that div as the style for scrollable also makes the
 		// offset for the sticky menu not work.
-		echo '<div id="' . Util::make_id($division_name) . '"><div class="scrollable">'
-			. '<table class="table-data' . $class . '"><caption><span class="caption-text">'
+		echo '<div id="' . Util::make_id($division_name) . '"'
+			. ($for_rest ? '' : ' class="alignwide"')
+			. '><div class="scrollable"><table class="table-data' . $class
+			. '"><caption><span class="caption-text">'
 			. "$division_name</span></caption>\n<thead><tr>"
 			. '<th></th><th class="left">Team</th><th><abbr title="Matches played">P</abbr></th>';
 		if ($wdl_cols)
@@ -129,7 +131,7 @@ class Table_Renderer {
 		foreach ($teams as $team) {
 			echo '<tr' . (!empty($team->divider) ? ' class="divider"' : '')
 				.  '><td>' . $team->position . '</td><td class="left">';
-			if (!$add_links_class) {
+			if ($for_rest) {
 				echo $team->team;
 			} elseif ($year == 0) {
 				echo '<a class="tb-link" href="/fixtures?team='
