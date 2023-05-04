@@ -81,6 +81,7 @@ class Fixtures_Grid_Renderer {
 			echo "</tbody></table></div></div>\n";
 		}
 		if (self::$keys) {
+			ksort(self::$keys);
 			echo '<p><b>Key:</b> ' . implode(', ', self::$keys) . "</p>\n";
 		}
 	}
@@ -95,6 +96,9 @@ class Fixtures_Grid_Renderer {
 					echo 'Canc.';
 					self::$keys['C'] = '<i>Canc.</i> = Cancelled';
 				} else {
+					if (str_contains($row->result, 'w/o')) {
+						self::$keys['W'] = '<i>w/o</i> = walkover';
+					}
 					echo $row->result;
 				}
 			} else {
@@ -102,7 +106,7 @@ class Fixtures_Grid_Renderer {
 			}
 			if ($row->points_multi > 1) {
 				echo ' <sup>*2</sup>';
-				self::$keys['m'] = '<i>*2</i> = multiple points';
+				self::$keys['*'] = '<i>*2</i> = multiple points';
 			}
 			if (!empty($row->extra)) echo $row->extra;
 		}

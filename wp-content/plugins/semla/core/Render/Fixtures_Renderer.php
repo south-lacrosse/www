@@ -51,6 +51,9 @@ class Fixtures_Renderer {
 						break;
 					default:
 						$result = $row->result;
+						if (str_contains($result, 'w/o')) {
+							$keys['W'] = '<i>w/o</i> = walkover';
+						}
 				}
 			} else {
 				$result = Util::format_time($row->match_time);
@@ -64,7 +67,7 @@ class Fixtures_Renderer {
 			}
 			if ($row->points_multi > 1) {
 				$result .= ' <sup>*' . $row->points_multi . '</sup>';
-				$keys['m'] = '<i>*2</i> = multiple points';
+				$keys['*'] = '<i>*2</i> = multiple points';
 			}
 			if (!$row->result && $row->venue) {
 				$result .= "<br>at $row->venue";
@@ -85,6 +88,7 @@ class Fixtures_Renderer {
 		echo "</tbody></table></div>\n";
 
 		if (!empty($keys)) {
+			ksort($keys);
 			echo '<p><b>Key:</b> ' . implode(', ', $keys) . "</p>\n";
 		}
 		if ($year == 0) {
