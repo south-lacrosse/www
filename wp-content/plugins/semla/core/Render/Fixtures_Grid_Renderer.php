@@ -8,23 +8,33 @@ class Fixtures_Grid_Renderer {
 		$fixtures_page = $year ? "results-$year" : 'fixtures';
 		self::$keys = [];
 		foreach ($divisions as $division) {
-			$not_ladder = empty($division->teams2);
 			$teams = explode('|', $division->teams);
+			if (empty($division->teams2)) {
+				$column_count = count($teams);
+				$not_ladder = true;
+			} else {
+				$not_ladder = false;
+				$teams2 = explode('|', $division->teams2);
+				$column_count = count($teams2);
+			}
 			// Don't put scrollable on the root div as the style for scrollable also makes the
 			// offset for the sticky menu not work as a link target.
 			echo '<div id="' . esc_attr(str_replace(' ','-',$division->section_name))
 				. '" class="alignwide"><div class="scrollable">'
-				. '<table class="table-data grid col-hover"><caption><span class="caption-text">'
+				. '<table class="table-data grid col-hover"';
+			if ($column_count < 8) { //
+				echo ' style="max-width:' . ($column_count * 6 + 12) . 'em"';
+			}
+			echo  '><caption><span class="caption-text">'
 				. $division->section_name . "</span></caption>\n"
 				. '<thead><tr><th class="no-bb"></th><th colspan="';
 			if ($not_ladder) {
-				echo count($teams) . '">Away</th></tr><tr><th>Home</th>';
+				echo $column_count . '">Away</th></tr><tr><th>Home</th>';
 				foreach (explode('|', $division->minimals) as $key => $minimal) {
 					echo '<th><abbr title="' . $teams[$key] . '">' . $minimal . '</abbr></th>';
 				}
 			} else {
-				$teams2 = explode('|', $division->teams2);
-				echo count($teams2) . '">' . $divisions[$division->ladder_comp_id2]->section_name
+				echo $column_count . '">' . $divisions[$division->ladder_comp_id2]->section_name
 					. '</th></tr><tr><th>' . $divisions[$division->ladder_comp_id1]->section_name . '</th>';
 				foreach (explode('|', $division->minimals2) as $key => $minimal) {
 					echo '<th><abbr title="' . $teams2[$key] . '">' . $minimal . '</abbr></th>';
