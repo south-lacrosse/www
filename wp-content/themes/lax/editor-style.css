@@ -272,6 +272,9 @@ img {
 	max-width: 100%;
 	height: auto;
 }
+.wp-block-image.alignwide img {
+	width: unset;
+}
 
 /*--------------- Forms/Buttons ----------------------*/
 
