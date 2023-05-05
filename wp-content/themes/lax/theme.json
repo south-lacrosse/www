@@ -2,33 +2,56 @@
 	"$schema": "https://schemas.wp.org/trunk/theme.json",
 	"version": 2,
 	"settings": {
+		"border": {
+			"color": true,
+			"radius": true,
+			"style": true,
+			"width": true
+		},
 		"color": {
-			"background": false,
-			"custom": false,
-			"customDuotone": false,
-			"customGradient": false,
-			"defaultDuotone": false,
-			"defaultGradients": false,
-			"defaultPalette": false,
 			"duotone": [],
+			"customDuotone": false,
+			"defaultDuotone": false,
 			"gradients": [],
-			"link": false,
-			"palette": [],
-			"text": false
+			"customGradient": false,
+			"defaultGradients": false,
+			"palette": []
 		},
 		"layout": {
 			"contentSize": "720px",
 			"wideSize": "980px"
 		},
+		"spacing": {
+			"margin": true,
+			"padding": true
+		},
 		"typography": {
-			"customFontSize": false,
 			"dropCap": false,
-			"fontFamilies": [],
-			"fontSizes": [],
+			"fontSizes": [
+				{
+					"name": "Small",
+					"size": "13px",
+					"slug": "small"
+				},
+				{
+					"name": "Medium",
+					"size": "16px",
+					"slug": "medium"
+				},
+				{
+					"name": "Large",
+					"size": "24px",
+					"slug": "large"
+				},
+				{
+					"name": "Extra Large",
+					"size": "32px",
+					"slug": "x-large"
+				}
+			],
 			"fontStyle": false,
 			"fontWeight": false,
 			"letterSpacing": false,
-			"lineHeight": false,
 			"textDecoration": false,
 			"textTransform": false
 		}
