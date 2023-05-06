@@ -63,6 +63,8 @@ function lax_admin() {
 	add_action ('enqueue_block_editor_assets', function() {
 		add_theme_support('editor-styles');
 		add_editor_style('editor-style' . SEMLA_MIN . '.css');
+		wp_enqueue_style('semla-editor',
+			get_stylesheet_directory_uri() . '/editor' . SEMLA_MIN . '.css', [], '1.0');
 	});
 
 	// if menu changes get rid of our cached versions

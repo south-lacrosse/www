@@ -1,0 +1,45 @@
+/* Styles to modify the editor.
+
+IMPORTANT: Bump the version in functions.php if you make changes.
+
+Note: don't put in editor-styles.css as WordPress modifies that so it only
+applies in editor-styles-wrapper
+
+The editor centres the content (in up to 6.2 at least), however that doesn't
+match our theme. To fix that we alter the .editor-styles-wrapper div to have max
+wide width, and then the content inside will be set to our content width by WP,
+and alignwide will work. However we can't use the theme's trick to get full
+width as that uses vw which doesn't work here, so we fudge it here to just give
+1em extra. Obviously we need a better way to do this!!
+
+Must be higher specificity than the CSS added by WP as that gets added right
+before the .editor-styles-wrapper div, so we use div.editor-styles-wrapper
+instead or .editor-styles-wrapper. */
+
+div.editor-styles-wrapper {
+	padding-left: 1em;
+	padding-right: 1em;
+	max-width: 980px;
+	margin-left: auto;
+	margin-right: auto;
+}
+div.editor-styles-wrapper
+	.edit-post-visual-editor__post-title-wrapper
+	> :where(:not(.alignleft):not(.alignright):not(.alignfull)),
+div.editor-styles-wrapper
+	.block-editor-block-list__layout.is-root-container
+	> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+	margin-left: 0 !important;
+	margin-right: 0 !important;
+}
+div.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper > .alignfull,
+div.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > .alignfull {
+	/* margin-left: calc(50% - 50vw + 1em);
+	margin-right: calc(50% - 50vw + 1em);
+	max-width: calc(100vw - 2em);
+	width: 100vw; */
+	margin-left: -1em;
+	margin-right: -1em;
+	max-width: calc(100% + 2em);
+	width: calc(100% + 2em);
+}
