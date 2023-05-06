@@ -63,18 +63,6 @@ class App_Admin {
 					});
 					break;
 			}
-			// Modify heartbeat. Left on for now, but uncomment one or both options below
-			//  if heartbeat causes too much server usage
-
-			// don't use the heartbeat except for edit posts/cpt
-			// if ($screen->base !== 'post') {
-			//  wp_deregister_script('heartbeat');
-			// }
-			// Change heartbeat frequency, defaults to 60s
-			// add_filter( 'heartbeat_settings', function($settings) {
-			// 	$settings['interval'] = 120;
-			// 	return $settings;
-			// }, 99, 1 );
 		});
 
 		add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
