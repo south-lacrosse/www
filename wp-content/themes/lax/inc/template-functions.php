@@ -138,24 +138,26 @@ function lax_breadcrumbs() {
  */
 function lax_posts_navigation() {
 	global $wp_query;
-	$total = $wp_query->max_num_pages;
+	$total = (int) $wp_query->max_num_pages;
 	if ($total < 2) {
 		return;
 	}
 
 	// format of pagination links/text to display
 	$page_links = [
-	    ['rel' => -1, 'label' => 'prev'],
+	    ['abs' => 1],
+		['rel' => -11, 'label' => '..'],
 		['rel' => -10],
-		['rel' => -10, 'label' => '..'],
+		['rel' => -3, 'label' => '..'],
 		['rel' => -2],
 		['rel' => -1],
 		['rel' => 0],
 		['rel' => 1],
 		['rel' => 2],
-		['rel' => 10, 'label' => '..'],
+		['rel' => 3, 'label' => '..'],
 		['rel' => 10],
-		['rel' => 1, 'label' => 'next']
+		['rel' => 11, 'label' => '..'],
+		['abs' => $total]
 	];
 
 	$current = get_query_var('paged') ? intval(get_query_var('paged')) : 1;
@@ -166,32 +168,38 @@ function lax_posts_navigation() {
 <hr>
 <nav class="page-nav paging">
 <h2 class="screen-reader-text">Page Links</h2>
-<span class="box">Page <?= $current ?> of <?= $total ?></span>
-<?php 	if ($current > 3) {
-			echo '<a class="no-ul box" href="', $page_1, "\">« First</a>\n";
+<?php
+ 	if ($current > 1) {
+		$prev = $current  - 1;
+		echo "\n" . '<a class="no-ul page-link" href="',
+			$prev === 1 ? $page_1 : str_replace('%#%', $prev, $base),
+			"\">prev</a>\n";
+	}
+	foreach ($page_links as $page_link) {
+		$absolute = $page_link['abs'] ?? null;
+		$page = $absolute ?? $current + $page_link['rel'];
+		if (!$absolute && ($page < 2 || $page >= $total)) {
+			continue;
 		}
-		foreach ($page_links as $page_link) {
-			$page = $current + $page_link['rel'];
-			if ($page <= 0 || $page > $total) {
-				continue;
-			}
-			if ($page_link['rel'] === 0) {
-				echo '<span class="box grey">', $page, "</span>\n";
-			} else {
-				$label = $page_link['label'] ?? '';
-				if ($label === '..') {
-					echo '<span class="box">', $label, "</span>\n";
-				} else {
-					echo '<a class="no-ul box" href="',
-						$page === 1 ? $page_1 : str_replace('%#%', $page, $base),
-						'">', ($label ? $label : $page), "</a>\n";
-				}
-			}
+		if ($page === $current) {
+			echo "\n<span class=\"page-link page-current\">$page</span>";
+			continue;
 		}
-		if ($current < $total - 2) {
-			echo '<a class="no-ul box" href="', str_replace('%#%', $total, $base),
-				"\">Last »</a>\n";
-		} ?>
+		$label = $page_link['label'] ?? null;
+		if ($label === '..') {
+			echo "\n..";
+			continue;
+		}
+		echo "\n<a class=\"no-ul page-link\" href=\"",
+			$page === 1 ? $page_1 : str_replace('%#%', $page, $base),
+			'">',
+			$label ? $label : $page, '</a>';
+	}
+	if ($current < $total) {
+		echo "\n" . '<a class="no-ul page-link" href="',
+			str_replace('%#%', $current + 1, $base),
+			"\">next</a>\n";
+	} ?>
 </nav>
 <?php
 }
