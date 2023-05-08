@@ -33,9 +33,9 @@ class Competition_Gateway {
 					history_page, history_group_page
 				FROM sl_competition_group
 				) g ON g.id = c.group_id AND c.type = 'cup'
-			WHERE c.history_page != '' AND c.has_history = 1");
+			WHERE c.history_page != ''");
 	}
-	 
+
 	/**
 	 * Get divisions for a league with team names and minimals, including ladders
 	 */
@@ -87,10 +87,10 @@ class Competition_Gateway {
 			if ($cmp) return $cmp;
 			return $a->id - $b->id;
 		});
-		
+
 		return $rows;
 	}
-	
+
 	/**
 	 * Get divisions
 	 */

@@ -28,10 +28,7 @@ class Competition_Group_Gateway {
 		global $wpdb;
 		return $wpdb->get_results(
 			"SELECT id, name, type, history_page FROM sl_competition_group cg
-			WHERE history_page != '' AND history_group_page
-			AND EXISTS (SELECT * FROM sl_competition c
-				WHERE c.group_id = cg.id
-				AND c.has_history = 1)");
+			WHERE history_page != '' AND history_group_page");
 	}
 
 	public static function get_all( $args = [] ) {
@@ -45,7 +42,7 @@ class Competition_Group_Gateway {
 		];
 		$args	  = wp_parse_args( $args, $defaults );
 		return $wpdb->get_results( 'SELECT * FROM sl_competition_group ORDER BY '
-			. $args['orderby'] .' ' . $args['order'] 
+			. $args['orderby'] .' ' . $args['order']
 			.' LIMIT ' . $args['offset'] . ', ' . $args['number'] );
 	}
 
@@ -84,10 +81,10 @@ class Competition_Group_Gateway {
 			return 'Cannot delete: group has existing competitions';
 		}
 		return true;
-	  }	
+	  }
 
 	public static function delete( $id ) {
 		global $wpdb;
 		return $wpdb->delete( 'sl_competition_group', [ 'id' => $id ], [ '%d' ] );
-	  }	
+	  }
 }
