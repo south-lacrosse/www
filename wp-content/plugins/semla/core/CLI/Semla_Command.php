@@ -20,11 +20,11 @@ use \WP_CLI;
 class Semla_Command {
 	/**
 	 * Manage the SEMLA fixtures.
-	 * 
+	 *
 	 * Note it is better to use the SEMLA WordPress Admin menu as that
 	 * purges fewer cached pages than the CLI version because of the way
 	 * LiteSpeed cache works.
-	 * 
+	 *
 	 * ## OPTIONS
 	 *
 	 * <update|update-all|revert>
@@ -65,7 +65,7 @@ class Semla_Command {
 
 	/**
 	 * Purge a SEMLA cache.
-	 * 
+	 *
 	 * You might want to clear the current and history caches through the SEMLA
 	 * Admin page as that will also do a minimal purge of Litespeed Cache entries,
 	 * whereas that option isn't available through the command line so we purge
@@ -78,7 +78,7 @@ class Semla_Command {
 	 */
 	public function purge($args) {
 		switch ($args[0]) {
-			case 'current': 
+			case 'current':
 				Cache::clear_cache();
 				break;
 			case 'history':
@@ -104,14 +104,17 @@ class Semla_Command {
 	 * do this with:
 	 *
 	 *    $ wp post delete $(wp post list --post_type='history' --format=ids) --force
-	 * 
+	 *
 	 * ## OPTIONS
-	 * 
-	 * <update-pages|stats>
-	 * : The stats option will give you statistics about how many rows there are
+	 *
+	 * <update-pages|update-winners|stats>
+	 * : update-winners will just update non-league/flags winners pages, useful
+	 * if you have updated competition winners like Sixes or Varsity, but not run
+	 * the full end of season update.
+	 * The stats option will give you statistics about how many rows there are
 	 * on all the history tables. Useful to run before and after the end of season
 	 * processing.
-	 * 
+	 *
 	 * ## EXAMPLES
 	 *
 	 *     # Update history pages.
@@ -123,7 +126,13 @@ class Semla_Command {
 			$this->clear_lscache();
 			// do_action( 'litespeed_purge_posttype', 'history' );
 			return;
-	
+
+		}
+		if ($args[0] === 'update-winners') {
+			History_Pages::update_winners();
+			$this->clear_lscache();
+			return;
+
 		}
 		if ($args[0] !== 'stats')
 			WP_CLI::error( 'Unknown option.' );

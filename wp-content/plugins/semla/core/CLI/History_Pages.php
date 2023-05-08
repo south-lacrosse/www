@@ -48,6 +48,16 @@ class History_Pages {
 			. self::$updated  . ' pages updated');
 	}
 
+	/**
+	 * Just update non-league/flags winners pages
+	 */
+	public static function update_winners() {
+		WP_CLI::log('Creating WordPress history winners pages from the history database');
+		self::winners();
+		WP_CLI::Success('History pages updated: ' . self::$inserted . ' pages inserted, '
+			. self::$updated  . ' pages updated');
+	}
+
 	private static function db_check() {
 		global $wpdb;
 		if ($wpdb->last_error) {
