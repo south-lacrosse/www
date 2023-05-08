@@ -1,7 +1,7 @@
 <?php
 namespace Semla\Data_Access;
 /**
- * Data access for Clubs
+ * Data access for Clubs post type
  */
 class Club_Gateway {
 	/**
@@ -42,5 +42,13 @@ class Club_Gateway {
 		require __DIR__ . '/views/clubs-map.php';
 		wp_reset_postdata();
 		return ob_get_clean();
+	}
+
+	public static function get_club_slugs() {
+		global $wpdb;
+		$res = $wpdb->get_col('SELECT post_name FROM wp_posts
+			WHERE post_type = "clubs" AND post_status = "publish"');
+		if ($wpdb->last_error) return false;
+		return $res;
 	}
 }

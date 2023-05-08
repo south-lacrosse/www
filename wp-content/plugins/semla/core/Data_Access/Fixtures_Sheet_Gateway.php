@@ -18,6 +18,7 @@ class Fixtures_Sheet_Gateway {
 	const TEAMS=6;
 	// Teams page
 	const TEAM_NAME=0;
+	const TEAM_CLUB_PAGE = 2;
 	const TEAM_MINIMAL=4;
 	const TEAM_SHORT=5;
 	// Deductions
@@ -122,9 +123,21 @@ class Fixtures_Sheet_Gateway {
 		}
 		if ($this->error->has_errors()) return;
 		$team_minimals = $team_abbrevs = $this->teams = [];
+		$club_slugs = Club_Gateway::get_club_slugs();
+		if ($club_slugs === false) {
+			$this->add_db_error('Failed to load club slugs');
+			return;
+		}
+		$club_slugs = array_flip($club_slugs);
 		foreach ($team_rows as $key => $row) {
 			$team_name = $row[self::TEAM_NAME];
 			$this->teams[$team_name] = 1;
+			if (!empty($row[self::TEAM_CLUB_PAGE])) {
+				if (!array_key_exists($row[self::TEAM_CLUB_PAGE], $club_slugs)) {
+					$this->error->add('fixtures', "Unknown team page for $team_name");
+					continue;
+				}
+			}
 			if (!empty($row[self::TEAM_MINIMAL])) {
 				$team_minimals[] = [$team_name,$row[self::TEAM_MINIMAL]];
 			}

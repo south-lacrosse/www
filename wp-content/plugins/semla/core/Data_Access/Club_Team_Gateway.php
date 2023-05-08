@@ -1,7 +1,7 @@
 <?php
 namespace Semla\Data_Access;
 /**
- * Data access for clubs and teams
+ * Data access for clubs and teams for current fixtures tables
  */
 class Club_Team_Gateway {
 
@@ -17,7 +17,7 @@ class Club_Team_Gateway {
 			FROM slc_team
 			GROUP BY club, club_page
 			ORDER BY club', OBJECT_K);
-		if ($wpdb->last_error) return false;			
+		if ($wpdb->last_error) return false;
 		if ($remove_key_from_object) {
 			foreach ( $rows as $row ) {
 				unset($row->club);
@@ -32,7 +32,7 @@ class Club_Team_Gateway {
 		if ($wpdb->last_error) return false;
 		return $res;
 	}
- 
+
 	public static function get_teams_for_club($club) {
 		global $wpdb;
 		$res = $wpdb->get_col($wpdb->prepare(
@@ -115,7 +115,7 @@ class Club_Team_Gateway {
 		$result = $wpdb->query($query);
 		if ($result === false) return false;
 		DB_Util::add_table_to_rename('team');
-		
+
 		$result = DB_Util::create_table('new_club',
 			'`name` CHAR(50) NOT NULL,
 			`team_count` SMALLINT NOT NULL,
