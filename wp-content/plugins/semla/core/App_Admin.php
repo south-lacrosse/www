@@ -8,6 +8,22 @@ use Semla\Admin\User_Profile_Extras;
  */
 class App_Admin {
 	public static function init() {
+		// if clubs have changed then purge pages/rest routes which use club data
+		add_action('save_post_clubs', function() {
+			do_action('litespeed_purge', 'semla_clubs');
+		});
+
+		if (defined('DOING_AJAX') && DOING_AJAX) {
+			if (!empty($_POST['action']) && $_POST['action'] ==='inline-save'
+			&& !empty($_POST['post_type'])) {
+				self::add_modified_column($_POST['post_type']);
+			}
+			// short circuit to avoid running anything not needed in AJAX
+			// IMPORTANT: make sure anything which can be called from AJAX is
+			// above here!
+			return;
+		}
+
 		// get rid of useless stuff added to page
 		remove_action('admin_print_scripts', 'print_emoji_detection_script');
 		remove_action('admin_print_styles', 'print_emoji_styles');
@@ -36,11 +52,11 @@ class App_Admin {
 				case 'dashboard' :
 					self::init_dashboard();
 					break;
-				// case 'post' :
-				// 	self::init_post();
-				// 	break;
-				case 'edit':
-					require __DIR__ . '/Admin/post-list.php';
+				case 'post' :
+					add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
+					break;
+				case 'edit': // post/page/cpt list screen
+					self::init_edit($screen);
 					break;
 				case 'user':
 				case 'user-edit':
@@ -65,8 +81,6 @@ class App_Admin {
 			}
 		});
 
-		add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
-
 		// Removes comments/discussion from admin menu
 		add_action('admin_menu', function() {
 			remove_menu_page( 'edit-comments.php' );
@@ -79,11 +93,6 @@ class App_Admin {
 		});
 
 		add_filter( 'attachment_link', '__return_empty_string' );
-
-		// if clubs have changed then purge pages/rest routes which use club data
-		add_action('save_post_clubs', function() {
-			do_action('litespeed_purge', 'semla_clubs');
-		});
 	}
 
 	public static function enqueue_block_editor_assets() {
@@ -157,5 +166,33 @@ class App_Admin {
 			}
 			echo "</style>\n";
 		});
+	}
+
+	private static function init_edit($screen) {
+		self::add_modified_column($screen->post_type);
+		add_filter( "manage_{$screen->id}_sortable_columns", function ($columns) {
+			$columns['modified'] = 'modified';
+			return $columns;
+		});
+		add_action('admin_enqueue_scripts', function() {
+			echo '<style>.fixed .column-modified{width:14%}</style>';
+		});
+	}
+
+	private static function add_modified_column($post_type) {
+		add_filter( "manage_{$post_type}_posts_columns", function($columns) {
+			$columns['modified'] = 'Modified';
+			return $columns;
+		});
+		add_action( "manage_{$post_type}_posts_custom_column", function ($column_name, $post_id) {
+			if ( $column_name === 'modified' ) {
+				$author = get_the_modified_author();
+				if ( $author ) {
+					the_modified_date('Y/m/d g:i a');
+					echo "<br>by $author";
+				}
+				echo '</p>';
+			}
+		}, 10, 2);
 	}
 }
