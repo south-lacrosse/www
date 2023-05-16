@@ -24,7 +24,7 @@ class Competition_Gateway {
 		global $wpdb;
 		return $wpdb->get_results(
 			"SELECT c.id, c.name, c.seq, c.section_name, c.head_to_head, c.history_page,
-				g.history_group_page, g.name AS group_name,
+				c.description, g.history_group_page, g.name AS group_name,
 				g.history_page AS group_history_page,
 				IF (c.type = 'cup' AND g.history_page != '',1,0) AS link_to_draws,
 				IF (g.history_group_page, c.group_id,NULL) as group_id

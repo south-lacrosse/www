@@ -171,6 +171,9 @@ class History_Pages {
 				$breadcrumbs = [[$competition->group_history_page, $competition->group_name]];
 			}
 			$winners = Winner_Gateway::get_winners($competition);
+			if ($competition->description) {
+				$winners =  '<p>' . $competition->description . "</p>\n" . $winners;
+			}
 			self::db_check();
 			self::insert_post([
 				'post_title'    => $competition->name,
