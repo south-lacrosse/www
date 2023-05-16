@@ -172,8 +172,6 @@ button {
 	/* These are technically the same, but use both as older browsers use one, modern another */
 	overflow-wrap: break-word;
 	word-wrap: break-word;
-	/* Adds a hyphen where the word breaks, if supported */
-	hyphens: auto;
 }
 /* start non-editor */
 #sidebar-mini-tables {
@@ -214,6 +212,41 @@ button {
 	background-color: #333f48;
 	color: #fff;
 	clear: both;
+}
+
+#sidebar-content h2 {
+	border-bottom: 0;
+	padding-bottom: 0;
+	font-size: 1.25em;
+}
+@media screen and (min-width: 720px) {
+	#content-area {
+		display: flex;
+	}
+	#content-area > #content {
+		flex: 1;
+		max-width: 660px;
+	}
+	#sidebar {
+		flex: 0 0 auto;
+		margin: 0 0.5rem 0.5rem 0.5rem;
+		padding-left: 0.75em;
+		border-left: 1px solid #d0cecf;
+	}
+	#sidebar-content > :first-child {
+		margin-top: 0;
+	}
+}
+@media screen and (min-width: 720px) and (min-height: 400px) {
+	#sidebar-content {
+		position: sticky;
+		top: 0;
+	}
+}
+@media screen and (max-width: 719px) {
+	#sidebar {
+		border-top: 1px solid #666;
+	}
 }
 
 /*--------------------- Banner / menu setup -------------------*/
@@ -274,6 +307,9 @@ button {
 	   internal links such at #Referees */
 	html {
 		scroll-padding-top: 40px;
+	}
+	#sidebar-content {
+		top: 40px;
 	}
 }
 @media screen and (min-height: 500px) and (max-width: 679px) {
@@ -620,7 +656,7 @@ ml0-1 = menu li tag with depth */
 .soc-a:hover {
 	text-decoration: underline;
 }
-@media (max-width: 480px) {
+@media (max-width: 530px) {
 	.soc-h {
 		display: block;
 		padding: 0 0 10px 0;
@@ -1382,7 +1418,7 @@ dd {
    The alternate id to do :after with clear: both;, which isn't as good  */
 .page-nav {
 	margin-top: 0;
-	margin-bottom: 1.2em;
+	margin-bottom: 0.5em;
 	overflow: hidden;
 }
 .hist-nav {
@@ -1478,7 +1514,7 @@ hr,
 	margin-top: 0.67em;
 	margin-bottom: 0.67em;
 	border: 0;
-	border-top: 1px solid;
+	border-top: 1px solid #666;
 }
 .wp-block-separator:not(.is-style-wide):not(.is-style-dots) {
 	width: 100px;

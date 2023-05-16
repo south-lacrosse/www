@@ -1,7 +1,7 @@
 <?php
 namespace Semla\CLI;
 /**
- * Manage SEMLA fixtures/tables/flags, history pages, caches, external links.
+ * Manage SEMLA fixtures/tables/flags, history pages, caches.
  *
  * ## EXAMPLES
  *

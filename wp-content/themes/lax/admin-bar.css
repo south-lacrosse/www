@@ -14,11 +14,17 @@
 		scroll-padding-top: 0;
 	}
 }
+#sidebar-content {
+	top: var(--wp-admin--admin-bar--height);
+}
 
 /* media query matches style.css for sticky menu */
 @media screen and (min-height: 500px) and (min-width: 680px) {
 	html {
 		scroll-padding-top: calc(var(--wp-admin--admin-bar--height) + 40px);
+	}
+	#sidebar-content {
+		top: calc(var(--wp-admin--admin-bar--height) + 40px);
 	}
 	.menu-nav {
 		/* scroll-padding-top added by WP handles everything else */

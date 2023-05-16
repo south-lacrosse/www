@@ -162,8 +162,6 @@ button {
 	/* These are technically the same, but use both as older browsers use one, modern another */
 	overflow-wrap: break-word;
 	word-wrap: break-word;
-	/* Adds a hyphen where the word breaks, if supported */
-	hyphens: auto;
 }
 
 
@@ -857,7 +855,7 @@ hr,
 	margin-top: 0.67em;
 	margin-bottom: 0.67em;
 	border: 0;
-	border-top: 1px solid;
+	border-top: 1px solid #666;
 }
 .wp-block-separator:not(.is-style-wide):not(.is-style-dots) {
 	width: 100px;

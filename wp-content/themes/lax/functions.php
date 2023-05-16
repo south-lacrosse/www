@@ -4,7 +4,7 @@
  * @link https://developer.wordpress.org/themes/basics/theme-functions/
  */
 
-/**
+ /**
  * Set up theme defaults and register support for various WordPress features.
  *
  * after_setup_theme runs before the init hook, which is too late for some
@@ -44,6 +44,16 @@ add_action('after_setup_theme', function() {
 		'popular' => 'Popular Links',
 		'social' => 'Social Links',
 	]);
+
+	add_action('widgets_init', function() {
+		register_sidebar([
+			'name'          => 'News/Archives Sidebar',
+			'id'            => 'sidebar-posts',
+			'description'   => 'Sidebar on list of posts (news, categories, or tags)',
+			'before_widget' => '',
+			'after_widget'  => '',
+		]);
+	});
 
 	if (is_admin()) {
 		lax_admin();
@@ -97,7 +107,7 @@ add_action('init', function() {
 
 add_action('wp_enqueue_scripts', function() {
 	wp_enqueue_style('lax-style', get_stylesheet_directory_uri() . '/style' . SEMLA_MIN . '.css'
-		, [], '1.3.1');
+		, [], '1.3.2');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
 		, ['lax-style'], '1.0');

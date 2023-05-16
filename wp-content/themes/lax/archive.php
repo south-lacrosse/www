@@ -1,16 +1,25 @@
 <?php
 /**
- * The template for displaying archive pages
+ * The template for displaying archive pages, also used for posts index (home)
  */
 
-require __DIR__ . '/parts/header.php'; ?>
+require __DIR__ . '/parts/header.php';
+$sidebar_active = is_active_sidebar( 'sidebar-posts' );
+if ($sidebar_active) echo "<div id=\"content-area\">\n";
+?>
 <main id="content">
 <?php
 if (have_posts()) : ?>
 <header>
 <?php
-	the_archive_title('<h1>', '</h1>');
-	the_archive_description();
+	if (is_home()) {
+		echo '<h1>';
+		single_post_title();
+		echo "</h1>\n";
+	} else {
+		the_archive_title('<h1>', '</h1>');
+		the_archive_description();
+	}
 ?>
 </header>
 <?php
@@ -23,5 +32,12 @@ else :
 	require __DIR__ . '/parts/nothing-found.php';
 endif; ?>
 </main>
-<?php
+<?php if ($sidebar_active) : ?>
+<aside id="sidebar">
+<div id="sidebar-content">
+<?php dynamic_sidebar( 'sidebar-posts' ); ?>
+</div>
+</aside>
+</div>
+<?php endif;
 require __DIR__ . '/parts/footer.php';
