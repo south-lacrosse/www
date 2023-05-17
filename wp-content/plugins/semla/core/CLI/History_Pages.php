@@ -172,7 +172,11 @@ class History_Pages {
 			}
 			$winners = Winner_Gateway::get_winners($competition);
 			if ($competition->description) {
-				$winners =  '<p>' . $competition->description . "</p>\n" . $winners;
+				if (str_starts_with($competition->description,'<')) {
+					$winners =  "$competition->description\n$winners";
+				} else {
+					$winners =  "<p>$competition->description</p>\n$winners";
+				}
 			}
 			self::db_check();
 			self::insert_post([
