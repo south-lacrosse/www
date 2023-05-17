@@ -35,6 +35,7 @@ add_filter( 'rest_url_prefix', function () {
 	return 'api';
 } );
 
+add_action( 'init', [App::class, 'init_early'], 0 );
 add_action( 'init', [App::class, 'init'] );
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
 	add_action( 'cli_init', function() {

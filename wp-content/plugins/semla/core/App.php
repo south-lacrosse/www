@@ -168,6 +168,28 @@ class App {
 	}
 
 	/**
+	 * Called from the init hook, but with a low priority so it runs before the
+	 * actions we want to remove have run.
+	 */
+	public static function init_early() {
+		remove_action( 'init', 'register_block_core_comment_author_name' );
+		remove_action( 'init', 'register_block_core_comment_content' );
+		remove_action( 'init', 'register_block_core_comment_date' );
+		remove_action( 'init', 'register_block_core_comment_edit_link' );
+		remove_action( 'init', 'register_block_core_comment_reply_link' );
+		remove_action( 'init', 'register_block_core_comment_template' );
+		remove_action( 'init', 'register_block_core_comments_pagination_next' );
+		remove_action( 'init', 'register_block_core_comments_pagination_numbers' );
+		remove_action( 'init', 'register_block_core_comments_pagination_previous' );
+		remove_action( 'init', 'register_block_core_comments_pagination' );
+		remove_action( 'init', 'register_block_core_comments_title' );
+		remove_action( 'init', 'register_block_core_comments' );
+		remove_action( 'init', 'register_block_core_latest_comments' );
+		remove_action( 'init', 'register_block_core_post_comments_form' );
+		remove_action( 'init', 'register_legacy_post_comments_block', 21 );
+	}
+
+	/**
 	 * @param string $post_type the post type to create
 	 * @param mixed $name name to use in labels, so 'New Name'. Can be a string, in which case plural add 's',
 	 * 		or array of singular and plural
