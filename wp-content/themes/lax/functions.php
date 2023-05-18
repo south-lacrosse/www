@@ -13,6 +13,9 @@
 add_action('after_setup_theme', function() {
 	global $content_width;
 
+	// stops query to find site logo - we don't use it
+	remove_filter( 'theme_mod_custom_logo', '_override_custom_logo_theme_mod' );
+
 	// Set the $content_width for things such as video embeds.
 	// Don't make too wide otherwise the video will take up an inordinate amount
 	// of space on the page
