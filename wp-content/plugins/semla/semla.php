@@ -26,6 +26,9 @@ add_filter('wp_sitemaps_add_provider', function($provider, $name) {
 	return ('users' === $name) ? false :  $provider;
 }, 10, 2);
 
+// stop pointless query to wp_options table. Needs to go here to catch all calls
+add_filter('pre_option_can_compress_scripts', function() { return 1; });
+
 // include our class loader
 require_once __DIR__.'/core/autoload.php';
 
