@@ -1,9 +1,8 @@
 <?php
 /**
  * Plugin Name:  SEMLA
- * Plugin URI:   https://www.southlacrosse.org.uk/
+ * Plugin URI:   https://github.com/south-lacrosse/www
  * Description:  South of England Men's Lacrosse Association clubs, league, flags, fixtures etc.
- * Version:      1.0.0
  * Author:       SEMLA
  * Author URI:   mailto:webmaster@southlacrosse.org.uk
  * License:      GNU General Public License v2 or later
