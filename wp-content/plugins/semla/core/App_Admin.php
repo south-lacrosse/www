@@ -52,9 +52,6 @@ class App_Admin {
 				case 'dashboard' :
 					self::init_dashboard();
 					break;
-				case 'post' :
-					add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
-					break;
 				case 'edit': // post/page/cpt list screen
 					self::init_edit($screen);
 					break;
@@ -81,6 +78,7 @@ class App_Admin {
 			}
 		});
 
+		add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
 		// Removes comments/discussion from admin menu
 		add_action('admin_menu', function() {
 			remove_menu_page( 'edit-comments.php' );
@@ -100,11 +98,18 @@ class App_Admin {
 		$asset_file = include( $plugin_dir . '/blocks-core/core.asset.php');
 		if ($asset_file) {
 			$dependencies = $asset_file['dependencies'];
-			// by adding wp-edit-{screen} as a dependency we make sure our
-			// script runs after the core blocks have been created, so we
-			// can then remove or change them if we want
-			$edit_dependency = 'wp-edit-' . get_current_screen()->base;
-			if (!in_array($edit_dependency, $dependencies)) {
+			// by adding wp-edit-... as a dependency we make sure our script
+			// runs after the core blocks have been created, so we can then
+			// remove or change them if we want
+			$screen = get_current_screen();
+			$edit_dependency = match($screen->base) {
+				'post' => 'wp-edit-post',
+				'widgets' => 'wp-edit-widgets',
+				'customize' => 'wp-customize-widgets',
+				'site-editor' => 'wp-edit-site',
+				default => false
+			};
+			if ($edit_dependency && !in_array($edit_dependency, $dependencies)) {
 				$dependencies[] = $edit_dependency;
 			};
 			$base_url = plugins_url('/', __DIR__);
