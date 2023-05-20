@@ -54,13 +54,16 @@ function lax_entry_footer() {
 }
 
 /**
- * Load cached menu, or regenerate it
+ * Load cached menu, or regenerate it. Will always regenerate if running
+ * customizer.
  *
- * wp_nav_menu executes 4 queries, which returns a load of data, so menus are cached here.
+ * wp_nav_menu executes 4 queries, which returns a load of data, so menus are
+ * cached here.
  */
 function lax_menu($menu_name) {
+	$customizer = is_customize_preview();
 	$menu_file = dirname(__DIR__ ) . '/parts/menu-' . $menu_name . '.html';
-	if (!@readfile($menu_file)) {
+	if ($customizer || !@readfile($menu_file)) {
 		add_filter('semla_change_the_title', '__return_false');
 		ob_start();
 		if ($menu_name === 'main') {
@@ -95,14 +98,16 @@ function lax_menu($menu_name) {
 		$site_url = defined( 'WP_SITEURL' ) ? WP_SITEURL : get_option('siteurl');
 		$menu = str_replace($site_url, '', $menu);
 		$menu = str_replace('href="http', 'rel="nofollow" href="http', $menu);
-		// write to a temp file so another process doesn't try to read
-		// a half written file
-		$tmpf = tempnam('/tmp','lax_menu');
-		$fp = fopen($tmpf,'w');
-		fwrite($fp,$menu);
-		fclose($fp);
-		chmod($tmpf, 0604); // temp files default to 0600
-		rename($tmpf, $menu_file);
+		if (!$customizer) {
+			// write to a temp file so another process doesn't try to read
+			// a half written file
+			$tmpf = tempnam('/tmp','lax_menu');
+			$fp = fopen($tmpf,'w');
+			fwrite($fp,$menu);
+			fclose($fp);
+			chmod($tmpf, 0604); // temp files default to 0600
+			rename($tmpf, $menu_file);
+		}
         remove_filter('semla_change_the_title', '__return_false');
 		echo $menu;
 	}

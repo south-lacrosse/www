@@ -82,6 +82,10 @@ function lax_admin() {
 
 	// if menu changes get rid of our cached versions
 	add_action('wp_update_nav_menu', 'lax_delete_menu_cache', 10, 0);
+	// customizer does not run wp_update_nav_menu, so to be on the safe side
+	// delete the menu cache whenever anything saved. Not performant, but the
+	// customizer is hardly not used anyway, otherwise this should be improved
+	add_action('customize_save_after', 'lax_delete_menu_cache', 10, 0);
 	add_action('semla_clear_menu_cache', 'lax_delete_menu_cache', 10, 0);
 }
 
