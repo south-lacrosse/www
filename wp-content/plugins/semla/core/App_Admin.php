@@ -12,6 +12,10 @@ class App_Admin {
 		add_action('save_post_clubs', function() {
 			do_action('litespeed_purge', 'semla_clubs');
 		});
+		add_filter('upload_mimes', function($mine_types){
+			$mine_types['svg'] = 'image/svg+xml';
+			return $mine_types;
+		});
 
 		if (defined('DOING_AJAX') && DOING_AJAX) {
 			if (!empty($_POST['action']) && $_POST['action'] ==='inline-save'
