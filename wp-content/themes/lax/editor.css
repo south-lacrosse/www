@@ -20,8 +20,6 @@ div.editor-styles-wrapper {
 	padding-left: 1em;
 	padding-right: 1em;
 	max-width: 980px;
-	margin-left: auto;
-	margin-right: auto;
 }
 div.editor-styles-wrapper
 	.edit-post-visual-editor__post-title-wrapper
@@ -42,4 +40,13 @@ div.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > .
 	margin-right: -1em;
 	max-width: calc(100% + 2em);
 	width: calc(100% + 2em);
+}
+.club-card-link,
+.cl-club-link {
+	text-decoration: none !important;
+	color: inherit !important;
+}
+.club-card-link:visited,
+.cl-club-link:visited {
+	color: inherit !important;
 }

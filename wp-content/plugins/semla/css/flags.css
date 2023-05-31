@@ -1,6 +1,8 @@
 /* *********  IMPORTANT ************
-	If you make changes to this file then make sure you bump the version number
-	in the plugin. Just search for "css/flags"
+ *
+ * If you make changes to this file then make sure you bump the version number
+ * in the plugin. Just search for "css/flags", there will be 2 enqueues for
+ * Admin and Public
  */
 
 /*--------------- Flags -----------------*/

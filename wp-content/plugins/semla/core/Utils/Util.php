@@ -46,4 +46,17 @@ class Util {
 		}
 		return 'https://docs.google.com/spreadsheets/d/' . $id . '/';
 	 }
+
+	 /**
+	  * Extract the website URL from post content
+	  */
+	 public static function get_the_website($post_content) {
+		if (preg_match('!wp:semla/website {"url":"([^"]*)"!', $post_content, $matches)) {
+			return $matches[1] ;
+		}
+		if (preg_match('/<a [^>]*href="([^"]*)"[^"]*>(Club |)Website/i', $post_content, $matches)) {
+			return $matches[1];
+		}
+		return false;
+	}
 }

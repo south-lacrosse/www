@@ -15,21 +15,18 @@ class App {
 			'name' => 'Club',
 			'args' => [
 				'menu_icon' => 'dashicons-shield',
+				'supports' => [
+					'title',
+					'editor',
+					'revisions',
+					'thumbnail'
+				],
 				'template' => [
-					[ 'core/heading', [
-						'content' => 'Location',
-					] ],
+					[ 'semla/club-title'],
+					[ 'core/heading', ['content' => 'Location'] ],
 					[ 'semla/location' ],
-					[ 'core/heading', [
-						'content' => 'Club Information',
-					] ],
-					[ 'semla/attr-value', [
-						'attr' => 'Colours',
-					] ],
-					[ 'semla/attr-value', [
-						'attr' => 'Club Links',
-						'value' => 'Add Website and Facebook links'
-					] ],
+					[ 'core/heading', ['content' => 'Club Information'] ],
+					[ 'semla/attr-value', ['attr' => 'Colours'] ],
 					[ 'core/heading', [
 						'content' => '{Team Name} Team Information',
 					] ],
@@ -37,9 +34,7 @@ class App {
 						'attr' => 'Fixtures',
 						'value' => 'Add Fixtures and Results link here'
 					] ],
-					[ 'semla/attr-value', [
-						'attr' => 'Captain',
-					] ],
+					[ 'semla/attr-value', ['attr' => 'Captain'] ],
 				],
 			],
 			'dashicon_code' => 'f332',
@@ -140,6 +135,9 @@ class App {
 		register_block_type( $block_dir . '/calendar', [
 			'render_callback' => [Block_Calendar::class, 'render_callback'],
 		]);
+		register_block_type( $block_dir . '/club-title', [
+			'render_callback' => [Blocks::class, 'club_title'],
+		]);
 		register_block_type( $block_dir . '/data', [
 			'render_callback' => [Block_Data::class, 'render_callback'],
 		]);
@@ -150,6 +148,9 @@ class App {
 			'render_callback' => [Blocks::class, 'map'],
 		]);
 		register_block_type( $block_dir . '/toc' );
+		register_block_type( $block_dir . '/website', [
+			'render_callback' => [Blocks::class, 'website'],
+		]);
 
 		if (is_admin()) {
 			App_Admin::init();

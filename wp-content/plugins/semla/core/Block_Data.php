@@ -63,8 +63,22 @@ class Block_Data {
 		return '';
 	}
 
+	private function clubs_list_args() {
+		wp_enqueue_style( 'semla-clubs-list',
+			plugins_url('/css/clubs-list' . SEMLA_MIN . '.css', __DIR__),
+			[], '1.0');
+	}
 	private function clubs_list() {
-		return Club_Gateway::clubs_list();
+		return Club_Gateway::clubs_list('list');
+	}
+
+	private function clubs_grid_args() {
+		wp_enqueue_style( 'semla-clubs-grid',
+			plugins_url('/css/clubs-grid' . SEMLA_MIN . '.css', __DIR__),
+			[], '1.0');
+	}
+	private function clubs_grid() {
+		return Club_Gateway::clubs_list('grid');
 	}
 
 	/**

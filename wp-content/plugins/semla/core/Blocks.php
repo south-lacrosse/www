@@ -4,6 +4,27 @@ namespace Semla;
  * Rendering of a couple of blocks
  */
 class Blocks {
+
+	public static function club_title( $attrs, $content, $block ) {
+		if ( ! isset( $block->context['postId'] ) ) return '';
+		$post_ID = $block->context['postId'];
+
+		add_filter('max_srcset_image_width', [self::class, 'max_srcset_image_width']);
+		$featured_image = get_the_post_thumbnail( $post_ID, 'thumbnail',
+			['class' => 'club-icon-img'] );
+		remove_filter('max_srcset_image_width', [self::class, 'max_srcset_image_width']);
+		if ( ! $featured_image ) {
+			return $content;
+		}
+		return '<div class="wp-block-semla-club-title">' . "\n"
+			. '<div class="club-icon">' . "\n$featured_image\n</div>\n"
+			. '<div class="club-title-content">' . "\n"
+			. "$content\n</div>\n</div>\n";
+	}
+	public static function max_srcset_image_width() {
+		return 1;
+	}
+
 	public static function location($attrs, $content, $block) {
 		$start = strpos($content, '<p>') + 3;
 		$end = strpos($content, '</p>', $start);
@@ -37,12 +58,26 @@ class Blocks {
 	}
 
 	public static function map($attrs, $content) {
-		if (isset($attrs['latLong'])) {
-			return str_replace('!MAP!',
-				'<iframe class="gmap" data-url="https://www.google.com/maps/embed/v1/place?q='
-				. $attrs['latLong'] . '&amp;zoom=15&amp;key=' . get_option('semla_gapi_key')
-				. '" title="Google Map" allowFullScreen></iframe>', $content);
+		if (!isset($attrs['latLong'])) return '';
+		return str_replace('!MAP!',
+			'<iframe class="gmap" data-url="https://www.google.com/maps/embed/v1/place?q='
+			. $attrs['latLong'] . '&amp;zoom=15&amp;key=' . get_option('semla_gapi_key')
+			. '" title="Google Map" allowFullScreen></iframe>', $content);
+	}
+
+	public static function website( $attrs ) {
+		if (!isset($attrs['url'])) return '';
+		$url = $attrs['url'];
+
+		// Remove protocol and www prefixes.
+		$pretty_url = preg_replace('/^(?:https?:)\/\/(?:www\.)?/', '', $url );
+		// Ends with / and only has that single slash, strip it.
+		$pos = strpos($pretty_url,'/');
+		if ($pos !== -1 && $pos === strlen($pretty_url) - 1) {
+			$pretty_url = substr($pretty_url, 0, -1);
 		}
-		return '';
+
+		return '<p class="wp-block-semla-website">Website: <a href="' . $url
+			. '">' . $pretty_url . "</a></p>\n";
 	}
 }

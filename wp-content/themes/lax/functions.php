@@ -31,13 +31,8 @@ add_action('after_setup_theme', function() {
 	// register that this theme supports the SEMLA plugin
 	//  check the plugin for current_theme_supports to see where used
 	add_theme_support('semla');
-
-	/*
-	 * Enable support for Post Thumbnails on posts and pages.
-	 *
-	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-	 */
-	// add_theme_support('post-thumbnails');
+	// Enable post thumbnails (featured images). Post/page support removed later
+	add_theme_support('post-thumbnails');
 
 	register_nav_menus([
 		'main' => 'Main Navigation',
@@ -90,6 +85,8 @@ function lax_admin() {
 }
 
 add_action('init', function() {
+	remove_post_type_support('page', 'thumbnail');
+	remove_post_type_support('post', 'thumbnail');
 	$block_styles = [
 		'core/table' => [
 			'lined'         => 'Lined',
@@ -111,7 +108,7 @@ add_action('init', function() {
 
 add_action('wp_enqueue_scripts', function() {
 	wp_enqueue_style('lax-style', get_stylesheet_directory_uri() . '/style' . SEMLA_MIN . '.css'
-		, [], '1.3.2');
+		, [], '1.3.3');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
 		, ['lax-style'], '1.0');

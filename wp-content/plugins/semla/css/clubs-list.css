@@ -1,0 +1,76 @@
+/* needs "table" to get specificity to override max-width */
+table.clubs-list {
+	width: 100%;
+	max-width: 850px;
+}
+.clubs-list th {
+	padding: 0.3rem 0;
+	font-size: 1rem;
+	background-color: #f7f7f5;
+	border-bottom: 1px solid #dbdbdb;
+}
+.clubs-list td {
+	padding: 0.5rem 0;
+	vertical-align: middle;
+	border-bottom: 1px solid #efefef;
+}
+.clubs-list th + th,
+.clubs-list td + td {
+	padding-left: 3rem;
+}
+.cl-club-link {
+	display: flex;
+	align-items: center;
+	font-weight: 500;
+	text-decoration: none;
+	color: inherit;
+}
+.cl-club-link:visited {
+	color: inherit;
+}
+.cl-club-link:hover {
+	text-decoration: underline;
+}
+.cl-logo {
+	flex: 0 0 65px;
+}
+.cl-img {
+	vertical-align: bottom;
+	border-radius: 0.2rem;
+}
+.cl-club-head {
+	padding-left: 65px !important;
+}
+.cl-club {
+	font-size: 20px;
+}
+.cl-links-wrapper {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+}
+.cl-links-wrapper > a + .wp-block-social-links {
+	margin-left: 0.5em;
+}
+.cl-links-wrapper > .wp-block-social-links {
+	font-size: 24px !important;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+.cl-website {
+	transition: transform 0.1s ease;
+}
+.cl-website:hover {
+	transform: scale(1.1);
+}
+.cl-website-img {
+	vertical-align: bottom;
+}
+@media (max-width: 400px) {
+	.cl-club {
+		font-size: 1rem;
+	}
+	.cl-links {
+		display: none;
+	}
+}

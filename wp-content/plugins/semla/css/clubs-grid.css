@@ -1,0 +1,44 @@
+/* *********  IMPORTANT ************
+ *
+ * If you make changes to this file then make sure you bump the version number
+ * in the plugin. Just search for "css/clubs-grid", there will be 2 enqueues for
+ * Admin and Public
+ */
+.clubs-grid {
+	display: grid;
+	grid-gap: 0.75rem;
+	grid-template-columns: repeat(auto-fill, 162px);
+	padding: 0;
+}
+.club-card {
+	display: block;
+	text-align: center;
+	border: 1px solid rgba(0, 0, 0, 0.125);
+	border-radius: 0.25rem;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	padding: 5px;
+}
+.club-card-link {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	text-decoration: none;
+	color: inherit;
+}
+.club-card-link:visited {
+	color: inherit;
+}
+.club-card-link:hover {
+	text-decoration: underline;
+}
+.club-card-icon {
+	display: block;
+	border-radius: 0.25rem;
+}
+.club-card-title {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 5px 0 0 0; /* match club-card padding to center */
+}

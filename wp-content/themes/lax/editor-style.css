@@ -213,6 +213,31 @@ h4 {
 	margin-top: 1em;
 	margin-bottom: 1em;
 }
+.wp-block-semla-club-title {
+	margin-top: 0.5em;
+	margin-bottom: 1em;
+}
+@media (min-width: 500px) {
+	.wp-block-semla-club-title {
+		display: flex;
+		align-items: center;
+	}
+	.club-icon {
+		flex: 0 0 150px;
+		margin-right: 2em;
+	}
+	.club-icon-img {
+		border-radius: 0.25rem;
+	}
+	.club-title-content {
+		flex: 1;
+	}
+	.club-title-content .wp-block-post-title {
+		margin: 0;
+		border: 0;
+		line-height: 1;
+	}
+}
 
 /*--------------------- Meta info -------------------*/
 

@@ -21,12 +21,12 @@ class Club_Gateway {
 			'update_post_meta_cache' => false
 		]);
 	}
-	public static function clubs_list() {
+	public static function clubs_list($format) {
 		$query = self::get_all_clubs_query();
 
 		if (!$query->have_posts()) return '';
 		ob_start();
-		require __DIR__ . '/views/clubs-list.php';
+		require __DIR__ . "/views/clubs-$format.php";
 		wp_reset_postdata();
 		return ob_get_clean();
 	}
