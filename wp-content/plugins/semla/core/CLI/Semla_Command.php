@@ -150,6 +150,19 @@ class Semla_Command {
 	}
 
 	/**
+	 * Refresh media file sizes meta data.
+	 *
+	 * If you have optimized images outside of WordPress, without changing their
+	 * dimensions, this this command will update the image metadata for the new
+	 * file sizes.
+	 *
+	 * @subcommand media-sizes
+	 */
+	public function media_sizes($args) {
+		require __DIR__ . '/media-sizes.php';
+	}
+
+	/**
 	 * Clears the entire litespeed cache. Ideally we should use use more restrictive
 	 * purges, but most don't work in the CLI.
 	 */
