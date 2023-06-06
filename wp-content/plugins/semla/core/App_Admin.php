@@ -135,6 +135,15 @@ class App_Admin {
 	}
 
 	private static function init_dashboard() {
+		// Stop comments query in site activity panel
+		// If theme uses comment templates then this filter should be run on
+		// front end too to stop any queries running
+		add_filter('comments_pre_query', function($comment_data,$query) {
+			if ($comment_data) return $comment_data;
+			if ($query->query_vars['count'] ?? false) return 0;
+			return [];
+		}, 10, 2);
+
 		add_action('wp_dashboard_setup', function() {
 			remove_meta_box('dashboard_quick_press', 'dashboard', 'side');
 			remove_meta_box('dashboard_primary', 'dashboard', 'side');
