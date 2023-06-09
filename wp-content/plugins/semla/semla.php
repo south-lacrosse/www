@@ -40,7 +40,5 @@ add_filter( 'rest_url_prefix', function () {
 add_action( 'init', [App::class, 'init_early'], 0 );
 add_action( 'init', [App::class, 'init'] );
 if ( defined( 'WP_CLI' ) && WP_CLI ) {
-	add_action( 'cli_init', function() {
-		\WP_CLI::add_command( 'semla', \Semla\CLI\Semla_Command::class );
-	} );
+	require __DIR__ . '/core/CLI/init.php';
 }

@@ -1,11 +1,17 @@
 <?php
 namespace Semla\CLI;
 /**
- * Create history pages for all tables/flags draws/results. Will overwrite page if already
- * exists.
+ * History pages update and statistics.
  *
- * This should only be need to run as part of the end of season process, or if the format
- * of any of the HTML has changed, e.g. if Cup_Draw_Renderer.php changes.
+ * If for any reason you need to delete all the history pages you can do this
+ * with:
+ *
+ *   $ wp post delete $(wp post list --post_type='history' --format=ids) --force
+ *
+ * ## EXAMPLE
+ *
+ *     # Update history pages.
+ *     $ wp history update
  */
 
 use Semla\Cache;
@@ -14,24 +20,35 @@ use Semla\Data_Access\Competition_Group_Gateway;
 use Semla\Data_Access\Cup_Draw_Gateway;
 use Semla\Data_Access\Fixtures_Gateway;
 use Semla\Data_Access\Fixtures_Results_Gateway;
+use Semla\Data_Access\History_Gateway;
 use Semla\Data_Access\Table_Gateway;
 use Semla\Data_Access\Winner_Gateway;
 use WP_CLI;
 use function WP_CLI\Utils\make_progress_bar;
 
-class History_Pages {
-	private static $updated = 0;
-	private static $inserted = 0;
+class History_Command {
+	private $updated = 0;
+	private $inserted = 0;
 
-	public static function update_pages() {
+	/**
+	 * Create all history pages from the database.
+	 *
+	 * Creates or updates pages for all tables, flags draws, results,
+	 * competition winners. Will overwrite page if already exists.
+	 *
+	 * This should only be need to run as part of the end of season process, or
+	 * if the format of any of the HTML has changed, e.g. if
+	 * Cup_Draw_Renderer.php changes.
+	 */
+	public function update() {
 		WP_CLI::log('Creating WordPress history pages from the history database');
-		self::tables();
-		self::results();
-		self::cup_draws();
-		self::winners();
-		self::group_winners();
+		$this->update_tables();
+		$this->update_results();
+		$this->update_cup_draws();
+		$this->update_winners();
+		$this->update_group_winners();
 		$url = get_option( 'siteurl' );
-		self::insert_post([
+		$this->insert_post([
 			'post_title'    => 'Plate Finals',
 			'post_name'     => 'plate-finals',
 			'post_content'  => '<ul class="medium-spaced">'
@@ -44,34 +61,59 @@ class History_Pages {
 				. '</ul>'
 			]);
 		Cache::clear_cache('hist');
-		WP_CLI::Success('History pages updated: ' . self::$inserted . ' pages inserted, '
-			. self::$updated  . ' pages updated');
+		WP_CLI::Success('History pages updated: ' . $this->inserted . ' pages inserted, '
+			. $this->updated  . ' pages updated');
+		Util::clear_lscache();
+		// do_action( 'litespeed_purge_posttype', 'history' );
 	}
 
 	/**
-	 * Just update non-league/flags winners pages
+	 * Create history pages for competition winners (not including league, flags).
+	 *
+	 * Useful if you have updated competition winners like Sixes or Varsity, but
+	 * not run the full end of season update.
 	 */
-	public static function update_winners() {
+	public function winners() {
 		WP_CLI::log('Creating WordPress history winners pages from the history database');
-		self::winners();
-		WP_CLI::Success('History pages updated: ' . self::$inserted . ' pages inserted, '
-			. self::$updated  . ' pages updated');
+		$this->update_winners();
+		WP_CLI::Success('History pages updated: ' . $this->inserted . ' pages inserted, '
+			. $this->updated  . ' pages updated');
+		Util::clear_lscache();
 	}
 
-	private static function db_check() {
+	/**
+	 * Display statistics about how many rows there are on all the history
+	 * tables.
+	 *
+	 * Useful to run before and after the end of season processing.
+	 */
+	public function stats() {
+		$num_posts = wp_count_posts( 'history' );
+		if( ! $num_posts )
+			WP_CLI::error('Cannot count history pages');
+		WP_CLI::log("There are $num_posts->publish history WordPress pages");
+		$stats = History_Gateway::get_stats();
+		$this->db_check();
+		WP_CLI::log('History database table row counts:');
+		foreach ($stats as $stat) {
+			WP_CLI::log("$stat->table_name: $stat->row_count");
+		}
+	}
+
+	private function db_check() {
 		global $wpdb;
 		if ($wpdb->last_error) {
 			WP_CLI::error('Database error: ' . $wpdb->last_error);
 		}
 	}
 
-	private static function tables() {
+	private function update_tables() {
 		$leagues = Competition_Group_Gateway::get_leagues(true);
-		self::db_check();
+		$this->db_check();
 		foreach ($leagues as $league) {
 			$name = $league->id === '1' ? "League" : "$league->name League";
 			$years = Table_Gateway::get_tables_years($league->id);
-			self::db_check();
+			$this->db_check();
 			$progress = make_progress_bar( "$name Tables", count($years) );
 			foreach ( $years as $year ) {
 				$year = intval($year);
@@ -80,16 +122,16 @@ class History_Pages {
 				$grid_page = $year > 2002 ? $league->grid_page : '';
 				$data = Table_Gateway::get_tables($year,
 											$league->id,$league->page,$grid_page);
-				self::db_check();
-				self::insert_post([
+				$this->db_check();
+				$this->insert_post([
 					'post_title'    => "$year $name Tables",
 					'post_name'		=> $tables_page,
 					'post_content'	=> $data
 				], $meta);
 				$data = Fixtures_Gateway::get_grid($year,$league->id);
-				self::db_check();
+				$this->db_check();
 				if ($year > 2002) {
-					self::insert_post([
+					$this->insert_post([
 						'post_title'    => "$year $name Results Grid",
 						'post_name'		=> str_replace('fixtures','results',$league->grid_page)
 											. "-$year",
@@ -104,14 +146,14 @@ class History_Pages {
 		}
 	}
 
-	private static function results() {
+	private function update_results() {
 		$gateway = new Fixtures_Results_Gateway();
 		$years = $gateway->get_results_years();
-		self::db_check();
+		$this->db_check();
 		$html = '';
 		$progress = make_progress_bar( 'Results', count($years) + 1 );
 		foreach ( $years as $year ) {
-			self::insert_post([
+			$this->insert_post([
 				'post_title'    => "$year Results",
 				'post_name'		=> "results-$year",
 			], [['results','Results']]);
@@ -119,7 +161,7 @@ class History_Pages {
 			$html .= "<a href=\"/history/results-$year\">$year</a>";
 			$progress->tick();
 		}
-		self::insert_post([
+		$this->insert_post([
 			'post_title'    => "Results",
 			'post_name'		=> "results",
 			'post_content'  => "<p>Full results are available for the following years:</p>\n<p>"
@@ -130,9 +172,9 @@ class History_Pages {
 
 	}
 
-	private static function cup_draws() {
+	private function update_cup_draws() {
 		$years = Cup_Draw_Gateway::get_cup_years();
-		self::db_check();
+		$this->db_check();
 		$progress = make_progress_bar( 'Cup draws', count($years) );
 		foreach ( $years as $year ) {
 			if ($year->breadcrumbs) {
@@ -142,16 +184,16 @@ class History_Pages {
 				$breadcrumbs = false;
 			}
 			$data = Cup_Draw_Gateway::get_draws($year->year,$year->group_id,'',$year->history_page);
-			self::db_check();
-			self::insert_post([
+			$this->db_check();
+			$this->insert_post([
 				'post_title'    => "$year->year $year->name",
 				'post_name'		=> "$year->history_page-$year->year",
 				'post_content'	=> $data
 			], $breadcrumbs, $year->max_rounds);
 			$data = Cup_Draw_Gateway::get_draws($year->year,$year->group_id,
 				'rounds',$year->history_page);
-			self::db_check();
-			self::insert_post([
+			$this->db_check();
+			$this->insert_post([
 				'post_title'    => "$year->year $year->name Rounds",
 				'post_name'		=> "$year->history_page-$year->year-rounds",
 				'post_content'	=> $data
@@ -161,9 +203,9 @@ class History_Pages {
 		$progress->finish();
 	}
 
-	private static function winners() {
+	private function update_winners() {
 		$competitions = Competition_Gateway::get_history_competitions();
-		self::db_check();
+		$this->db_check();
 		$progress = make_progress_bar( 'Competition winners', count($competitions) );
 		foreach ( $competitions as $competition ) {
 			$breadcrumbs = false;
@@ -178,8 +220,8 @@ class History_Pages {
 					$winners =  "<p>$competition->description</p>\n$winners";
 				}
 			}
-			self::db_check();
-			self::insert_post([
+			$this->db_check();
+			$this->insert_post([
 				'post_title'    => $competition->name,
 				'post_name'		=> $competition->history_page,
 				'post_content'	=> $winners
@@ -189,9 +231,9 @@ class History_Pages {
 		$progress->finish();
 	}
 
-	private static function group_winners() {
+	private function update_group_winners() {
 		$competitions = Competition_Group_Gateway::get_history_competition_groups();
-		self::db_check();
+		$this->db_check();
 		$progress = make_progress_bar( 'League/groups winners', count($competitions) );
 		foreach ( $competitions as $competition ) {
 			if ($competition->type === 'league') {
@@ -201,8 +243,8 @@ class History_Pages {
 				$name = "$competition->name Winners";
 			}
 			$data = Winner_Gateway::get_group_winners($competition->id);
-			self::db_check();
-			self::insert_post([
+			$this->db_check();
+			$this->insert_post([
 				'post_title'    => $name,
 				'post_name'		=> $competition->history_page,
 				'post_content'	=> $data
@@ -212,7 +254,7 @@ class History_Pages {
 		$progress->finish();
 	}
 
-	private static function insert_post($post, $breadcrumbs=false, $max_rounds=false) {
+	private function insert_post($post, $breadcrumbs=false, $max_rounds=false) {
 		$post = array_merge([
 			'post_type'     => 'history',
 			'post_status'   => 'publish',
@@ -241,9 +283,9 @@ class History_Pages {
 		// 	delete_post_meta( $post_id, '_semla_max_flags_rounds' );
 		}
 		if ($old_page) {
-			self::$updated++;
+			$this->updated++;
 		} else {
-			self::$inserted++;
+			$this->inserted++;
 		}
 	}
 }

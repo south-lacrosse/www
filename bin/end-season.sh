@@ -27,7 +27,7 @@ if [[ $prompt != "y" && $prompt != "Y" ]] ; then
 	exit 0
 fi
 echo ---------- Stats before history update -----------------
-wp semla history stats
+wp history stats
 echo --------------------------------------------------------
 # Run with --verbose to see statements
 mysql --defaults-extra-file=.my.cnf < end-season.sql
@@ -35,7 +35,7 @@ if [[ $? -ne 0 ]]; then
 	echo 'Database update failed - check output'
 	exit 1
 fi
-wp semla history update-pages
+wp history update-pages
 echo ---------- Stats after history update ------------------
-wp semla history stats
+wp history stats
 echo --------------------------------------------------------
