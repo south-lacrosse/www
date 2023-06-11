@@ -862,6 +862,10 @@ img {
 .wp-block-image.alignwide img {
 	width: unset;
 }
+.wp-block-gallery.has-nested-images.is-style-lightbox figure.wp-block-image {
+	width: unset !important;
+	flex: 0 0 auto;
+}
 
 /*--------------- Forms/Buttons ----------------------*/
 

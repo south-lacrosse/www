@@ -92,6 +92,9 @@ add_action('init', function() {
 			'lined'         => 'Lined',
 			'boxed-striped' => 'Boxed and striped',
 		],
+		'core/gallery' => [
+			'lightbox'         => 'Lightbox',
+		],
 	];
 	foreach ( $block_styles as $block => $styles ) {
 		foreach ( $styles as $style_name => $style_label ) {
@@ -108,7 +111,7 @@ add_action('init', function() {
 
 add_action('wp_enqueue_scripts', function() {
 	wp_enqueue_style('lax-style', get_stylesheet_directory_uri() . '/style' . SEMLA_MIN . '.css'
-		, [], '1.3.3');
+		, [], '1.3.4');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
 		, ['lax-style'], '1.0');

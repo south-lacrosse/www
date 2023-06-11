@@ -65,7 +65,7 @@ class Block_Data {
 
 	private function clubs_list_args() {
 		wp_enqueue_style( 'semla-clubs-list',
-			plugins_url('/css/clubs-list' . SEMLA_MIN . '.css', __DIR__),
+			plugins_url('css/clubs-list' . SEMLA_MIN . '.css', __DIR__),
 			[], '1.0');
 	}
 	private function clubs_list() {
@@ -74,7 +74,7 @@ class Block_Data {
 
 	private function clubs_grid_args() {
 		wp_enqueue_style( 'semla-clubs-grid',
-			plugins_url('/css/clubs-grid' . SEMLA_MIN . '.css', __DIR__),
+			plugins_url('css/clubs-grid' . SEMLA_MIN . '.css', __DIR__),
 			[], '1.0');
 	}
 	private function clubs_grid() {
@@ -85,7 +85,7 @@ class Block_Data {
 	 * Just need to enqueue the map css/js here so the CSS appears in the head
 	 */
 	private function clubs_map_args() {
-		wp_enqueue_style( 'semla-map', plugins_url('/css/map' . SEMLA_MIN . '.css', __DIR__),
+		wp_enqueue_style( 'semla-map', plugins_url('css/map' . SEMLA_MIN . '.css', __DIR__),
 			[], '1.1');
 		wp_enqueue_script( 'semla-map',
 			plugins_url('js/map' . SEMLA_MIN . '.js', __DIR__),

@@ -32,7 +32,7 @@ while ($query->have_posts()) {
 	if ($website = Util::get_the_website($post->post_content)) {
 		if (!$website_svg) {
 			$website_svg = '<img class="cl-website-img" src="' . plugins_url('/', dirname(__DIR__,2))
-			. 'img/website.svg" height="34" width="34" alt="Website link">';
+				. 'img/website.svg" height="34" width="34" alt="Website link">';
 		}
 		echo "<a class=\"cl-website\" href=\"$website\">$website_svg<span class=\"screen-reader-text\">Website</span></a>";
 	}

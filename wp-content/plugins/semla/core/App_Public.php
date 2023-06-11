@@ -156,10 +156,27 @@ class App_Public {
 				do_action( 'litespeed_tag_add', $tag );
 			});
 		}
+		if (preg_match('/<!-- wp:gallery {[^}]*"className":"[^"]*is-style-lightbox/',
+				$post->post_content, $m)) {
+			$ver = '3.2.0';
+			$base_url = plugins_url('/', __DIR__);
+			wp_enqueue_style( 'glightbox', $base_url .'css/glightbox.min.css',
+				[], $ver);
+			if (!SEMLA_MIN) {
+				wp_enqueue_script( 'glightbox',
+					$base_url . 'js/glightbox.min.js', [], $ver, true );
+				wp_enqueue_script( 'glightbox-gallery',
+					$base_url . 'js/glightbox-gallery.js', ['glightbox'],
+					$ver, true );
+			} else {
+				wp_enqueue_script( 'glightbox',
+					$base_url . 'js/glightbox.bundle.min.js', [], $ver, true );
+			}
+		}
 	}
 
 	public static function enqueue_flags_css($rounds) {
-		wp_enqueue_style( 'semla-flags', plugins_url('/css/flags' . SEMLA_MIN . '.css', __DIR__),
+		wp_enqueue_style( 'semla-flags', plugins_url('css/flags' . SEMLA_MIN . '.css', __DIR__),
 			[], '1.1');
 		if ($rounds) {
 			add_filter( 'body_class', function( $classes ) use ($rounds) {

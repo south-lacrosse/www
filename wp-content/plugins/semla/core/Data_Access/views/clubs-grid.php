@@ -12,7 +12,7 @@ while ($query->have_posts()) {
 		the_post_thumbnail('thumbnail', ['class' => 'club-card-icon']);
 	} else {
 		if (!$question_mark) {
-			$question_mark = '<img src="' . $base_url = plugins_url('/', dirname(__DIR__,2))
+			$question_mark = '<img src="' . plugins_url('/', dirname(__DIR__,2))
 				. 'img/question-mark.svg" style="height:150px" class="club-card-icon" height="150px" width="150px">';
 		}
 		echo $question_mark;
