@@ -93,27 +93,20 @@ class History_Command {
 			WP_CLI::error('Cannot count history pages');
 		WP_CLI::log("There are $num_posts->publish history WordPress pages");
 		$stats = History_Gateway::get_stats();
-		$this->db_check();
+		Util::db_check();
 		WP_CLI::log('History database table row counts:');
 		foreach ($stats as $stat) {
 			WP_CLI::log("$stat->table_name: $stat->row_count");
 		}
 	}
 
-	private function db_check() {
-		global $wpdb;
-		if ($wpdb->last_error) {
-			WP_CLI::error('Database error: ' . $wpdb->last_error);
-		}
-	}
-
 	private function update_tables() {
 		$leagues = Competition_Group_Gateway::get_leagues(true);
-		$this->db_check();
+		Util::db_check();
 		foreach ($leagues as $league) {
 			$name = $league->id === '1' ? "League" : "$league->name League";
 			$years = Table_Gateway::get_tables_years($league->id);
-			$this->db_check();
+			Util::db_check();
 			$progress = make_progress_bar( "$name Tables", count($years) );
 			foreach ( $years as $year ) {
 				$year = intval($year);
@@ -122,14 +115,14 @@ class History_Command {
 				$grid_page = $year > 2002 ? $league->grid_page : '';
 				$data = Table_Gateway::get_tables($year,
 											$league->id,$league->page,$grid_page);
-				$this->db_check();
+				Util::db_check();
 				$this->insert_post([
 					'post_title'    => "$year $name Tables",
 					'post_name'		=> $tables_page,
 					'post_content'	=> $data
 				], $meta);
 				$data = Fixtures_Gateway::get_grid($year,$league->id);
-				$this->db_check();
+				Util::db_check();
 				if ($year > 2002) {
 					$this->insert_post([
 						'post_title'    => "$year $name Results Grid",
@@ -149,7 +142,7 @@ class History_Command {
 	private function update_results() {
 		$gateway = new Fixtures_Results_Gateway();
 		$years = $gateway->get_results_years();
-		$this->db_check();
+		Util::db_check();
 		$html = '';
 		$progress = make_progress_bar( 'Results', count($years) + 1 );
 		foreach ( $years as $year ) {
@@ -174,7 +167,7 @@ class History_Command {
 
 	private function update_cup_draws() {
 		$years = Cup_Draw_Gateway::get_cup_years();
-		$this->db_check();
+		Util::db_check();
 		$progress = make_progress_bar( 'Cup draws', count($years) );
 		foreach ( $years as $year ) {
 			if ($year->breadcrumbs) {
@@ -184,7 +177,7 @@ class History_Command {
 				$breadcrumbs = false;
 			}
 			$data = Cup_Draw_Gateway::get_draws($year->year,$year->group_id,'',$year->history_page);
-			$this->db_check();
+			Util::db_check();
 			$this->insert_post([
 				'post_title'    => "$year->year $year->name",
 				'post_name'		=> "$year->history_page-$year->year",
@@ -192,7 +185,7 @@ class History_Command {
 			], $breadcrumbs, $year->max_rounds);
 			$data = Cup_Draw_Gateway::get_draws($year->year,$year->group_id,
 				'rounds',$year->history_page);
-			$this->db_check();
+			Util::db_check();
 			$this->insert_post([
 				'post_title'    => "$year->year $year->name Rounds",
 				'post_name'		=> "$year->history_page-$year->year-rounds",
@@ -205,7 +198,7 @@ class History_Command {
 
 	private function update_winners() {
 		$competitions = Competition_Gateway::get_history_competitions();
-		$this->db_check();
+		Util::db_check();
 		$progress = make_progress_bar( 'Competition winners', count($competitions) );
 		foreach ( $competitions as $competition ) {
 			$breadcrumbs = false;
@@ -220,7 +213,7 @@ class History_Command {
 					$winners =  "<p>$competition->description</p>\n$winners";
 				}
 			}
-			$this->db_check();
+			Util::db_check();
 			$this->insert_post([
 				'post_title'    => $competition->name,
 				'post_name'		=> $competition->history_page,
@@ -233,7 +226,7 @@ class History_Command {
 
 	private function update_group_winners() {
 		$competitions = Competition_Group_Gateway::get_history_competition_groups();
-		$this->db_check();
+		Util::db_check();
 		$progress = make_progress_bar( 'League/groups winners', count($competitions) );
 		foreach ( $competitions as $competition ) {
 			if ($competition->type === 'league') {
@@ -243,7 +236,7 @@ class History_Command {
 				$name = "$competition->name Winners";
 			}
 			$data = Winner_Gateway::get_group_winners($competition->id);
-			$this->db_check();
+			Util::db_check();
 			$this->insert_post([
 				'post_title'    => $name,
 				'post_name'		=> $competition->history_page,
