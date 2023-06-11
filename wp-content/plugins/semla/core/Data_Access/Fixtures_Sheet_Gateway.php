@@ -534,7 +534,7 @@ class Fixtures_Sheet_Gateway {
 		}
 		if ($this->error->has_errors()) return;
 
-		usort($fixtures, function($a, $b) {
+		usort($fixtures, static function($a, $b) {
 			$cmp = strcmp($a[0],$b[0]); // date
 			if ($cmp) return $cmp;
 			$cmp = $a['sort'] - $b['sort']; // competition sequence #
