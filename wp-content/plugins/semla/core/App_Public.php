@@ -158,20 +158,7 @@ class App_Public {
 		}
 		if (preg_match('/<!-- wp:gallery {[^}]*"className":"[^"]*is-style-lightbox/',
 				$post->post_content, $m)) {
-			$ver = '3.2.0';
-			$base_url = plugins_url('/', __DIR__);
-			wp_enqueue_style( 'glightbox', $base_url .'css/glightbox.min.css',
-				[], $ver);
-			if (!SEMLA_MIN) {
-				wp_enqueue_script( 'glightbox',
-					$base_url . 'js/glightbox.min.js', [], $ver, true );
-				wp_enqueue_script( 'glightbox-gallery',
-					$base_url . 'js/glightbox-gallery.js', ['glightbox'],
-					$ver, true );
-			} else {
-				wp_enqueue_script( 'glightbox',
-					$base_url . 'js/glightbox.bundle.min.js', [], $ver, true );
-			}
+			require __DIR__ . '/lightbox-gallery.php';
 		}
 	}
 
