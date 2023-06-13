@@ -145,7 +145,7 @@ button {
 	line-height: 1.5;
 }
 .inner {
-	max-width: 1028px; /* 980 + .middle largest padding */
+	max-width: 1072px; /* 1024 + .middle largest padding */
 	margin: 0 auto;
 }
 .middle {

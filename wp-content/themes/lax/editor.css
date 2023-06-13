@@ -19,7 +19,7 @@ instead or .editor-styles-wrapper. */
 div.editor-styles-wrapper {
 	padding-left: 1em;
 	padding-right: 1em;
-	max-width: 980px;
+	max-width: 1024px;
 }
 div.editor-styles-wrapper
 	.edit-post-visual-editor__post-title-wrapper

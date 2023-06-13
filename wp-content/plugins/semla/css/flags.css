@@ -189,7 +189,7 @@ r6 (2176 - 48) / 2 = 1064
 @media screen and (min-width: 680px) {
 	/* final round is 168 wide, other rounds 188
 		so calc = ((rounds - 1) * 188) + 168
-		5 rounds = 920 which is < the 980px max content width, but for 6 rounds
+		5 rounds = 920 which is < the 1024px max content width, but for 6 rounds
 		we change to show all flags if possible
 	 */
 	.rounds-6 .inner {
