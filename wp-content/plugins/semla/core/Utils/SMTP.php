@@ -27,12 +27,10 @@ class SMTP {
 	public static function get_args() {
 		if (!defined('SMTP_USER') || !defined('SMTP_PASS')) return false;
 
-		$args['Host'] = defined('SMTP_HOST') ? SMTP_HOST : 'smtp.hostinger.com';
+		$args['Host'] = defined('SMTP_HOST') ? SMTP_HOST : 'ssl://smtp.hostinger.com:465';
 		$args['SMTPAuth'] = true;
-		$args['Port'] = defined('SMTP_PORT') ? SMTP_PORT : 587;
 		$args['Username'] = SMTP_USER;
 		$args['Password'] = SMTP_PASS;
-		$args['SMTPSecure'] = 'tls';
 		$args['From'] = defined('SMTP_FROM') ? SMTP_FROM : SMTP_USER;
 		if (defined('SMTP_NAME')) {
 			$args['FromName'] = SMTP_NAME;
@@ -48,7 +46,7 @@ class SMTP {
 		}
 		return $args;
 	}
-	
+
 	public static function mail_failed( $error ) {
 		self::log('Failed: ' . print_r($error,true));
 	}

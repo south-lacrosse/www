@@ -100,9 +100,11 @@ define('SEMLA_ANALYTICS', 'UA-xxxxxxxx-y');
 define('SMTP_USER', '<user to send emails>' );
 define('SMTP_PASS', '<password for sending wordpress emails>');
 
-# define('SMTP_HOST', 'smtp.hostinger.com' ); // The hostname of the mail server, defaults to hostinger
+// The mail server, scheme://host:port, default setting below. Scheme can be
+// ssl for SMTPS (best, usually port 465) or tls for STARTTLS (usually port 587).
+# define('SMTP_HOST', 'ssl://smtp.hostinger.com:465' );
 # define('SMTP_FROM', '<from address>' ); defaults to SMTP_USER
-# NAME defaults to 'SEMLA' for prod, otherwise 'SEMLA (stg|dev)' using 1st part of site URL
+// NAME defaults to 'SEMLA' for prod, otherwise 'SEMLA (stg|dev)' using 1st part of site URL
 # define('SMTP_NAME', 'FROM_NAME');
 // End Live Server -----------------------------------------
 
