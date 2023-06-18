@@ -5,10 +5,11 @@
 #  slc - all SEMLA current fixtures/flags/league tables (prefix slc_)
 #  slh - all SEMLA history tables (prefix slh_)
 #  wp - all core WordPress tables
-#  table-name - must be specific table, startting sl_,slc_,slh_ or wp_
+#  dmarc - DMARC email authentication reports
+#  table-name - must be specific table, starting sl_, slc_, slh_, wp_, or dmarc_
 
 if [[ $# -ne 1 ]]; then
-	echo "Usage: $0 sl|slc|slh|wp|table-name"
+	echo "Usage: $0 sl|slc|slh|wp|dmarc|table-name"
 	exit 1
 fi
 
@@ -19,7 +20,7 @@ case "$1" in
 		PFX=$(grep table_prefix ../wp-config.php | awk -F "'" '{print $2}')
 		BACKUP_TABLES="${PFX}commentmeta ${PFX}comments ${PFX}links ${PFX}options ${PFX}postmeta ${PFX}posts ${PFX}term_relationships ${PFX}term_taxonomy ${PFX}termmeta ${PFX}terms ${PFX}usermeta ${PFX}users"
 		;;
-	sl|slc|slh)
+	sl|slc|slh|dmarc)
 		BACKUP_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like '$1%'")
 		[[ $? -ne 0 ]] && exit 1
 		if [[ $OSTYPE == *win* ]]; then
@@ -27,14 +28,10 @@ case "$1" in
 		fi
 		;;
 	*)
-		if [[ ! "$1" =~ ^(sl|slc|slh|wp)_[a-z\_]+$ ]]; then
-			echo "Usage: $0 sl|slc|slh|wp|table-name"
-			exit 1
-		fi
 		TEST_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like '$1'")
 		[[ $? -ne 0 ]] && exit 1
 		if [[ -z $TEST_TABLES ]]; then
-			echo "Unknown table. Usage: $0 sl|slc|slh|wp|table-name"
+			echo "Unknown table. Usage: $0 sl|slc|slh|wp|dmarc|table-name"
 			exit 1
 		fi
 		BACKUP_TABLES=$1
