@@ -97,11 +97,10 @@ class Fixtures_Renderer {
 				echo '<p class="no-print">';
 				if (!empty($options['team_club'][$arg])) {
 					echo 'Go to <a href="clubs/'.$options['team_club'][$arg].'">club page</a> or ';
-
 				}
 				echo '<b>Subscribe:</b> <a href="' . $cal_url . '">iCalendar link</a>'
-					. ' | <a rel="nofollow" href="http://www.google.com/calendar/render?cid='
-					. rawurlencode($cal_url) . '">add to Google Calendar</a></p>'."\n";
+					. ' | <a rel="nofollow" href="https://calendar.google.com/calendar/render?cid='
+					. str_replace('https://', 'webcal://', $cal_url) . '">add to Google Calendar</a></p>'."\n";
 			} elseif ($type === 'club' && !empty($options['club'][$arg]->club_page)) {
 				echo '<p class="no-print">Go to <a href="clubs/'.$options['club'][$arg]->club_page.'">club page</a></p>'."\n";
 			}
