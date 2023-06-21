@@ -84,7 +84,6 @@ class Table_Renderer {
 			if ($team->points_deducted > 0) {
 				$deducted_col = true;
 				break;
-
 			}
 		}
 		if ($for_rest) {
@@ -163,7 +162,7 @@ class Table_Renderer {
 			if ($deducted_col)
 				echo '<td>' . ($team->points_deducted > 0 ? floatval($team->points_deducted) : '') . '</td>';
 			if ($points_col)
-				echo '<td>' . floatval($team->points) . '</td>';
+				echo '<td class="' . ($for_rest ? 'sl-' : '') . 'points">' . floatval($team->points) . '</td>';
 			if ($points_avg_col)
 				echo '<td class="hide-sml">' . number_format($team->points_avg, 2) . '</td>';
 			if ($form_col) {

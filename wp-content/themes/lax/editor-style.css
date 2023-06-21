@@ -535,7 +535,7 @@ tr.divider > td {
 	border-bottom: 1px dashed #252525;
 }
 /* fixtures */
-/* leave td as this ensures the same priority than .table-data td rule,
+/* leave td as this ensures the same priority as .table-data td rule,
 	but these win as they appear later */
 th.min-width,
 col.min-width {
@@ -564,6 +564,9 @@ td.result {
 }
 td.comp {
 	white-space: nowrap;
+}
+td.points {
+	font-weight: 600;
 }
 /* hl = hightligh result field for non-default time/pitch */
 .hl {

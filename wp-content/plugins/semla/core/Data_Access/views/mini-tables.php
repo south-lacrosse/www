@@ -59,7 +59,7 @@ foreach ($rows as $row) {
 	echo '<tr' . (!empty($row->divider) ? ' class="divider"' : '') .  '><td>' . $row->position . '</td><td class="left">'
 		. '<a class="tb-link" href="fixtures?team='
 		. urlencode($row->team) . '">' . ($row->abbrev ? $row->abbrev : $row->team)
-		. '</a></td><td>' . $row->played . '</td><td>' . floatval($row->points) . '</td>'
+		. '</a></td><td>' . $row->played . '</td><td class="points">' . floatval($row->points) . '</td>'
 		. "</tr>\n";
 }
 echo "</tbody></table>\n";
