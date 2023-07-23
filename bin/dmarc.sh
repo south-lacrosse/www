@@ -15,4 +15,4 @@ $BIN/db-backup.sh dmarc
 /bin/find $BIN/backups/ -maxdepth 1 -name "dmarc-*.sql.gz" -type f -mtime +60 -delete
 
 php utils/summary_report.php domain=southlacrosse.org.uk period=lastweek format=html
-echo DMARC tasks comleted
+echo DMARC tasks completed
