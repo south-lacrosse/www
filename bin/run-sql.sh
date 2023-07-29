@@ -2,13 +2,15 @@
 
 # Run arbitrary SQL using the credentials from wp-config.php
 # If there are no args then will run the mysql client, leaving it open
-# If there are args then run the sql in that file, and will unzip if needed
+# If there are args then:
+#    arg 1 is an SQL file to run, which will be unziped if needed
+#    the user will be prompted to confirm unless 2nd arg is "-y"
 
-if [[ $# -gt 1 ]]; then
-	echo "Usage: $0 [sql-file]"
+if [[ $# -gt 2 || ( $# -eq 2 && "$2" != '-y' ) ]]; then
+	echo "Usage: $0 [sql-file [-y]]"
 	exit 1
 fi
-if [[ $# -eq 1 ]]; then
+if [[ $# -gt 0 ]]; then
 	if [[ ! -f "$1" ]] ; then
 		echo "File $1 does not exist."
 		exit 1
@@ -25,10 +27,12 @@ if [[ $# -eq 0 ]]; then
 	exit
 fi
 
-read -p "Are you sure you want to run the SQL in $file? <y/N> " prompt
-if [[ $prompt != "y" && $prompt != "Y" ]] ; then
-	echo 'Run SQL terminated by user.'
-	exit
+if [[ "$2" != '-y' ]]; then
+	read -p "Are you sure you want to run the SQL in $file? <y/N> " prompt
+	if [[ $prompt != "y" && $prompt != "Y" ]] ; then
+		echo 'Run SQL terminated by user.'
+		exit
+	fi
 fi
 
 if [[ "$file" =~ \.gz$ ]]; then
