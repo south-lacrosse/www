@@ -15,8 +15,14 @@ fi
 NO_RESULT="${NO_RESULT/$'\r'/}"
 if [[ $NO_RESULT != "0" ]] ; then
 	echo -e "\e[91mThere are $NO_RESULT fixtures without results.\e[0m"
-	echo 'All fixtures must have results. You can mark fixtures as V-V for void, or C-C for cancelled.'
-	exit 1
+	echo 'All fixtures should have results. You can mark fixtures as V-V for void, or C-C for cancelled.'
+	echo 'Breakdown is:'
+	mysql --defaults-extra-file=.my.cnf -Nse 'SELECT c.type, COUNT(*) FROM slc_fixture f, sl_competition c WHERE f.result = "" AND c.id = f.comp_id GROUP BY c.type'
+	read -p 'Continue anyway? (Not recommended) <y/N> ' prompt
+	if [[ $prompt != "y" && $prompt != "Y" ]] ; then
+		echo 'End of season processing terminated'
+		exit 0
+	fi
 fi
 echo -e '\e[93mBefore continuing make sure you have read the instuctions at'
 echo -e 'https://github.com/south-lacrosse/www-dev/blob/main/docs/end-season.md\e[0m'
@@ -35,7 +41,7 @@ if [[ $? -ne 0 ]]; then
 	echo 'Database update failed - check output'
 	exit 1
 fi
-wp history update-pages
+wp history update
 echo ---------- Stats after history update ------------------
 wp history stats
 echo --------------------------------------------------------

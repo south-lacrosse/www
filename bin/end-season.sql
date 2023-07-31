@@ -30,9 +30,9 @@ INSERT INTO `slh_league_year`
 
 SELECT 'Inserting results' as '';
 INSERT INTO `slh_result`
-(`year`,`match_date`,`comp_id`,`comp_id2`,`competition`,`home`,`away`,`home_goals`,`away_goals`,
+(`year`,`match_date`,`comp_id`,`competition`,`home`,`away`,`home_goals`,`away_goals`,
 `result`,`home_points`,`away_points`,`points_multi`)
-SELECT @end_year,	`match_date`, `comp_id`,
+SELECT @end_year, `match_date`, `comp_id`,
 	`competition`, `home`, `away`, `home_goals`, `away_goals`, `result`,
 	`home_points`, `away_points`, `points_multi`
 FROM `slc_fixture` ORDER BY `id`;
@@ -58,9 +58,9 @@ from `slc_remarks`;
 
 SELECT 'Inserting competitions' as '';
 INSERT INTO `slh_competition`
-(`year`, `comp_id`, `where_clause`)
+(`year`, `id`, `where_clause`)
 SELECT @end_year, comp_id, CONCAT('=',comp_id) FROM slc_ladder
-UNION 
+UNION
 SELECT @end_year, comp_id, where_clause FROM slc_division
 UNION
 SELECT @end_year, comp_id, CONCAT('=',comp_id) FROM slc_cup_draw WHERE round = 1 AND match_num = 1
@@ -70,9 +70,11 @@ ORDER BY comp_id;
 SELECT 'Inserting league winners' as '';
 INSERT INTO `slh_winner`
 (`comp_id`,`year`,`winner`,`runner_up`,`result`,`has_data`)
-SELECT comp_id, @end_year, team, NULL, NULL, 1
-FROM slc_table WHERE position = 1 AND played > 0
-ORDER BY comp_id;
+SELECT t.comp_id, @end_year, t.team, NULL, NULL, 1
+FROM slc_table t, sl_competition c
+WHERE t.position = 1 AND t.played > 0
+AND c.id = t.comp_id AND c.type = 'league'
+ORDER BY t.comp_id;
 
 -- Flags winners
 SELECT 'Inserting flags winners' as '';
@@ -100,7 +102,7 @@ ORDER BY comp_id;
 -- SELECT 'Inserting varsity winners' as '';
 -- INSERT IGNORE INTO `slh_winner`
 -- (`comp_id`,`year`,`winner`,`runner_up`,`result`,`has_data`)
--- SELECT comp_id, @end_year, 
+-- SELECT comp_id, @end_year,
 -- 	CASE
 -- 		WHEN home_goals = away_goals THEN 'Drawn'
 -- 		WHEN home_goals > away_goals THEN home
