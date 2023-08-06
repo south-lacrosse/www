@@ -33,7 +33,8 @@ INSERT INTO `slh_result`
 (`year`,`match_date`,`comp_id`,`competition`,`home`,`away`,`home_goals`,`away_goals`,
 `result`,`home_points`,`away_points`,`points_multi`)
 SELECT @end_year, `match_date`, `comp_id`,
-	`competition`, `home`, `away`, `home_goals`, `away_goals`, `result`,
+	`competition`, `home`, `away`, `home_goals`, `away_goals`,
+	CASE WHEN `result` = '' THEN '?' ELSE `result` END,
 	`home_points`, `away_points`, `points_multi`
 FROM `slc_fixture` ORDER BY `id`;
 
