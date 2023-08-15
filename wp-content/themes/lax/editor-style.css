@@ -231,8 +231,8 @@ h4 {
 		flex: 1;
 	}
 	.club-title-content .wp-block-post-title {
-		margin: 0;
 		border: 0;
+		padding-bottom: 0;
 		line-height: 1;
 	}
 }
