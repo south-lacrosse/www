@@ -15,6 +15,10 @@
 /wp-content/themes/lax/editor-style.css
 /wp-content/themes/lax/parts/
 
+!/sub/
+/sub/*
+!/sub/test/
+
 *.min.css
 *.min.js
 *.md
