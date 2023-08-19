@@ -35,9 +35,6 @@ class Club_Gateway {
 		$query = self::get_all_clubs_query();
 
 		if (!$query->have_posts()) return '';
-		wp_enqueue_script('google-maps', 'https://maps.googleapis.com/maps/api/js?v=3&key='
-				. get_option('semla_gapi_key') . '&libraries=places&region=GB',
-				null, null, true);
 		ob_start();
 		require __DIR__ . '/views/clubs-map.php';
 		wp_reset_postdata();

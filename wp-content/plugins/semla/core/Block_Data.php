@@ -86,11 +86,12 @@ class Block_Data {
 	 */
 	private function clubs_map_args() {
 		wp_enqueue_style( 'semla-map', plugins_url('css/map' . SEMLA_MIN . '.css', __DIR__),
-			[], '1.1');
+			[], '1.2');
+		wp_enqueue_script( 'polyfill', 'https://polyfill.io/v3/polyfill.min.js?features=default', [], null );
 		wp_enqueue_script( 'semla-map',
 			plugins_url('js/map' . SEMLA_MIN . '.js', __DIR__),
-			[], '1.0', true );
-		Block_Util::preconnect_hints(['maps.googleapis.com','maps.gstatic.com']);
+			['polyfill'], '1.1', ['in_footer' => true, 'strategy' => 'async'] );
+		Block_Util::preconnect_hints(['maps.googleapis.com','maps.gstatic.com','fonts.gstatic.com']);
 	}
 	private function clubs_map() {
 		return Club_Gateway::clubs_map();

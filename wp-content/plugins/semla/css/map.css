@@ -15,10 +15,6 @@
 	z-index: 0;
 	overflow: hidden;
 }
-/* reset #content setting for images */
-div#map img {
-	border: 0;
-}
 @media screen and (max-width: 749px) {
 	#map-key,
 	#toggle-key {
@@ -58,12 +54,7 @@ div#map img {
 	cursor: pointer;
 }
 #clubs-list > li:hover,
-.map-ctl-text:hover,
-.hover {
-	background-color: #f1f1f1;
-}
-.selected {
-	font-weight: bold;
+.map-ctl-text:hover {
 	background-color: #f1f1f1;
 }
 .map-ctl {
@@ -72,10 +63,8 @@ div#map img {
 .map-ctl-text {
 	cursor: pointer;
 	text-align: center;
-	color: #000;
-	font-family: Roboto, Arial, sans-serif;
 	user-select: none;
-	font-size: 11px;
+	font-size: 14px;
 	background-color: #fff;
 	padding: 8px;
 	border-radius: 2px;
@@ -92,7 +81,6 @@ div#map img {
 }
 #search-box {
 	font-size: 14px;
-	font-family: Roboto, Arial, sans-serif;
 	padding: 5px 0 5px 5px;
 	border: 0;
 }
@@ -100,8 +88,7 @@ div#map img {
 	outline: none;
 }
 #search-reset {
-	font-family: Roboto, Arial, sans-serif;
-	font-size: 14px;
+	font-size: 16px;
 	font-weight: bold;
 	padding: 5px 10px;
 	cursor: pointer;
