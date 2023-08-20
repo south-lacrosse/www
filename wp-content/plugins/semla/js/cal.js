@@ -152,7 +152,8 @@
 								}
 							} else {
 								var date = new Date(entry.end.date);
-								date.setDate(date.getDate() - 1);
+								// subtract 1 day, or 24 * 60 * 60 * 1000 seconds
+								date.setTime(date.getTime() - 86400000);
 								endDate = date.toISOString().split('T')[0];
 								if (endDate !== startDate) {
 									line += ' - ' + formatEndDate(startDate, endDate);

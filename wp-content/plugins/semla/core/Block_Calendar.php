@@ -18,7 +18,7 @@ class Block_Calendar {
 				[], null, true );
 			wp_enqueue_script( 'semla-cal',
 				plugins_url('js/cal' . SEMLA_MIN . '.js', __DIR__),
-				['google-api'], '1.0', true );
+				['google-api'], '1.1', true );
 			$enhanced = $atts['enhanced'] ?? false;
 			if ($enhanced) {
 				$tagColor = $atts['tagsList'] ?? [];
