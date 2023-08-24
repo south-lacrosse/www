@@ -3,12 +3,6 @@
 <p>However, it seems JavaScript is either disabled or not supported by your browser.
 To view the maps, enable JavaScript in your browser options, and then try again.</p>
 </noscript>
-<div style="display: none">
-<div id="search-wrapper">
-<input id="search-box" type="text" placeholder="Search for clubs near..." size="30">
-<span id="search-reset" title="Reset search for nearest clubs">&times;</span>
-</div>
-</div>
 <a id="toggle-key" href="#">Hide Key</a>
 <div id="map-container">
 <div class="map" id="map"></div>

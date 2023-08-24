@@ -66,40 +66,45 @@
 	user-select: none;
 	font-size: 14px;
 	background-color: #fff;
+	border: 0;
 	padding: 8px;
 	border-radius: 2px;
-	background-clip: padding-box;
 	box-shadow: 0px 1px 4px -1px rgba(0, 0, 0, 0.3);
 	min-width: 22px;
 	font-weight: 500;
 }
-#search-wrapper {
+.search-wrapper {
 	margin: 10px;
 	background-color: #fff;
 	border: 1px solid #ccc;
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
-#search-box {
+.search-box {
 	font-size: 14px;
 	padding: 5px 0 5px 5px;
 	border: 0;
 }
-#search-box:focus {
+.search-box:focus {
 	outline: none;
 }
-#search-reset {
+.search-reset {
 	font-size: 16px;
 	font-weight: bold;
 	padding: 5px 10px;
 	cursor: pointer;
 	color: #808080;
 }
-#search-reset:hover {
+.search-reset:hover {
 	color: #000;
 }
 @media print {
-	#map,
-	#map-key {
+	#map {
 		overflow: hidden;
+	}
+	#map-key,
+	#toggle-key,
+	.map-ctl,
+	.search-wrapper {
+		display: none;
 	}
 }

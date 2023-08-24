@@ -1,22 +1,28 @@
 /**
- * IMPORTANT: If you change this remember to bump the version number in
- * the plugin. Just search for "js/map" to find the reference.
+ * Google Map of the clubs
+ *
+ * Docs at https://developers.google.com/maps/documentation/javascript/reference
+ *
+ * IMPORTANT: If you change this remember to bump the version number in the
+ * plugin. Just search for "js/map" to find the reference.
  */
 /* eslint-env es2017 */
 (function () {
 	'use strict';
 	let mapDiv,
 		mapKeyDiv,
+		clubsList,
 		footer,
 		searchBox,
 		map,
 		mapContainerDiv = null,
-		mapBounds,
+		clubsBounds,
 		infoWindow = null,
-		currentMapCenter = null,
 		geocoder = null,
-		closeZoom = 9,
+		zoomInToClub = 9, // min zoom when we pan to a selected club
 		clubsInAlphaOrder = true;
+
+	const componentRestrictions = { country: 'gb' }; // autocomplete/geocode restriction
 
 	const GEOCODER_STATUS_DESCRIPTION = {
 		UNKNOWN_ERROR:
@@ -29,18 +35,71 @@
 	};
 
 	async function initMap() {
-		// https://developers.google.com/maps/documentation/javascript/reference
-		const { Map, MapTypeControlStyle } = await google.maps.importLibrary('maps');
+		const { Map } = await google.maps.importLibrary('maps');
 		const { ControlPosition, LatLng, LatLngBounds } = await google.maps.importLibrary('core');
 		const { Autocomplete } = await google.maps.importLibrary('places');
 
 		mapDiv = document.getElementById('map');
 		mapKeyDiv = document.getElementById('map-key');
+		clubsList = document.getElementById('clubs-list');
 		footer = document.getElementById('page-footer');
 		// now resize the map to fill the available size
 		resizeMapDiv();
 		// make sure when the browser window is resized that the map resizes too
 		window.addEventListener('resize', resizeMapDiv, false);
+
+		const clubsLength = SemlaClubs.length;
+		// see what the maximum bounds the map needs to display all the clubs
+		clubsBounds = new LatLngBounds();
+		for (let i = clubsLength; i--; ) {
+			const club = SemlaClubs[i];
+			club.latLng = new LatLng(club.lat, club.lng);
+			clubsBounds.extend(club.latLng);
+		}
+
+		map = new Map(mapDiv, {
+			center: clubsBounds.getCenter(),
+			fullscreenControl: true,
+			scaleControl: true,
+			restriction: {
+				// restrict map to a reasonable area around SEMLA area - sw/ne corners
+				latLngBounds: new LatLngBounds(new LatLng(49, -6), new LatLng(55.5, 2.5)),
+				strictBounds: false,
+			},
+		});
+		map.fitBounds(clubsBounds);
+
+		let html = '';
+		// create markers for each club, and the html for the key
+		for (let i = 0; i < clubsLength; i++) {
+			const club = SemlaClubs[i];
+			const marker = new google.maps.Marker({
+				map: map,
+				title: club.name,
+				optimized: false, // need this otherwise markers are optimized to single element, and title won't show
+				position: club.latLng,
+				semlaClub: club, // add custom property for club data
+			});
+			club.marker = marker;
+			club.order = i;
+			marker.addListener('click', markerClick);
+
+			html += '<li title="' + club.name + '">' + club.name + '</li>';
+		}
+
+		// add list of clubs to the key
+		clubsList.innerHTML = html;
+		// whenever a club name is clicked then zoom and pan to that club's location,
+		// and open an info window
+		clubsList.addEventListener(
+			'click',
+			function (event) {
+				const club = SemlaClubs[positionWithinParent(event.target)];
+				zoomPan(club.latLng);
+				showClubInfoWindow(club);
+			},
+			false
+		);
 
 		document.getElementById('toggle-key').addEventListener(
 			'click',
@@ -56,100 +115,32 @@
 					mapContainerDiv.className += ' hide-key';
 					this.innerHTML = 'Show Key';
 				}
-				if (map) {
-					google.maps.event.trigger(map, 'resize');
-				}
+				google.maps.event.trigger(map, 'resize');
 			},
 			false
 		);
 
-		const clubsLength = SemlaClubs.length;
-		let i;
-		// see what the maximum bounds the map needs to display all the clubs
-		mapBounds = new LatLngBounds();
-		for (i = clubsLength; i--; ) {
-			const club = SemlaClubs[i];
-			club.latLng = new LatLng(club.lat, club.lng);
-			mapBounds.extend(club.latLng);
-		}
-
-		map = new Map(mapDiv, {
-			center: mapBounds.getCenter(),
-			fullscreenControl: true,
-			scaleControl: true,
-			mapTypeControlOptions: { style: MapTypeControlStyle.DROPDOWN_MENU },
-			zoom: 6,
+		// add a control to centre the map
+		const centreControl = document.createElement('div');
+		centreControl.className = 'map-ctl';
+		centreControl.title = 'Centre all clubs on the map';
+		centreControl.innerHTML = '<button type="button" class="map-ctl-text">Centre</button>';
+		centreControl.firstElementChild.addEventListener('click', function () {
+			map.fitBounds(clubsBounds);
+			map.setCenter(clubsBounds.getCenter());
 		});
-		map.fitBounds(mapBounds);
+		map.controls[ControlPosition.LEFT_TOP].push(centreControl);
 
-		// when a map is resized by default it won't recentre, so do that here
-		map.addListener('resize', function () {
-			currentMapCenter = this.getCenter();
-		});
-		map.addListener('bounds_changed', function () {
-			if (currentMapCenter) {
-				this.setCenter(currentMapCenter);
-			}
-			currentMapCenter = null;
-		});
-
-		let html = '';
-		// create markers for each club, and the html for the key
-		for (i = 0; i < clubsLength; i++) {
-			const club = SemlaClubs[i];
-			const marker = new google.maps.Marker({
-				map: map,
-				title: club.name,
-				optimized: false, // need this otherwise markers are optimized to single element, and title won't show
-				position: club.latLng,
-				semlaClub: club, // add custom property for club data
-			});
-			club.marker = marker;
-			club.order = i;
-			marker.addListener('click', markerClick);
-
-			html += '<li>' + club.name + '</li>';
-		}
-
-		const clubsList = document.getElementById('clubs-list');
-		// add list of clubs to the key
-		clubsList.innerHTML = html;
-		// whenever a club name is clicked the zoom and pan to that club's location,
-		// and open an info window
-		clubsList.addEventListener(
-			'click',
-			function (event) {
-				const i = positionWithinParent(event.target);
-				const club = SemlaClubs[i];
-				zoomPan(club.latLng);
-				showClubInfoWindow(club);
-			},
-			false
-		);
-
-		// create and add a control to centre the map
-		const centreControlDiv = document.createElement('div');
-		centreControlDiv.className = 'gmnoprint';
-
-		const centreControlUI = document.createElement('div');
-		centreControlUI.className = 'map-ctl';
-		centreControlUI.title = 'Recentre the map';
-		centreControlUI.innerHTML = '<div class="map-ctl-text">Centre</div>';
-		centreControlUI.addEventListener('click', centreMap);
-		centreControlDiv.appendChild(centreControlUI);
-
-		map.controls[ControlPosition.LEFT_TOP].push(centreControlDiv);
-
-		// the search box on our page will be added to the map
-		map.controls[ControlPosition.TOP_RIGHT].push(document.getElementById('search-wrapper'));
-
-		searchBox = document.getElementById('search-box');
+		// add an autocomplete search box
+		const searchControl = document.createElement('div');
+		searchControl.className = 'search-wrapper';
+		searchControl.innerHTML =
+			'<input class="search-box" type="text" placeholder="Search for clubs near..." size="30">' +
+			'<span class="search-reset" title="Reset search for nearest clubs">&times;</span>';
+		searchBox = searchControl.firstElementChild;
 		const autocomplete = new Autocomplete(searchBox, {
-			bounds: new LatLngBounds(
-				new LatLng(50, -6), //sw
-				new LatLng(54, 2) //ne
-			),
-			componentRestrictions: { country: 'gb' },
+			fields: ['name', 'geometry.location'],
+			componentRestrictions,
 		});
 		autocomplete.addListener('place_changed', function () {
 			const place = this.getPlace();
@@ -161,15 +152,19 @@
 				if (!geocoder) {
 					geocoder = new google.maps.Geocoder();
 				}
-				geocoder.geocode({ address: place.name.trim() }, geocoderResponse);
+				geocoder.geocode(
+					{ address: place.name.trim(), componentRestrictions },
+					geocoderResponse
+				);
 				return;
 			}
 			showNearestClubs(place.geometry.location);
 		});
-		document.getElementById('search-reset').addEventListener('click', function () {
+		searchControl.lastElementChild.addEventListener('click', function () {
 			searchBox.value = '';
 			reorderClubsAlpha();
 		});
+		map.controls[ControlPosition.TOP_RIGHT].push(searchControl);
 	}
 
 	// event listeners for markers
@@ -186,46 +181,14 @@
 		}
 	}
 
-	// pan to new position, or setcenter if zooming
+	// pan to new position, or setCenter if zooming
 	function zoomPan(position) {
-		if (map.getZoom() < closeZoom) {
-			map.setZoom(closeZoom);
+		if (map.getZoom() < zoomInToClub) {
+			map.setZoom(zoomInToClub);
 			map.setCenter(position);
 		} else {
 			map.panTo(position);
 		}
-	}
-
-	// centre the map so all clubs are displayed, and zoom in as much as possible
-	// while making sure that all clubs are displayed
-	function centreMap() {
-		const mapType = map.mapTypes.get(map.getMapTypeId());
-		const MAX_ZOOM = mapType.maxZoom || 21;
-		const MIN_ZOOM = mapType.minZoom || 0;
-
-		const projection = map.getProjection();
-		const ne = projection.fromLatLngToPoint(mapBounds.getNorthEast());
-		const sw = projection.fromLatLngToPoint(mapBounds.getSouthWest());
-
-		const worldCoordWidth = Math.abs(ne.x - sw.x);
-		const worldCoordHeight = Math.abs(ne.y - sw.y);
-
-		// Fit padding in pixels
-		const FIT_PAD = 40;
-		let zoom;
-		for (zoom = MAX_ZOOM; zoom >= MIN_ZOOM; --zoom) {
-			// use mapDiv.firstChild.offsetWidth etc as when the map is maximized the
-			// mapDiv stays the same size, but it's first child will be 100%x100%, so
-			// we need to use that div's height and width
-			if (
-				worldCoordWidth * (1 << zoom) + 2 * FIT_PAD < mapDiv.firstChild.offsetWidth &&
-				worldCoordHeight * (1 << zoom) + 2 * FIT_PAD < mapDiv.firstChild.offsetHeight
-			) {
-				break;
-			}
-		}
-		map.setCenter(mapBounds.getCenter());
-		map.setZoom(zoom);
 	}
 
 	function showClubInfoWindow(club) {
@@ -236,7 +199,7 @@
 		let html = '<h2 style="margin:0;border:0;font-size:1rem">' + club.name + '</h2>';
 		if (!clubsInAlphaOrder) {
 			html +=
-				'<p style="margin:0;font-size:075.rem">(' + club.dist + ' miles from search)</p>';
+				'<p style="margin:0;font-size:0.75rem">(' + club.dist + ' miles from search)</p>';
 		}
 		html +=
 			'<p style="margin:1em 0 0;font-size:1rem">' +
@@ -299,12 +262,11 @@
 		zoomPan(position);
 
 		// compute distance to all clubs from position
-		let i;
 		const clubsLength = SemlaClubs.length;
 		const positionLatRad = deg2rad(position.lat());
 		const positionLatRadSin = Math.sin(positionLatRad);
 		const positionLatRadCos = Math.cos(positionLatRad);
-		for (i = clubsLength; i--; ) {
+		for (let i = clubsLength; i--; ) {
 			const club = SemlaClubs[i];
 			const clubLatRad = deg2rad(club.lat);
 			club.dist =
@@ -320,13 +282,16 @@
 		SemlaClubs.sort(sortByDistance);
 		clubsInAlphaOrder = false;
 		closeInfoWindow();
-		const keyLiNodes = mapKeyDiv.getElementsByTagName('li');
-		for (i = clubsLength; i--; ) {
+		const keyLiNodes = clubsList.getElementsByTagName('li');
+		for (let i = clubsLength; i--; ) {
 			const club = SemlaClubs[i];
 			club.order = i;
-			club.marker.setLabel('' + (i + 1));
 			club.dist = club.dist.toFixed(2);
-			keyLiNodes[i].firstChild.nodeValue = i + 1 + '. ' + club.name + ' ' + club.dist + ' mi';
+			const clubTitle = i + 1 + '. ' + club.name + ' ' + club.dist + ' mi';
+			club.marker.setLabel('' + (i + 1));
+			club.marker.setTitle(clubTitle);
+			keyLiNodes[i].textContent = clubTitle;
+			keyLiNodes[i].setAttribute('title', clubTitle);
 		}
 	}
 
@@ -347,12 +312,14 @@
 		SemlaClubs.sort(sortByName);
 		clubsInAlphaOrder = true;
 		closeInfoWindow();
-		const keyLiNodes = mapKeyDiv.getElementsByTagName('li');
+		const keyLiNodes = clubsList.getElementsByTagName('li');
 		for (let i = SemlaClubs.length; i--; ) {
 			const club = SemlaClubs[i];
 			club.order = i;
 			club.marker.setLabel('');
-			keyLiNodes[i].firstChild.nodeValue = club.name;
+			club.marker.setTitle(club.name);
+			keyLiNodes[i].textContent = club.name;
+			keyLiNodes[i].setAttribute('title', club.name);
 		}
 	}
 
