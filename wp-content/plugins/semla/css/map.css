@@ -22,7 +22,7 @@
 	}
 }
 @media screen and (min-width: 750px) {
-	.map {
+	#map {
 		margin-left: 12em;
 		position: relative;
 	}
@@ -37,11 +37,11 @@
 		overflow-x: hidden;
 		border: 1px solid #979797;
 	}
-	.hide-key .map {
-		margin-left: 0;
-	}
-	.hide-key #map-key {
+	.hide-key > #map-key {
 		display: none;
+	}
+	.hide-key > #map {
+		margin-left: 0;
 	}
 }
 #clubs-list {
@@ -79,12 +79,12 @@
 	border: 1px solid #ccc;
 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
-.search-box {
+#search-box {
 	font-size: 14px;
 	padding: 5px 0 5px 5px;
 	border: 0;
 }
-.search-box:focus {
+#search-box:focus {
 	outline: none;
 }
 .search-reset {

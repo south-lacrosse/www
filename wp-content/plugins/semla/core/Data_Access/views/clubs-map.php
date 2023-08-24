@@ -5,7 +5,7 @@ To view the maps, enable JavaScript in your browser options, and then try again.
 </noscript>
 <a id="toggle-key" href="#">Hide Key</a>
 <div id="map-container">
-<div class="map" id="map"></div>
+<div id="map"></div>
 <div id="map-key">
 <ul id="clubs-list"></ul>
 </div>
