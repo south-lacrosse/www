@@ -101,10 +101,6 @@ class App_Public {
 		add_action( 'semla_mini_tables', function() {
 			echo Table_Gateway::get_mini_tables();
 		});
-		// make sure scripts are async if marked as such
-		add_filter( 'script_loader_tag', function ( $tag, $handle, $src ) {
-			return str_replace("#async'", "' async", $tag);
-		}, 10, 3 );
 
 		// Remove author links. Lax theme already removes these, so check first
 		if (! current_theme_supports('semla')) {
