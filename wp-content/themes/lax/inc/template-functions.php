@@ -170,7 +170,7 @@ function lax_posts_navigation() {
 	$big = 99999;
 	$base = str_replace($big, '%#%', esc_url(get_pagenum_link($big)));
 ?>
-<hr>
+<hr class="no-print">
 <nav class="page-nav paging">
 <h2 class="screen-reader-text">Page Links</h2>
 <?php

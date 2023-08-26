@@ -25,7 +25,7 @@ while (have_posts()) {
 		'next_text' => '%title »',
 	]);
 	if ($nav) {
-		echo '<hr>', $nav;
+		echo '<hr class="no-print">', $nav;
 	}
 } ?>
 </main>

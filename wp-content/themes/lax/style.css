@@ -1731,8 +1731,10 @@ a.icon[href^='tel']::before {
 	body > header,
 	nav,
 	body > footer,
-	.no-print,
-	#semla_toc {
+	#sidebar,
+	.share,
+	#semla_toc,
+	.no-print {
 		display: none;
 	}
 	body {
