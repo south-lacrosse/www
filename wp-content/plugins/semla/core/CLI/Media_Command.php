@@ -27,7 +27,7 @@ class Media_Command {
 		$updated_sub_sizes = 0;
 
 		$attachment_ids = $wpdb->get_col(
-			"SELECT ID FROM {$wpdb->prefix}posts
+			"SELECT ID FROM $wpdb->posts
 			WHERE post_type = 'attachment' AND post_mime_type LIKE 'image/%'"
 		);
 		Util::db_check();
@@ -124,17 +124,17 @@ class Media_Command {
 		 */
 		$rows = $wpdb->get_results(
 			"SELECT i.ID, i.post_parent, i.post_title, i.guid
-			FROM {$wpdb->prefix}posts i
+			FROM $wpdb->posts i
 			WHERE i.post_type = 'attachment' $parent_sql
-			AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}postmeta pm
+			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pm
 				WHERE pm.meta_key = '_thumbnail_id' AND pm.meta_value = i.ID)
-			AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}posts p
+			AND NOT EXISTS (SELECT * FROM $wpdb->posts p
 				WHERE p.post_type <> 'attachment' $revisions_sql
 				AND (p.post_content LIKE CONCAT('%',i.guid,'%')
 					OR p.post_content REGEXP CONCAT('wp:image {[^}]*\"id\":',i.ID,'[,}]')
 					OR p.post_content REGEXP CONCAT('\"mediaId\":',i.ID,'[,}]')
 					) )
-			AND NOT EXISTS (SELECT * FROM {$wpdb->prefix}postmeta pm
+			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pm
 				WHERE pm.meta_value LIKE CONCAT('%',i.guid,'%'));");
 		$format = WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
 		if ( 'ids' === $format ) {
