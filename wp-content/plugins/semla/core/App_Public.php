@@ -20,6 +20,20 @@ class App_Public {
 		add_action('parse_request', function($wp) {
 			unset($wp->query_vars['author']);
 		}, 99 );
+
+		// lets make sure users can only login with email/password
+		// this stops username guessing, so author might display Fred Smith
+		// for username fred_smith
+		remove_filter('authenticate', 'wp_authenticate_username_password', 20);
+		// Don't allow users with no roles (i.e. disabled) to login
+		add_filter('authenticate', function ( $user, $username, $password ) {
+			if (!$user || is_wp_error( $user )) return $user;
+			if ( count($user->roles) === 0 ) {
+				return new \WP_Error('user_disabled', '<strong>Error:</strong> Your username/email does not have permission to login.');
+			}
+			return $user;
+		}, 30, 3 );
+
 	}
 
 	/**

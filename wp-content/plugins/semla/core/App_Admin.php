@@ -2,7 +2,6 @@
 namespace Semla;
 
 use Semla\Admin\Admin_Menu;
-use Semla\Admin\User_Profile_Extras;
 /**
  * Handling initialisation for the admin pages
  */
@@ -60,12 +59,10 @@ class App_Admin {
 					self::init_edit($screen);
 					break;
 				case 'user':
-				case 'user-edit':
-				case 'profile':
-					User_Profile_Extras::init_admin();
+					self::init_user();
 					break;
 				case 'users':
-					User_Profile_Extras::init_users();
+					self::init_users();
 					break;
 				case 'edit-comments':
 				case 'options-discussion':
@@ -215,6 +212,32 @@ class App_Admin {
 				}
 				echo '</p>';
 			}
+		}, 10, 2);
+	}
+
+	// New user screen
+	private static function init_user() {
+		add_action( 'admin_notices', function() { ?>
+<div class="notice notice-warning is-dismissible">
+<p><strong>IMPORTANT:</strong> Before adding a new user please make sure you read the
+<a target="_blank" href="https://south-lacrosse.github.io/wp-help/users.html">specific SEMLA help page</a>.</p>
+</div>
+<?php
+		});
+	}
+
+	private static function init_users() {
+		add_action( 'delete_user_form', function($current_user, $user_ids ) {
+			global $users_have_content;
+			if (!$users_have_content) return;
+?>
+<div class="notice notice-error">
+<p><strong>IMPORTANT:</strong> Don't delete users with content! Instead set their
+Role to "— No role for this site —". See the
+<a target="_blank" href="https://south-lacrosse.github.io/wp-help/users.html#deleting-users">SEMLA help page</a>
+for details.</p>
+</div>
+<?php
 		}, 10, 2);
 	}
 }

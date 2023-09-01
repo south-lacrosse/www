@@ -1,7 +1,6 @@
 <?php
 namespace Semla;
 
-use Semla\Admin\User_Profile_Extras;
 use Semla\Rest\Rest;
 use Semla\Utils\SMTP;
 
@@ -160,12 +159,6 @@ class App {
 		// page, or a REST request
 		App_Public::init();
 		add_action('rest_api_init', [Rest::class, 'init']);
-
-		// lets make sure users can only login with email/password
-		// this stops username guessing, so author might display Fred Smith
-		// for username fred_smith
-		remove_filter('authenticate', 'wp_authenticate_username_password', 20);
-		User_Profile_Extras::init();
 	}
 
 	/**
