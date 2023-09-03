@@ -621,8 +621,7 @@ th > a:visited,
 
 ul,
 ol {
-	margin-top: 0.67em;
-	margin-bottom: 0.67em;
+	margin: 0 0 1em;
 }
 li > ul,
 li > ol {
@@ -649,7 +648,6 @@ li > ol {
 /*--------------- Attribute-value field layout ----------*/
 
 .wp-block-semla-attr-value {
-	margin-top: 0.75em;
 	margin-bottom: 0.75em;
 }
 .avf-name {
@@ -882,13 +880,12 @@ code {
 }
 hr,
 .wp-block-separator {
-	margin-top: 0.67em;
-	margin-bottom: 0.67em;
+	margin: 0.67em 0;
 	border: 0;
 	border-top: 1px solid #666;
 }
-.wp-block-separator:not(.is-style-wide):not(.is-style-dots) {
-	width: 100px;
+.wp-block-separator.is-style-wide {
+	border-top-width: 2px;
 }
 .wp-block-embed figcaption,
 .wp-block-image figcaption {
