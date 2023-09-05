@@ -151,6 +151,12 @@ class App {
 			'render_callback' => [Blocks::class, 'website'],
 		]);
 
+		// we have all urls correctly set to https, so stop unnecessary logic running and a database lookup
+		remove_filter( 'the_content', 'wp_replace_insecure_home_url' );
+		remove_filter( 'the_excerpt', 'wp_replace_insecure_home_url' );
+		remove_filter( 'widget_text_content', 'wp_replace_insecure_home_url' );
+		remove_filter( 'wp_get_custom_css', 'wp_replace_insecure_home_url' );
+
 		if (is_admin()) {
 			App_Admin::init();
 			return;
