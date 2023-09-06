@@ -33,6 +33,8 @@ add_action('after_setup_theme', function() {
 	add_theme_support('semla');
 	// Enable post thumbnails (featured images). Post/page support removed later
 	add_theme_support('post-thumbnails');
+	// remove core bundled patterns
+	remove_theme_support( 'core-block-patterns' );
 
 	register_nav_menus([
 		'main' => 'Main Navigation',
