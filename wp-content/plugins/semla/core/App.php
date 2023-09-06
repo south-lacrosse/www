@@ -20,21 +20,6 @@ class App {
 					'revisions',
 					'thumbnail'
 				],
-				'template' => [
-					[ 'semla/club-title'],
-					[ 'core/heading', ['content' => 'Location'] ],
-					[ 'semla/location' ],
-					[ 'core/heading', ['content' => 'Club Information'] ],
-					[ 'semla/attr-value', ['attr' => 'Colours'] ],
-					[ 'core/heading', [
-						'content' => '{Team Name} Team Information',
-					] ],
-					[ 'semla/attr-value', [
-						'attr' => 'Fixtures',
-						'value' => 'Add Fixtures and Results link here'
-					] ],
-					[ 'semla/attr-value', ['attr' => 'Captain'] ],
-				],
 			],
 			'dashicon_code' => 'f332',
 		],
@@ -150,6 +135,13 @@ class App {
 		register_block_type( $block_dir . '/website', [
 			'render_callback' => [Blocks::class, 'website'],
 		]);
+		add_filter('render_block_core/post-date', function($block_content, $block, $instance) {
+			if ($block['attrs']['displayType'] ?? '' ===  'modified'
+			&& str_contains($block['attrs']['className'] ?? '', 'entry-meta')) {
+				$block_content = str_replace('<time', 'Modified: <time', $block_content);
+			}
+			return $block_content;
+		}, 0, 3);
 
 		// we have all urls correctly set to https, so stop unnecessary logic running and a database lookup
 		remove_filter( 'the_content', 'wp_replace_insecure_home_url' );

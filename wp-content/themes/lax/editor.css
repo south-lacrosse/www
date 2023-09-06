@@ -50,3 +50,10 @@ div.editor-styles-wrapper .block-editor-block-list__layout.is-root-container > .
 .cl-club-link:visited {
 	color: inherit !important;
 }
+/** Change post-date modified block to match what is done in a hook in PHP for
+ *  the public site, as that doesn't run in the editor.
+ */
+.wp-block-post-date__modified-date.entry-meta::before {
+	content: 'Modified: ';
+	position: relative;
+}

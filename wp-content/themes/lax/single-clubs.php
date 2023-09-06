@@ -27,16 +27,7 @@ while (have_posts()) {
 </div>
 </article>
 <?php
-}
-if (!empty($team)) {
-	$subject = '?subject=' . urlencode($team) . '+Info';
-} else {
-	$subject = '';
-}
-?>
-<hr>
-<p class="entry-meta meta">Updated: <?= get_the_modified_date('j M Y') ?></p>
-<p class="no-print">Is this information wrong? If so please email <a href="mailto:semla.secretary@southlacrosse.org.uk<?= $subject ?>">semla.secretary@southlacrosse.org.uk</a>.</p>
+} ?>
 </main>
 <?php
 require __DIR__ . '/parts/footer.php';
