@@ -8,7 +8,6 @@ use Semla\Data_Access\Competition_Group_Gateway;
  * semla/v1 endpoints:
  *      /clubs - html list of all clubs, with links to pages with club's
  *               services and team's services
- *      /clubs.txt - text list of all clubs
  *      /clubs.gpx - GPS data in gpx format
  *      /clubs/Bath - details of all REST services for club
  *      /clubs/Bath/fixtures - html snippet, .json, or .js to embed
@@ -36,7 +35,7 @@ class Rest {
 		'.ics' => 'text/calendar',
 		'.js' => 'application/javascript',
 		'.json' => 'application/json',
-		'.txt' => 'text/plain',
+		// '.txt' => 'text/plain',
 	];
 	const SEMLA_BASE = 'semla/v1';
 	const SEMLA_PREFIX = '/semla/v1/';
@@ -128,11 +127,6 @@ class Rest {
 		register_rest_route( self::SEMLA_BASE, '/clubs.gpx', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Clubs_Services::class, 'clubs_gpx'],
-			'permission_callback' => '__return_true',
-		]);
-		register_rest_route( self::SEMLA_BASE, '/clubs.txt', [
-			'methods' => \WP_REST_Server::READABLE,
-			'callback' => [Clubs_Services::class, 'clubs_txt'],
 			'permission_callback' => '__return_true',
 		]);
 		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w\+_]+)', [

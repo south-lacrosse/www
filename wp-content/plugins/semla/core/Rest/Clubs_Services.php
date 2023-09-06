@@ -9,7 +9,6 @@ use Semla\Data_Access\Table_Gateway;
  * Handle club REST requests
  *
  *	  /clubs - html list of all clubs, with links to clubs fixtures and tables, and teams
- *	  /clubs.txt - text list of all clubs
  *	  /clubs.gpx - GPS data in gpx format
  *	  /clubs/Bath - just points to tables & fixtures
  *	  /clubs/Bath/fixtures
@@ -48,17 +47,6 @@ class Clubs_Services {
 		Rest::$cache_tags = ['semla_clubs'];
 		ob_start();
 		require __DIR__ . '/views/clubs-gpx.php';
-		return new \WP_REST_Response(ob_get_clean());
-	}
-
-	public static function clubs_txt( \WP_REST_Request $request ) {
-		$request['extension'] = '.txt';
-		$error = Rest:: validate_content_type($request);
-		if ($error) return $error;
-		Rest::$cache_tags = ['semla_clubs'];
-		$query = Club_Gateway::get_all_clubs_query();
-		ob_start();
-		require __DIR__ . '/views/clubs-txt.php';
 		return new \WP_REST_Response(ob_get_clean());
 	}
 
