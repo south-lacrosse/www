@@ -87,4 +87,55 @@ class Monitor_Command {
 				 ['Content-Type: text/html; charset=UTF-8']);
 		}
 	}
+
+    /**
+	 * Get list sessions of logged in users
+	 *
+	 * [--fields=<fields>]
+	 * : Limit the output to specific object fields.
+	 *
+	 * [--format=<format>]
+	 * : Render output in a particular format.
+	 * ---
+	 * default: table
+	 * options:
+	 *   - table
+	 *   - csv
+	 *   - ids
+	 *   - json
+	 *   - count
+	 *   - yaml
+	 * ---
+	 */
+	public function sessions($args, $assoc_args) {
+		global $wpdb;
+
+		$rows = $wpdb->get_results(
+			"SELECT u.ID, u.user_login, u.user_email, m.meta_value
+			FROM wp_users u, wp_usermeta m
+			WHERE m.meta_key = 'session_tokens'
+			AND u.ID = m.user_id;", ARRAY_A);
+
+		$format = WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
+
+		if ( 'ids' === $format ) {
+			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
+			return;
+		}
+		$results = [];
+		foreach ($rows as $row) {
+			$tokens = maybe_unserialize( $row['meta_value'] );
+			if (! is_array($tokens)) continue;
+			foreach ($tokens as $token) {
+				$results[] = array_merge($row, [
+					'login' => wp_date('Y-m-d H:i:s', $token['login']),
+					'expiration' => wp_date('Y-m-d H:i:s', $token['expiration']),
+					'ip' => $token['ip'],
+				]);
+			}
+		}
+		$fields = WP_CLI\Utils\get_flag_value( $assoc_args, 'fields',
+			[ 'ID', 'user_login', 'user_email', 'login', 'expiration', 'ip' ] );
+		WP_CLI\Utils\format_items( $format, $results, $fields );
+	}
 }
