@@ -25,15 +25,15 @@ class App_Public {
 		// this stops username guessing, so author might display Fred Smith
 		// for username fred_smith
 		remove_filter('authenticate', 'wp_authenticate_username_password', 20);
-		// Don't allow users with no roles (i.e. disabled) to login
+		// Don't allow users with no roles or who are blocked to login
 		add_filter('authenticate', function ( $user, $username, $password ) {
 			if (!$user || is_wp_error( $user )) return $user;
-			if ( count($user->roles) === 0 ) {
+			if (count($user->roles) === 0
+			|| in_array( 'author-blocked', $user->roles) ) {
 				return new \WP_Error('user_disabled', '<strong>Error:</strong> Your username/email does not have permission to login.');
 			}
 			return $user;
 		}, 30, 3 );
-
 	}
 
 	/**

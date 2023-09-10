@@ -228,16 +228,23 @@ class App_Admin {
 
 	private static function init_users() {
 		add_action( 'delete_user_form', function($current_user, $user_ids ) {
-			global $users_have_content;
+			global $users_have_content, $wpdb;
 			if (!$users_have_content) return;
+			if ( $wpdb->get_var(
+				"SELECT ID FROM {$wpdb->posts}
+				WHERE post_author IN( " . implode( ',', $user_ids ) . ' )
+				AND post_type = "post"
+				LIMIT 1'
+			) ) {
 ?>
 <div class="notice notice-error">
-<p><strong>IMPORTANT:</strong> Don't delete users with content! Instead set their
-Role to "— No role for this site —". See the
+<p><strong>WARNING:</strong> Don't delete users who are authors of posts! Instead set their
+Role to "Blocked Author" so they can't login, but still keep their credit. See the
 <a target="_blank" href="https://south-lacrosse.github.io/wp-help/users.html#deleting-users">SEMLA help page</a>
 for details.</p>
 </div>
 <?php
+			};
 		}, 10, 2);
 	}
 }

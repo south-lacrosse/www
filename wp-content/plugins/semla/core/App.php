@@ -149,6 +149,15 @@ class App {
 		remove_filter( 'widget_text_content', 'wp_replace_insecure_home_url' );
 		remove_filter( 'wp_get_custom_css', 'wp_replace_insecure_home_url' );
 
+		add_filter( 'allow_password_reset', function( $allow, $user_ID ) {
+			if (!$allow) return $allow;
+			$user = get_userdata($user_ID);
+			if (in_array( 'author-blocked', $user->roles) ) {
+				return false;
+			}
+			return $allow;
+		}, 10, 2);
+
 		if (is_admin()) {
 			App_Admin::init();
 			return;
