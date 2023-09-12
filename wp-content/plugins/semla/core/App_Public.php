@@ -26,14 +26,7 @@ class App_Public {
 		// for username fred_smith
 		remove_filter('authenticate', 'wp_authenticate_username_password', 20);
 		// Don't allow users with no roles or who are blocked to login
-		add_filter('authenticate', function ( $user, $username, $password ) {
-			if (!$user || is_wp_error( $user )) return $user;
-			if (count($user->roles) === 0
-			|| in_array( 'author-blocked', $user->roles) ) {
-				return new \WP_Error('user_disabled', '<strong>Error:</strong> Your username/email does not have permission to login.');
-			}
-			return $user;
-		}, 30, 3 );
+		add_filter('authenticate', [User::class, 'authenticate'], 30, 3 );
 	}
 
 	/**
@@ -67,16 +60,6 @@ class App_Public {
 		remove_action('wp_head', 'rsd_link');
 		remove_action('wp_head', 'wp_shortlink_wp_head');
 		remove_action('template_redirect', 'wp_shortlink_header', 11);
-
-		// The following is commented out so can change it back easily
-
-		// no admin bar for front end - unless we are using Query Monitor
-		// if ( ! defined( 'SAVEQUERIES' ) || ! SAVEQUERIES ) {
-		// 	add_action('wp_enqueue_scripts', function() {
-		// 		wp_dequeue_style('litespeed-cache');
-		// 	});
-		// 	add_filter('show_admin_bar','__return_false');
-		// }
 
 		// Remove the REST API lines from the HTTP Header
 		remove_action('template_redirect', 'rest_output_link_header', 11);
