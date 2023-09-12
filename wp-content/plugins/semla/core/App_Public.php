@@ -5,7 +5,6 @@ use Semla\Data_Access\Table_Gateway;
  * Handling initialisation for the public facing pages
  */
 class App_Public {
-	const NOTICES_PAGES = ['fixtures','flags','tables','tables-local'];
 
 	public static function init() {
 		// Do most initialisation when we know which page it is
@@ -85,11 +84,6 @@ class App_Public {
 		send_frame_options_header();
 
 		// semla_* are actions called from our theme
-		add_action( 'semla_notices', function() { // add notices to selected pages
-			if (is_front_page() || is_page(self::NOTICES_PAGES) ) {
-				@readfile(__DIR__ . '/notices.html');
-			}
-		} );
 		// called from theme for history pages with flags on them
 		add_action( 'semla_flags_header', function() {
 			global $post;

@@ -13,7 +13,6 @@ require __DIR__ . '/parts/header.php'; ?>
 <main id="content" class="with-mini-tables">
 <div class="with-mini-tables-inner">
 <?php
-do_action('semla_notices');
 while (have_posts()) :
 	the_post();?>
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>

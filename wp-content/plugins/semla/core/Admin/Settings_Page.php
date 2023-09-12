@@ -60,32 +60,6 @@ class Settings_Page {
 				}
 			}
 		}
-		$notices_file = dirname(__DIR__) . '/notices.html';
-		$notices = @file_get_contents($notices_file);
-		if (isset($_POST['notices'])) {
-			$new = wp_specialchars_decode(stripslashes(trim($_POST['notices'])));
-			if ($new != $notices) {
-				if ($new === '') {
-					@unlink($notices_file);
-					Admin_Menu::dismissible_success_message('Notices removed');
-				} else {
-					// write to a temp file so another process doesn't try to read
-					// a half written file
-					$tmpf = tempnam('/tmp','semla_notices');
-					$fp = fopen($tmpf,'w');
-					fwrite($fp,$new);
-					fclose($fp);
-					chmod($tmpf, 0604); // temp files default to 0600
-					rename($tmpf, $notices_file);
-					Admin_Menu::dismissible_success_message('Notices updated');
-				}
-				$notices = $new;
-				do_action('litespeed_purge_url', '/');
-				foreach (App_Public::NOTICES_PAGES as $page) {
-					do_action('litespeed_purge_url', '/' . $page);
-				}
-			}
-		}
 		$points = get_option('semla_points');
 		if (isset($_POST['W'])) {
 			$points_new = [];
@@ -118,14 +92,6 @@ class Settings_Page {
 			<th scope="row"><label for="gapi_key">Google API key</label></th>
 			<td><input name="gapi_key" type="text" id="gapi_key" value="<?= $gapi_key ?>" class="regular-text" minlength="10">
 			<p>You should already have an API key, but if not <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">follow these instructions</a></p></td>
-		</tr>
-		<tr>
-			<th scope="row"><label for="notices">Notices</label></th>
-			<td><textarea name="notices" id="notices" rows="4" cols="50"><?= esc_html($notices); ?></textarea>
-			<p>This is currently a bit of a hack, so <b>be careful</b>! These notices will be displayed at the top
-				of the home, fixtures, flags, tables, and tables-local pages (assuming the SEMLA lax theme is used). It <b>must</b> be
-				valid html, and notices should be enclosed in p or div tags, possibly multiple for many messages, and the first tag
-				should have class="no-top-margin", e.g. <i>&lt;p class="no-top-margin"&gt;Beware!&lt;/p&gt;</i>.</p></td>
 		</tr>
 		</tbody></table>
 		<h2>Points</h2>

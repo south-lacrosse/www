@@ -8,7 +8,6 @@ require __DIR__ . '/parts/header.php';
 lax_breadcrumbs(); ?>
 <main id="content">
 <?php
-do_action('semla_notices');
 while (have_posts()) {
 	the_post();
 	require __DIR__ . '/parts/content-page.php';
