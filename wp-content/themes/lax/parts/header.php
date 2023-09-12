@@ -25,6 +25,7 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
 <a class="skip-link screen-reader-text" href="#content">Skip to content</a>
 <header class="main-header">
 <div class="banner inner">
