@@ -215,6 +215,9 @@ h4 {
 	margin-top: 0.5em;
 	margin-bottom: 1em;
 }
+.club-title-content > :last-child {
+	margin-bottom: 0;
+}
 @media (min-width: 500px) {
 	.wp-block-semla-club-title {
 		display: flex;
@@ -621,7 +624,7 @@ th > a:visited,
 
 ul,
 ol {
-	margin: 0 0 1em;
+	margin: 0 0 1rem;
 }
 li > ul,
 li > ol {
