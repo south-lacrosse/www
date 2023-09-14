@@ -74,12 +74,6 @@ class App_Public {
 		// remove_filter('comment_text_rss', 'wp_staticize_emoji');
 		remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 
-		add_action('wp_head', function() {
-			if (!is_admin_bar_showing()) return;
-			echo '<style>.wp-admin #wpadminbar #wp-admin-bar-semla-help>.ab-item:before{'
-				.'content:"\f223";top:2px;}</style>' . "\n";
-		}, 99);
-
 		// Add headers that are in .htaccess, but server doesn't send for PHP requests
 		send_frame_options_header();
 

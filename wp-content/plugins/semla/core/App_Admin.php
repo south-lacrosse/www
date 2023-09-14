@@ -86,11 +86,6 @@ class App_Admin {
 			remove_submenu_page( 'options-general.php', 'options-discussion.php' );
 		});
 
-		add_action('admin_head', function() {
-			echo '<style>.wp-admin #wpadminbar #wp-admin-bar-semla-help>.ab-item:before{'
-				.'content:"\f223";top:2px;}</style>' . "\n";
-		});
-
 		add_filter( 'attachment_link', '__return_empty_string' );
 	}
 

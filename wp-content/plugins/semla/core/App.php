@@ -96,17 +96,7 @@ class App {
 		}
 
 		if (is_admin_bar_showing()) {
-			// Remove comments from admin bar menu. This is the most efficient way
-			// to remove as it stops the wp_admin_bar_comments_menu function running,
-			// so stops any database access
-			add_action('add_admin_bar_menus', function() {
-				remove_action( 'admin_bar_menu', 'wp_admin_bar_customize_menu', 40 );
-				remove_action( 'admin_bar_menu', 'wp_admin_bar_comments_menu', 60 );
-			});
-			add_action('wp_before_admin_bar_render', function() {
-				// Add our help screens
-				require __DIR__.'/admin-bar-menu.php';
-			});
+			require __DIR__ . '/admin-bar.php';
 		}
 
 		// don't rewrite content to fancy quotes, used on front and back ends
