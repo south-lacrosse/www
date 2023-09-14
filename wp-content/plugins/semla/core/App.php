@@ -85,6 +85,8 @@ class App {
 			}
 			return $rules;
 		}, 99 );
+		// since we've removed author pages make sure we can't link to them
+		add_filter( 'author_link', '__return_empty_string' );
 
 		// use encrypted SMTP to send emails, and monitor it
 		if (defined('SMTP_USER') && defined('SMTP_PASS')) {
@@ -152,7 +154,6 @@ class App {
 		add_filter('allow_password_reset', [User::class, 'allow_password_reset'], 10, 2);
 		add_filter('retrieve_password_message', [User::class, 'retrieve_password_message'], 10, 4);
 		add_filter('wp_new_user_notification_email', [User::class, 'wp_new_user_notification_email'], 10, 3);
-
 
 		if (is_admin()) {
 			App_Admin::init();

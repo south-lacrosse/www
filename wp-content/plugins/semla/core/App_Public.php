@@ -93,12 +93,6 @@ class App_Public {
 			echo Table_Gateway::get_mini_tables();
 		});
 
-		// Remove author links. Lax theme already removes these, so check first
-		if (! current_theme_supports('semla')) {
-			add_filter( 'author_link', function() { return '#'; }, 99 );
-			add_filter( 'the_author_posts_link', '__return_empty_string', 99 );
-		}
-
 		// Check to see if the page contains something we need to know about
 		// before the page loads, so we can replace the content, change the page
 		// title, or add some CSS for a block.
