@@ -48,12 +48,7 @@
 					"size": "32px",
 					"slug": "x-large"
 				}
-			],
-			"fontStyle": false,
-			"fontWeight": false,
-			"letterSpacing": false,
-			"textDecoration": false,
-			"textTransform": false
+			]
 		}
 	}
 }
