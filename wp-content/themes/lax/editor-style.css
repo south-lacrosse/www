@@ -805,19 +805,13 @@ dd {
 .callout {
 	padding: 0.75em 1em;
 	margin-bottom: 1em;
-	overflow: auto;
-	position: relative;
 	border-width: 0 0 0 5px;
 	border-style: solid;
 }
-.callout p {
-	margin-bottom: 0.6em;
-	margin-top: 0.5em;
-}
-.callout p:first-child {
+.callout > :first-child {
 	margin-top: 0;
 }
-.callout p:last-child {
+.callout > :last-child {
 	margin-bottom: 0;
 }
 
