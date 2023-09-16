@@ -134,6 +134,13 @@ class Monitor_Command {
 				]);
 			}
 		}
+
+		usort($results, static function($a, $b) {
+			$cmp = strcmp($a['login'], $b['login']); // date
+			if ($cmp) return $cmp;
+			return $a['ID'] - $b['ID'];
+		});
+
 		$fields = WP_CLI\Utils\get_flag_value( $assoc_args, 'fields',
 			[ 'ID', 'user_login', 'user_email', 'login', 'expiration', 'ip' ] );
 		WP_CLI\Utils\format_items( $format, $results, $fields );
