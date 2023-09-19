@@ -8,7 +8,7 @@ if ( 'posts' == get_option( 'show_on_front' ) ) {
 	exit;
 }
 $img = get_theme_file_uri() . '/img/logo.svg';
-require __DIR__ . '/parts/header.php'; ?>
+require __DIR__ . '/template-parts/header.php'; ?>
 <img class="front-logo" src="<?= $img ?>" width="1024" height="636" alt="SEMLA logo" onerror="this.style.display='none'">
 <main id="content" class="with-mini-tables">
 <div class="with-mini-tables-inner">
@@ -29,4 +29,4 @@ endwhile; ?>
 <?php do_action('semla_mini_tables'); ?>
 </aside>
 <?php
-require __DIR__ . '/parts/footer.php';
+require __DIR__ . '/template-parts/footer.php';

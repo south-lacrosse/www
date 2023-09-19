@@ -3,7 +3,7 @@
  * The template for displaying archive pages, also used for posts index (home)
  */
 
-require __DIR__ . '/parts/header.php';
+require __DIR__ . '/template-parts/header.php';
 $sidebar_active = is_active_sidebar( 'sidebar-posts' );
 if ($sidebar_active) echo "<div id=\"content-area\">\n";
 ?>
@@ -25,11 +25,11 @@ if (have_posts()) : ?>
 <?php
 	while (have_posts()) {
 		the_post();
-		require __DIR__ . '/parts/post-summary.php';
+		require __DIR__ . '/template-parts/post-summary.php';
 	}
 	lax_posts_navigation();
 else :
-	require __DIR__ . '/parts/nothing-found.php';
+	require __DIR__ . '/template-parts/nothing-found.php';
 endif; ?>
 </main>
 <?php if ($sidebar_active) : ?>
@@ -40,4 +40,4 @@ endif; ?>
 </aside>
 </div>
 <?php endif;
-require __DIR__ . '/parts/footer.php';
+require __DIR__ . '/template-parts/footer.php';

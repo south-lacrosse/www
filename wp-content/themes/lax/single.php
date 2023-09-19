@@ -12,14 +12,14 @@ add_filter('navigation_markup_template', function() {
 	</nav>';
 });
 
-require __DIR__ . '/parts/header.php';
+require __DIR__ . '/template-parts/header.php';
 ?>
 <main id="content">
 <?php
 while (have_posts()) {
 	the_post();
-	require __DIR__ . '/parts/content.php';
-	// get_template_part('parts/content', get_post_format());
+	require __DIR__ . '/template-parts/content.php';
+	// get_template_part('template-parts/content', get_post_format());
 	$nav = get_the_post_navigation([
 		'prev_text' => '« %title',
 		'next_text' => '%title »',
@@ -30,4 +30,4 @@ while (have_posts()) {
 } ?>
 </main>
 <?php
-require __DIR__ . '/parts/footer.php';
+require __DIR__ . '/template-parts/footer.php';

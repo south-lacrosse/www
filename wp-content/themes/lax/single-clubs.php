@@ -4,7 +4,7 @@
  */
 
 global $post;
-require __DIR__ . '/parts/header.php'; ?>
+require __DIR__ . '/template-parts/header.php'; ?>
 <main id="content">
 	<?php
 while (have_posts()) {
@@ -30,4 +30,4 @@ while (have_posts()) {
 } ?>
 </main>
 <?php
-require __DIR__ . '/parts/footer.php';
+require __DIR__ . '/template-parts/footer.php';

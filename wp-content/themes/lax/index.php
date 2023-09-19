@@ -3,7 +3,7 @@
  * The main template file. In this theme should never get here as everything is
  * catered for in the other templates.
  */
-require __DIR__ . '/parts/header.php'; ?>
+require __DIR__ . '/template-parts/header.php'; ?>
 <main id="content">
 <?php
 if (have_posts()) :
@@ -18,8 +18,8 @@ if (have_posts()) :
 	}
 	lax_posts_navigation();
 else :
-	require __DIR__ . '/parts/nothing-found.php';
+	require __DIR__ . '/template-parts/nothing-found.php';
 endif; ?>
 </main>
 <?php
-require __DIR__ . '/parts/footer.php';
+require __DIR__ . '/template-parts/footer.php';

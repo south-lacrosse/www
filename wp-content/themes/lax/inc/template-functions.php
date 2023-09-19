@@ -62,7 +62,7 @@ function lax_entry_footer() {
  */
 function lax_menu($menu_name) {
 	$customizer = is_customize_preview();
-	$menu_file = dirname(__DIR__ ) . '/parts/menu-' . $menu_name . '.html';
+	$menu_file = dirname(__DIR__ ) . '/template-parts/menu-' . $menu_name . '.html';
 	if ($customizer || !@readfile($menu_file)) {
 		add_filter('semla_change_the_title', '__return_false');
 		ob_start();
