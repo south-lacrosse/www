@@ -80,6 +80,7 @@ class App_Admin {
 		});
 
 		add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
+		add_action ('enqueue_block_assets',  [self::class, 'enqueue_block_assets']);
 		// Removes comments/discussion from admin menu
 		add_action('admin_menu', function() {
 			remove_menu_page( 'edit-comments.php' );
@@ -90,7 +91,7 @@ class App_Admin {
 	}
 
 	public static function enqueue_block_editor_assets() {
-		$screen = get_current_screen();
+		$screen_base = get_current_screen()->base;
 		$plugin_dir = dirname(__DIR__);
 		$base_url = plugins_url('/', __DIR__);
 
@@ -99,7 +100,7 @@ class App_Admin {
 		// by adding wp-edit-... as a dependency we make sure our script
 		// runs after the core blocks have been created, so we can then
 		// remove or change them if we want
-		$edit_dependency = match($screen->base) {
+		$edit_dependency = match($screen_base) {
 			'post' => 'wp-edit-post',
 			'widgets' => 'wp-edit-widgets',
 			'customize' => 'wp-customize-widgets',
@@ -111,26 +112,41 @@ class App_Admin {
 		};
 		wp_enqueue_script('semla-blocks-core',
 			$base_url . 'blocks/core/index.js', $dependencies, $asset_file['version']);
-		wp_enqueue_style('semla-blocks-core',
-			$base_url . 'blocks/core/index.css', [], $asset_file['version']);
 
-		if ($screen->base === 'post' || $screen->base === 'site-editor') {
-			if ($screen->base === 'post') {
+		if ($screen_base === 'post' || $screen_base === 'site-editor') {
+			if ($screen_base === 'post') {
 				$asset_file = include "$plugin_dir/blocks/editor/index.asset.php";
 				$dependencies = $asset_file['dependencies'];
 				wp_enqueue_script('semla-blocks-editor',
-				$base_url . 'blocks/editor/index.js', $dependencies, $asset_file['version']);
+					$base_url . 'blocks/editor/index.js', $dependencies, $asset_file['version']);
 			}
+
+			wp_add_inline_script('semla-map-editor-script',
+				'window.semla=window.semla||{};window.semla.gapi="'
+					. get_option('semla_gapi_key') . '"',
+				'before');
+		}
+	}
+
+	/**
+	 * Styles enqueued here will be loaded into the editor iframe if it is used,
+	 * as well as the edit post page
+	 */
+	public static function enqueue_block_assets() {
+		$screen_base = get_current_screen()->base;
+		if ($screen_base === 'post' || $screen_base === 'site-editor') {
+			$plugin_dir = dirname(__DIR__);
+			$base_url = plugins_url('/', __DIR__);
+			$asset_file = include "$plugin_dir/blocks/core/index.asset.php";
+			wp_enqueue_style('semla-blocks-core',
+				$base_url . 'blocks/core/index.css', [], $asset_file['version']);
+
 			wp_enqueue_style('semla-flags',
 				$base_url . 'css/flags' . SEMLA_MIN . '.css', [], '1.1');
 			wp_enqueue_style('semla-clubs-grid',
 				$base_url . 'css/clubs-grid' . SEMLA_MIN . '.css', [], '1.0');
 			wp_enqueue_style('semla-clubs-list',
 				$base_url . 'css/clubs-list' . SEMLA_MIN . '.css', [], '1.0');
-			wp_add_inline_script('semla-location-editor-script',
-				'window.semla=window.semla||{};window.semla.gapi="'
-					. get_option('semla_gapi_key') . '"',
-				'before');
 		}
 	}
 
