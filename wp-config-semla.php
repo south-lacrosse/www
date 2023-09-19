@@ -69,6 +69,12 @@ define('WP_SITEURL', 'https://dev.southlacrosse.org.uk');
 define('WP_ENVIRONMENT_TYPE','development'); // Comment out if using Local
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true); // true to write to wp-content/debug.log, or location of log file
+// Development mode causes certain low-level WordPress behavior to change, e.g.
+// caches around theme.json should be disabled when working on a theme.
+// Should ONLY be set on development machines, i.e. if WP_ENVIRONMENT_TYPE is 'development'
+// Allowed values are plugin, theme, core (which we should never need), or all
+define('WP_DEVELOPMENT_MODE', 'theme');
+
 // define('BE_MEDIA_FROM_PRODUCTION_URL', 'https://www.southlacrosse.org.uk'); // get media from production, if plugin installed
 
 // if SEMLA .css & .js files should be served minimized. Defaults to '.min' to minimize, '' otherwise
