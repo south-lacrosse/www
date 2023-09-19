@@ -90,40 +90,48 @@ class App_Admin {
 	}
 
 	public static function enqueue_block_editor_assets() {
+		$screen = get_current_screen();
 		$plugin_dir = dirname(__DIR__);
-		$asset_file = include( $plugin_dir . '/blocks-core/core.asset.php');
-		if ($asset_file) {
-			$dependencies = $asset_file['dependencies'];
-			// by adding wp-edit-... as a dependency we make sure our script
-			// runs after the core blocks have been created, so we can then
-			// remove or change them if we want
-			$screen = get_current_screen();
-			$edit_dependency = match($screen->base) {
-				'post' => 'wp-edit-post',
-				'widgets' => 'wp-edit-widgets',
-				'customize' => 'wp-customize-widgets',
-				'site-editor' => 'wp-edit-site',
-				default => false
-			};
-			if ($edit_dependency && !in_array($edit_dependency, $dependencies)) {
-				$dependencies[] = $edit_dependency;
-			};
-			$base_url = plugins_url('/', __DIR__);
-			wp_enqueue_script('semla-blocks-core',
-				$base_url . 'blocks-core/core.js', $dependencies, $asset_file['version']);
-			wp_enqueue_style('semla-blocks-core',
-				$base_url . 'blocks-core/core.css', [], $asset_file['version']);
+		$base_url = plugins_url('/', __DIR__);
+
+		$asset_file = include "$plugin_dir/blocks/core/index.asset.php";
+		$dependencies = $asset_file['dependencies'];
+		// by adding wp-edit-... as a dependency we make sure our script
+		// runs after the core blocks have been created, so we can then
+		// remove or change them if we want
+		$edit_dependency = match($screen->base) {
+			'post' => 'wp-edit-post',
+			'widgets' => 'wp-edit-widgets',
+			'customize' => 'wp-customize-widgets',
+			'site-editor' => 'wp-edit-site',
+			default => false
+		};
+		if ($edit_dependency && !in_array($edit_dependency, $dependencies)) {
+			$dependencies[] = $edit_dependency;
+		};
+		wp_enqueue_script('semla-blocks-core',
+			$base_url . 'blocks/core/index.js', $dependencies, $asset_file['version']);
+		wp_enqueue_style('semla-blocks-core',
+			$base_url . 'blocks/core/index.css', [], $asset_file['version']);
+
+		if ($screen->base === 'post' || $screen->base === 'site-editor') {
+			if ($screen->base === 'post') {
+				$asset_file = include "$plugin_dir/blocks/editor/index.asset.php";
+				$dependencies = $asset_file['dependencies'];
+				wp_enqueue_script('semla-blocks-editor',
+				$base_url . 'blocks/editor/index.js', $dependencies, $asset_file['version']);
+			}
 			wp_enqueue_style('semla-flags',
 				$base_url . 'css/flags' . SEMLA_MIN . '.css', [], '1.1');
 			wp_enqueue_style('semla-clubs-grid',
 				$base_url . 'css/clubs-grid' . SEMLA_MIN . '.css', [], '1.0');
 			wp_enqueue_style('semla-clubs-list',
 				$base_url . 'css/clubs-list' . SEMLA_MIN . '.css', [], '1.0');
+			wp_add_inline_script('semla-location-editor-script',
+				'window.semla=window.semla||{};window.semla.gapi="'
+					. get_option('semla_gapi_key') . '"',
+				'before');
 		}
-		wp_add_inline_script('semla-location-editor-script',
-			'window.semla=window.semla||{};window.semla.gapi="'
-				. get_option('semla_gapi_key') . '"',
-			'before');
 	}
 
 	private static function init_dashboard() {
