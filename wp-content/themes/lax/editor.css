@@ -71,3 +71,8 @@ than the CSS added by WP as that gets added right before the
 	content: 'Modified: ';
 	position: relative;
 }
+
+#semla_toc {
+	float: none !important;
+	margin-top: 1em;
+}
