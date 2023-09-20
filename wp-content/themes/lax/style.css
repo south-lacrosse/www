@@ -1203,12 +1203,6 @@ li > ol {
 .medium-spaced > li {
 	margin-bottom: 0.33em;
 }
-.is-style-alpha {
-	list-style-type: lower-alpha;
-}
-.is-style-roman {
-	list-style-type: lower-roman;
-}
 .is-style-unstyled {
 	padding-left: 0;
 	list-style: none;
