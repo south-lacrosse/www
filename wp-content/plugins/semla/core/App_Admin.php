@@ -133,14 +133,14 @@ class App_Admin {
 	 * as well as the edit post page
 	 */
 	public static function enqueue_block_assets() {
+		$plugin_dir = dirname(__DIR__);
+		$base_url = plugins_url('/', __DIR__);
+		$asset_file = include "$plugin_dir/blocks/core/index.asset.php";
+		wp_enqueue_style('semla-blocks-core',
+			$base_url . 'blocks/core/index.css', [], $asset_file['version']);
+
 		$screen_base = get_current_screen()->base;
 		if ($screen_base === 'post' || $screen_base === 'site-editor') {
-			$plugin_dir = dirname(__DIR__);
-			$base_url = plugins_url('/', __DIR__);
-			$asset_file = include "$plugin_dir/blocks/core/index.asset.php";
-			wp_enqueue_style('semla-blocks-core',
-				$base_url . 'blocks/core/index.css', [], $asset_file['version']);
-
 			wp_enqueue_style('semla-flags',
 				$base_url . 'css/flags' . SEMLA_MIN . '.css', [], '1.1');
 			wp_enqueue_style('semla-clubs-grid',
