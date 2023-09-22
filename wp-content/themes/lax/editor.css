@@ -64,8 +64,8 @@ than the CSS added by WP as that gets added right before the
 	color: inherit !important;
 }
 
-/** Change post-date modified block to match what is done in a hook in PHP for
- *  the public site, as that doesn't run in the editor.
+/* Change post-date modified block to match what is done in a hook in PHP for
+ * the public site, as that doesn't run in the editor.
  */
 .wp-block-post-date__modified-date.entry-meta::before {
 	content: 'Modified: ';
@@ -75,4 +75,15 @@ than the CSS added by WP as that gets added right before the
 #semla_toc {
 	float: none !important;
 	margin-top: 1em;
+}
+
+/* Widgets have different styling on the front end, so make sure that's
+replicated in the backend */
+.wp-block-widget-area__inner-blocks > .block-editor-block-list__layout > h2 {
+	border-bottom: 0;
+	padding-bottom: 0;
+	font-size: 1.25em;
+}
+.wp-block-widget-area__inner-blocks > .block-editor-block-list__layout > :first-child {
+	margin-top: 0;
 }
