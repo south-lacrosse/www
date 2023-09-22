@@ -12,7 +12,7 @@ class Settings_Page {
 		'C' => 'Conceded', 'C24' => 'Conceded within 24 hours'];
 
 	public static function render_page() {
-		if (!current_user_can('manage_semla'))  {
+		if (!current_user_can('manage_options'))  {
 			wp_die('You do not have sufficient permissions to access this page.');
 		}
 		?>

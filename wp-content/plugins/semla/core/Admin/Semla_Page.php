@@ -12,7 +12,7 @@ use Semla\Data_Access\Tiebreaker_Gateway;
 class Semla_Page {
 
 	public static function render_page() {
-		if (!current_user_can('manage_categories'))  {
+		if (!current_user_can('manage_semla'))  {
 			wp_die('You do not have sufficient permissions to access this page.');
 		}
 		?>
@@ -65,7 +65,7 @@ class Semla_Page {
 				case 'update':
 					require __DIR__ . '/views/semla-update-tab.php';
 					break;
-				case 'formulas': 
+				case 'formulas':
 					$rows = $fixtures_sheet_id ? Cup_Draw_Gateway::get_cup_fixtures_for_sheet() : false;
 					require __DIR__ . '/views/semla-formulas-tab.php';
 					break;
@@ -94,9 +94,9 @@ class Semla_Page {
 			wp_die('You do not have sufficient permissions to access this page.');
 		}
 		// remove args from query string in browser so update doesn't re-run. Needs
-		// to be before render_page as the filter will already have run 
+		// to be before render_page as the filter will already have run
 		add_filter('removable_query_args', function($args) {
 			return array_merge($args, ['action','_wpnonce']);
-		});						
+		});
 	}
 }

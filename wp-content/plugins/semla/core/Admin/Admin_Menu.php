@@ -27,10 +27,10 @@ class Admin_Menu {
 			// 	'semla_competition', [Competition_Page::class, 'render_page'] );
 			// add_action( 'load-' . $hook_suffix, [Competition_Page::class, 'handle_actions'] );
 
-			add_submenu_page('semla', 'Settings', 'Settings', 'manage_semla',
+			add_submenu_page('semla', 'Settings', 'Settings', 'manage_options',
 				'semla_settings', [Settings_Page::class, 'render_page'] );
 
-			$hook_suffix = add_submenu_page('semla', 'Cache', 'Cache', 'manage_semla',
+			$hook_suffix = add_submenu_page('semla', 'Cache', 'Cache', 'manage_options',
 				'semla_cache', [Cache_Page::class, 'render_page'] );
 			add_action( 'load-' . $hook_suffix, [self::class, 'remove_action_query_arg'] );
 
@@ -88,7 +88,7 @@ class Admin_Menu {
 	}
 
 	public static function validate_nonce($action) {
-		if ( ! isset( $_REQUEST['_wpnonce'] ) 
+		if ( ! isset( $_REQUEST['_wpnonce'] )
 			|| ! wp_verify_nonce( $_REQUEST['_wpnonce'], $action ) ) {
 		   print 'The link you followed has expired.';
 		   exit;
@@ -97,9 +97,9 @@ class Admin_Menu {
 
 	public static function remove_action_query_arg() {
 		// remove args from query string in browser so update doesn't re-run. Needs
-		// to be before render_page as the filter will already have run 
+		// to be before render_page as the filter will already have run
 		add_filter('removable_query_args', function($args) {
 			return array_merge($args, ['action','_wpnonce']);
-		});						
+		});
 	}
 }

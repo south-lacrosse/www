@@ -10,7 +10,7 @@ class Cache_Page {
 	const PAGE_URL = '?page=semla_cache';
 
 	public static function render_page() {
-		if (!current_user_can('manage_semla'))  {
+		if (!current_user_can('manage_options'))  {
 			wp_die('You do not have sufficient permissions to access this page.');
 		}
 		?>
