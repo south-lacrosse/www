@@ -70,10 +70,8 @@ add_action('after_setup_theme', function() {
 });
 
 function lax_admin() {
-	add_action ('enqueue_block_editor_assets', function() {
-		add_theme_support('editor-styles');
-		add_editor_style('editor-style' . SEMLA_MIN . '.css');
-	});
+	add_theme_support('editor-styles');
+	add_editor_style('editor-style' . SEMLA_MIN . '.css');
 	add_action ('enqueue_block_assets',  function() {
 		wp_enqueue_style('semla-editor',
 			get_stylesheet_directory_uri() . '/editor' . SEMLA_MIN . '.css', [], '1.2');
