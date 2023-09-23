@@ -21,6 +21,7 @@ class Club_Gateway {
 			'update_post_meta_cache' => false
 		]);
 	}
+
 	public static function clubs_list($format) {
 		$query = self::get_all_clubs_query();
 
@@ -39,6 +40,39 @@ class Club_Gateway {
 		require __DIR__ . '/views/clubs-map.php';
 		wp_reset_postdata();
 		return ob_get_clean();
+	}
+
+	public static function get_club_emails($one_per_club) {
+		$query = self::get_all_clubs_query();
+
+		if (!$query->have_posts()) return '';
+		$emails = [];
+		while ($query->have_posts()) {
+			$query->the_post();
+			$club = get_the_title();
+			$content = get_the_content();
+			// social links
+			if (preg_match('/{"url":"mailto:([^"]+)"/', $content, $matches)) {
+				$emails[$matches[1]] = ['club' => $club, 'role' => 'General Contact', 'name'=> ''];
+				if ($one_per_club) continue;
+			}
+			if ($count = preg_match_all('/<div class="avf-name">([^<]*)<\/div><div class="avf-value">([^<]*)[^!]*<a [^>]*href="mailto:([^"]*)"/',
+				$content, $matches)) {
+				for ($i = 0; $i < $count; $i++) {
+					$email = $matches[3][$i];
+					if (!isset($emails[$email])) {
+						$emails[$email] = [
+							'club' => $club,
+							'role' => trim($matches[1][$i]),
+							'name' => trim($matches[2][$i])
+						];
+					}
+					if ($one_per_club) break;
+				}
+			}
+		}
+		wp_reset_postdata();
+		return $emails;
 	}
 
 	public static function get_club_slugs() {

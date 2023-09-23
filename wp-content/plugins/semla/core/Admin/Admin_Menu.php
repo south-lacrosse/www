@@ -34,8 +34,10 @@ class Admin_Menu {
 				'semla_cache', [Cache_Page::class, 'render_page'] );
 			add_action( 'load-' . $hook_suffix, [self::class, 'remove_action_query_arg'] );
 
+			$hook_suffix = add_submenu_page('edit.php?post_type=clubs', 'Club Emails', 'Emails', 'manage_semla',
+				'semla_clubs_emails', [Clubs_Emails_Page::class, 'render_page'] );
+			add_action( 'load-' . $hook_suffix, [Clubs_Emails_Page::class, 'check_download'] );
 
-			// The rest are only allowed by administrators
 			add_options_page('SMTP', 'SMTP', 'manage_options','semla_smtp',
 				[SMTP_Page::class, 'render_page'] );
 			add_management_page( 'PHP Info', 'PHP Info', 'manage_options', 'semla_phpinfo',
