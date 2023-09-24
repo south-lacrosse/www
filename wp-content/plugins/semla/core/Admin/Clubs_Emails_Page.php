@@ -16,14 +16,21 @@ class Clubs_Emails_Page {
 		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) === 'post' ) {
 			Admin_Menu::validate_nonce('semla_clubs_emails'); ?>
 <div class="postbox"><div class="inside">
-<button id="copy-to-clipboard" class="button button-secondary">Copy to clipboard</button>
+<button id="display-copy" class="button button-secondary">Copy to clipboard</button>
 <pre id="semla-emails" style="overflow:auto">
 <?php list($format,$include) = self::render_emails(); ?>
 </pre>
 <script>
-	document.getElementById('copy-to-clipboard').addEventListener('click', function() {
-		navigator.clipboard.writeText(document.getElementById('semla-emails').innerText)
-	});
+(function () {
+	const copyBtn = document.getElementById('display-copy');
+	let timeoutId;
+	copyBtn.addEventListener('click', function() {
+		navigator.clipboard.writeText(document.getElementById('semla-emails').textContent);
+		copyBtn.textContent = 'Emails copied';
+		clearTimeout( timeoutId );
+		timeoutId = setTimeout( () => { copyBtn.textContent = 'Copy to clipboard'; }, 5000 );
+	} );
+})();
 </script>
 </div></div>
 <?php
@@ -32,11 +39,11 @@ class Clubs_Emails_Page {
 			$include = 'all';
 		}
 ?>
-	<p>Download or display all club email addresses.</p>
+	<p>Download, copy, or display all club email addresses.</p>
 	<p>Note: this page will only extract emails if they are in an Attribute/Value or
 		Social Icons block. Attribute/Values should have the role as the attribute, and the
 		value should start with the name (if there is one), and contain the email address.</p>
-	<form method="post">
+	<form method="post" id="emails-form">
 		<table class="form-table" role="presentation"><tbody>
 		<tr>
 			<th scope="row">Format</th>
@@ -44,7 +51,7 @@ class Clubs_Emails_Page {
 				<?php self::render_radio_buttons([
 					'text' => 'Plain email addresses',
 					'full' => 'Name/addresses e.g. John Doe - Club Name 1st Team Captain &lt;john@example.com&gt;',
-					'csv' => 'CSV (Comma Separated Value) with fields for each part'
+					'csv' => 'CSV (Comma Separated Value) with fields for each part, for loading into Excel or Google Sheets.'
 					], 'format', $format); ?>
 				</fieldset>
 			</td>
@@ -64,9 +71,42 @@ class Clubs_Emails_Page {
 			<?php wp_nonce_field('semla_clubs_emails') ?>
 			<input type="submit" name="display" id="submit" class="button button-primary" value="Display">
 			<input type="submit" name="download" id="submit" class="button button-secondary" value="Download">
+			<button type="button" id="submit-copy" class="button button-secondary">Copy to Clipboard</button>
 		</p>
 	</form>
 </div>
+<script>
+(function () {
+	const copyBtn = document.getElementById('submit-copy');
+	let timeoutId;
+	copyBtn.addEventListener('click', async function() {
+		const form = document.getElementById('emails-form');
+		try {
+			const data = new URLSearchParams(new FormData(form));
+			data.append('download','Download');
+    		const response = await fetch(form.action, {method:'post', body: data});
+			if (!response.ok) {
+    			throw new Error('Network error');
+  			}
+			const contentType = await response.headers.get('Content-Type');
+			if (contentType !== 'application/octet-stream') {
+				throw new Error('Invalid response type: ' + contentType);
+			}
+		    const result = await response.text();
+			navigator.clipboard.writeText(result);
+			setButtonText('Emails copied');
+		} catch (error) {
+			console.error(error);
+			setButtonText('Copy failed - check console');
+		}
+	} );
+	function setButtonText(message) {
+		copyBtn.textContent = message;
+		clearTimeout( timeoutId );
+		timeoutId = setTimeout( () => { copyBtn.textContent = 'Copy to clipboard'; }, 5000 );
+	}
+})();
+</script>
 <?php
 	}
 
