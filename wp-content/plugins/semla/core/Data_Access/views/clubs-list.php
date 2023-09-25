@@ -50,6 +50,7 @@ while ($query->have_posts()) {
     }
 	echo "</div></td></tr>\n";
 }
+wp_reset_postdata();
 ?>
 </tbody>
 </table>

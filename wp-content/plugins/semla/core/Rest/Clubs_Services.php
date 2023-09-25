@@ -43,7 +43,7 @@ class Clubs_Services {
 		$error = Rest::validate_content_type($request);
 		if ($error) return $error;
 		Rest::$cors_header = true;
-		$query = Club_Gateway::get_all_clubs_query();
+		$clubs = Club_Gateway::get_clubs();
 		Rest::$cache_tags = ['semla_clubs'];
 		ob_start();
 		require __DIR__ . '/views/clubs-gpx.php';

@@ -5,17 +5,16 @@ namespace Semla\Data_Access;
  */
 class Club_Gateway {
 	/**
-	 * Get a WP_Query for all published clubs
+	 * Return an array of all club posts
+	 * @return WP_Post[]
 	 */
-	public static function get_all_clubs_query() {
-		return new \WP_Query([
+	public static function get_clubs() {
+		return get_posts([
 			'post_type' => 'clubs',
 			'post_status' => 'publish',
 			'nopaging' => true,
 			'orderby' => 'title',
 			'order' => 'ASC',
-			// don't count rows, as we'll get them all anyway
-			'no_found_rows' => true,
 			 // don't load and cache the post meta or term data for each post
 			'update_post_term_cache' => false,
 			'update_post_meta_cache' => false
@@ -23,46 +22,52 @@ class Club_Gateway {
 	}
 
 	public static function clubs_list($format) {
-		$query = self::get_all_clubs_query();
+		// Use WP_Query here so that we can use the post thumbnail cache. Without
+		// it WordPress will run 2 queries per thumbnail
+		$query = new \WP_Query([
+			'post_type' => 'clubs',
+			'post_status' => 'publish',
+			'nopaging' => true,
+			'orderby' => 'title',
+			'order' => 'ASC',
+			// don't need all the filters the query usually runs
+			'suppress_filters' => true
+		]);
 
 		if (!$query->have_posts()) return '';
+		update_post_thumbnail_cache( $query );
 		ob_start();
 		require __DIR__ . "/views/clubs-$format.php";
-		wp_reset_postdata();
 		return ob_get_clean();
 	}
 
 	public static function clubs_map() {
-		$query = self::get_all_clubs_query();
-
-		if (!$query->have_posts()) return '';
+		$clubs = self::get_clubs();
+		if (!$clubs) return '';
 		ob_start();
 		require __DIR__ . '/views/clubs-map.php';
-		wp_reset_postdata();
 		return ob_get_clean();
 	}
 
+	/**
+	 * Extract all emails from club pages
+	 * @return array key email, value array with club,role,name
+	 */
 	public static function get_club_emails($one_per_club) {
-		$query = self::get_all_clubs_query();
-
-		if (!$query->have_posts()) return '';
 		$emails = [];
-		while ($query->have_posts()) {
-			$query->the_post();
-			$club = get_the_title();
-			$content = get_the_content();
+		foreach (self::get_clubs() as $club) {
 			// social links
-			if (preg_match('/{"url":"mailto:([^"]+)"/', $content, $matches)) {
-				$emails[$matches[1]] = ['club' => $club, 'role' => 'General Contact', 'name'=> ''];
+			if (preg_match('/{"url":"mailto:([^"]+)"/', $club->post_content, $matches)) {
+				$emails[$matches[1]] = ['club' => $club->post_title, 'role' => 'General Contact', 'name'=> ''];
 				if ($one_per_club) continue;
 			}
 			if ($count = preg_match_all('/<div class="avf-name">([^<]*)<\/div><div class="avf-value">([^<]*)[^!]*<a [^>]*href="mailto:([^"]*)"/',
-				$content, $matches)) {
+				$club->post_content, $matches)) {
 				for ($i = 0; $i < $count; $i++) {
 					$email = $matches[3][$i];
 					if (!isset($emails[$email])) {
 						$emails[$email] = [
-							'club' => $club,
+							'club' => $club->post_title,
 							'role' => trim($matches[1][$i]),
 							'name' => trim($matches[2][$i])
 						];
@@ -71,14 +76,13 @@ class Club_Gateway {
 				}
 			}
 		}
-		wp_reset_postdata();
 		return $emails;
 	}
 
 	public static function get_club_slugs() {
 		global $wpdb;
-		$res = $wpdb->get_col('SELECT post_name FROM wp_posts
-			WHERE post_type = "clubs" AND post_status = "publish"');
+		$res = $wpdb->get_col("SELECT post_name FROM {$wpdb->posts}
+			WHERE post_type = 'clubs' AND post_status = 'publish'");
 		if ($wpdb->last_error) return false;
 		return $res;
 	}
