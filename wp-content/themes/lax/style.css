@@ -1237,7 +1237,8 @@ li > ol {
 		vertical-align: top;
 	}
 	.avf-same-line > .avf-name {
-		width: 12em;
+		width: 12.2em;
+		padding-right: 0.2em;
 	}
 	.avf-same-line > .avf-name::after {
 		content: ':';

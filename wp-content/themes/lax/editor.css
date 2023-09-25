@@ -64,6 +64,13 @@ than the CSS added by WP as that gets added right before the
 	color: inherit !important;
 }
 
+/* stops value from shrinking when using the Select tool */
+@media (min-width: 480px) {
+	.avf-same-line > .avf-value {
+		width: 100%;
+	}
+}
+
 /* Change post-date modified block to match what is done in a hook in PHP for
  * the public site, as that doesn't run in the editor.
  */
