@@ -18,7 +18,7 @@ class Clubs_Emails_Page {
 <div class="postbox"><div class="inside">
 <button id="display-copy" class="button button-secondary">Copy to clipboard</button>
 <pre id="semla-emails" style="overflow:auto">
-<?php list($format,$include) = self::render_emails(); ?>
+<?php list($format, $include, $officers) = self::render_emails(); ?>
 </pre>
 <script>
 (function () {
@@ -37,6 +37,7 @@ class Clubs_Emails_Page {
 		} else {
 			$format = 'text';
 			$include = 'all';
+			$officers = true;
 		}
 ?>
 	<p>Download, copy, or display all club email addresses.</p>
@@ -61,9 +62,20 @@ class Clubs_Emails_Page {
 			<td><fieldset>
 				<?php self::render_radio_buttons([
 					'all' => 'All club emails',
-					'one-per-club' => 'Only the first email on each Club page, usually the main contact'
+					'one-per-club' => 'One email address per club, chosen in order of preference '
+						. 'from the Secretary, General Contact (includes email in Social Icons), '
+						. 'Chair*, President, otherwise first contact'
 					], 'include', $include); ?>
 				</fieldset>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row">Include SEMLA Officers</th>
+			<td>
+				<p><label>
+					<input name="officers" type="checkbox" value="1" <?php checked( $officers ); ?>>
+					Add all Officers from the Contacts page</label>
+				</p>
 			</td>
 		</tr>
 		</tbody></table>
@@ -154,8 +166,9 @@ class Clubs_Emails_Page {
 	private static function render_emails($download = false) {
 		$include = $_POST['include'] ?? 'all';
 		$format = $_POST['format'] ?? 'text';
+		$officers = isset( $_POST['officers'] );
 
-		$emails = Club_Gateway::get_club_emails($include === 'one-per-club');
+		$emails = Club_Gateway::get_club_emails($include === 'one-per-club', $officers);
 		$str = '';
 		if ($format === 'text') {
 			$str = implode("\n",array_keys($emails));
@@ -186,6 +199,6 @@ class Clubs_Emails_Page {
 			'<' => '&lt;',
 			'>' => '&gt;',
 		]);
-		return [$format, $include];
+		return [$format, $include, $officers];
 	}
 }
