@@ -98,6 +98,14 @@ class Club_Gateway {
 		if ($officers && $contact_page = get_page_by_path('contact')) {
 			$site_title = get_bloginfo( 'name' );
 			self::extract_emails($site_title, $contact_page->post_content, $emails);
+			$admin_email = get_bloginfo( 'admin_email' );
+			if (!isset($emails[$admin_email])) {
+				$emails[$admin_email] = [
+					'club' => $site_title,
+					'role' => 'Webmaster',
+					'name' => ''
+				];
+			}
 		}
 		return $emails;
 	}
