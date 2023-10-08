@@ -959,7 +959,7 @@ class Fixtures_Sheet_Gateway {
 		if ($tables_count === null) {
 			return self::db_error('Failed to count backup tables');
 		}
-		if ($tables_count !== '6') {
+		if ($tables_count != count($tables)) {
 			return new WP_Error('fixtures', 'Not all backup tables exist, cannot revert');
 		}
 		$rows = $wpdb->get_results(
