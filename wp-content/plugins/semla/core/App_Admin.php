@@ -81,10 +81,19 @@ class App_Admin {
 
 		add_action ('enqueue_block_editor_assets',  [self::class, 'enqueue_block_editor_assets']);
 		add_action ('enqueue_block_assets',  [self::class, 'enqueue_block_assets']);
-		// Removes comments/discussion from admin menu
 		add_action('admin_menu', function() {
+			// Removes comments/discussion from admin menu
 			remove_menu_page( 'edit-comments.php' );
 			remove_submenu_page( 'options-general.php', 'options-discussion.php' );
+			// change Clubs default to only show published
+			global $submenu;
+			$url = 'edit.php?post_type=clubs';
+			foreach( $submenu[ $url ] as $key => $value ) {
+				if( $value[2] === $url ) {
+					$submenu[$url][$key][2] = "$url&post_status=publish";
+					break;
+				}
+			}
 		});
 
 		add_filter( 'attachment_link', '__return_empty_string' );
@@ -207,6 +216,15 @@ class App_Admin {
 	}
 
 	private static function init_edit($screen) {
+		// Change default ordering of clubs. We change the $_GET parameter so
+		// that WordPress will set the query and also change the page, so the up
+		// arrow on the Title column will be highlighted.
+		if ($screen->post_type == 'clubs') {
+			if ( !isset($_GET['orderby'])) {
+				$_GET['orderby'] = 'title';
+				$_GET['order'] = 'asc';
+			}
+		}
 		self::add_modified_column($screen->post_type);
 		add_filter( "manage_{$screen->id}_sortable_columns", function ($columns) {
 			$columns['modified'] = 'modified';
