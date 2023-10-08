@@ -722,7 +722,7 @@ class Fixtures_Sheet_Gateway {
 		if ($cmp) return $cmp;
 		$cmp = $b['wins'] - $a['wins'];
 		if ($cmp) return $cmp;
-		return strcmp($a['row']->team, $b['row']->team);
+		return $a['position'] - $b['position'];
 	}
 
 	private function get_competition_name($comp_id) {
