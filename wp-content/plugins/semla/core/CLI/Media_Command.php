@@ -113,6 +113,11 @@ class Media_Command {
 	public function unused($args, $assoc_args) {
 		global $wpdb;
 
+		$assoc_args = array_merge( [
+			'fields' => 'ID,post_parent,post_title,guid',
+			'format' => 'table',
+		], $assoc_args );
+
 		$revisions_sql = WP_CLI\Utils\get_flag_value( $assoc_args, 'revisions', true )
 			? "AND p.post_type <> 'revision'" : '';
 		$parent_sql = WP_CLI\Utils\get_flag_value( $assoc_args, 'attached', true )
@@ -136,14 +141,11 @@ class Media_Command {
 					) )
 			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pm
 				WHERE pm.meta_value LIKE CONCAT('%',i.guid,'%'));");
-		$format = WP_CLI\Utils\get_flag_value( $assoc_args, 'format', 'table' );
-		if ( 'ids' === $format ) {
+		if ( 'ids' === $assoc_args['format'] ) {
 			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
 			return;
 		}
-		$fields = WP_CLI\Utils\get_flag_value( $assoc_args, 'fields',
-			[ 'ID', 'post_parent', 'post_title', 'guid' ] );
-		WP_CLI\Utils\format_items( $format, $rows, $fields );
+		WP_CLI\Utils\format_items( $assoc_args['format'], $rows, explode( ',', $assoc_args['fields'] ) );
 	}
 
 	/**
