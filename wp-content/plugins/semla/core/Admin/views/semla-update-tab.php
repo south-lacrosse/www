@@ -1,7 +1,3 @@
-<div class="notice notice-warning inline">
-<p><b>Important:</b> If you are going to load the spreadsheet for a new season make sure that the previous
-season's data has been archived by running the <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/end-season.md">End of Season processing</a>.</p>
-</div>
 <?php
 
 use Semla\Utils\Util;
@@ -16,9 +12,9 @@ The fixtures will be loaded from <a href="<?= Util::get_fixtures_sheet_url($fixt
 See also <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/fixtures-sheet-format.md">Information on the Format of the Google Sheet</a>.</p>
 <?php
 if (current_user_can('manage_options'))  : ?>
-<p>To set the Google Sheet to use go to the <a href="?page=semla_settings">Settings Page</a>.</p>
+<p>To use a different Google Sheet, or change the points per win/draw/loss, go to the <a href="?page=semla_settings">Settings Page</a>.</p>
 <?php else : ?>
-<p>Note: the Google Sheet used can only be changed by Administrators.</p>
+<p>Note: the Google Sheet used, and points per win/draw/loss, can only be changed by Administrators.</p>
 <?php endif;
 if ($fixtures_sheet_id) {?>
 <p>Only update everything at the beginning of the season, or if you have changed any of the divisions or teams.</p>

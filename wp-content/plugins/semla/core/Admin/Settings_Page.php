@@ -18,6 +18,10 @@ class Settings_Page {
 		?>
 <div class="wrap">
 	<h1>SEMLA Settings</h1>
+	<div class="notice notice-warning inline">
+	<p><b>Important:</b> If you are changing the Fixtures Google Sheet ID for a new season make sure that the previous
+	season's data has been archived by running the <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/end-season.md">End of Season processing</a>.</p>
+	</div>
 <?php
 		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) === 'post' ) {
 			Admin_Menu::validate_nonce('semla_settings');
