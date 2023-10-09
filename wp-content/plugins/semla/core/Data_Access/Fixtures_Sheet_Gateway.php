@@ -664,13 +664,23 @@ class Fixtures_Sheet_Gateway {
 		}
 		for ($i = $start; $i < $size && $table[$i]->points === $points; $i++) {
 			$tiebreakers[$table[$i]->team] =
-				['points' => 0, 'goal_diff' => 0, 'wins' => 0, 'position' => $i + 1, 'row' => $table[$i]];
+				['played' => 0, 'points' => 0, 'goal_diff' => 0, 'wins' => 0,
+					'position' => $i + 1, 'row' => $table[$i]];
 		}
 		// calculate the head2head record for all teams on the same points
 		foreach ($fixtures as $fixture) {
 			if (array_key_exists($fixture['h'], $tiebreakers) && array_key_exists($fixture['a'], $tiebreakers)) {
 				$this->add_h2h($tiebreakers[$fixture['h']], $fixture['h_data']);
 				$this->add_h2h($tiebreakers[$fixture['a']], $fixture['a_data']);
+			}
+		}
+		// tiebreaker teams must have played at least once of the other teams
+		foreach ($tiebreakers as $team => $tiebreaker) {
+			if ($tiebreaker['played'] === 0) {
+				$this->status[] = 'A tie-break occurred for ' . $this->get_competition_name($comp_id)
+				. ', start position ' . ($start + 1)
+				. ', but it was ignored as at least one team had played none of the others';
+				return;
 			}
 		}
 		// uasort to keep the key for team
@@ -696,6 +706,7 @@ class Fixtures_Sheet_Gateway {
 	}
 
 	private function add_h2h(&$h2h_row, $data) {
+		$h2h_row['played'] += 1;
 		$h2h_row['points'] += $data['points'];
 		$h2h_row['goal_diff'] += $data['goal_diff'];
 		$h2h_row['wins'] += $data['win'];
