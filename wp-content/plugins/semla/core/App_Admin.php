@@ -220,6 +220,16 @@ class App_Admin {
 
 	private static function init_edit($screen) {
 		if ($screen->post_type == 'clubs') {
+			// check if coming back from editor, and only show published
+			if (count($_GET) === 1 &&
+			str_contains($_SERVER['HTTP_REFERER'] ?? '', '/wp-admin/post.php?') ) {
+				// setting request URI will ensure correct page links, and also WP
+				// will set the canonical link and use that to change the browser
+				// address bar to match. Alternative is to redirect here, but that
+				// isn't needed
+				$_SERVER['REQUEST_URI'] .= '&post_status=publish';
+				$_REQUEST['post_status'] = $_GET['post_status'] = 'publish';
+			}
 			// Change default ordering of clubs
 			if ( !isset($_GET['orderby'])) {
 				add_action( 'pre_get_posts', function( $query ) {
