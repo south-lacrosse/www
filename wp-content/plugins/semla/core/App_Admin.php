@@ -230,7 +230,7 @@ class App_Admin {
 		}
 		self::add_modified_column($screen->post_type);
 		add_filter( "manage_{$screen->id}_sortable_columns", function ($columns) {
-			$columns['modified'] = 'modified';
+			$columns['modified'] = ['modified', true, 'Modified Date', 'Table ordered by Modified Date.'];
 			return $columns;
 		});
 		add_action('admin_enqueue_scripts', function() {
