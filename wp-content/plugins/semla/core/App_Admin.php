@@ -58,6 +58,9 @@ class App_Admin {
 				case 'edit': // post/page/cpt list screen
 					self::init_edit($screen);
 					break;
+				case 'post': // post/page editor
+					add_filter('litespeed_bypass_metabox', '__return_true');
+					break;
 				case 'user':
 					User::init_user();
 					break;
