@@ -219,14 +219,22 @@ class App_Admin {
 	}
 
 	private static function init_edit($screen) {
-		// Change default ordering of clubs. We change the $_GET parameter so
-		// that WordPress will set the query and also change the page, so the up
-		// arrow on the Title column will be highlighted.
 		if ($screen->post_type == 'clubs') {
+			// Change default ordering of clubs
 			if ( !isset($_GET['orderby'])) {
-				$_GET['orderby'] = 'title';
-				$_GET['order'] = 'asc';
+				add_action( 'pre_get_posts', function( $query ) {
+					$query->set('orderby','title');
+					$query->set('order','asc');
+
+				});
 			}
+			// need to make sure the sortable columns match our new order
+			add_filter( "manage_{$screen->id}_sortable_columns", function ($columns) {
+				return [
+					'title'    => ['title', false, 'Title', 'Table ordered by Title.', 'asc'],
+					'date'     => ['date', true, 'Date', 'Table ordered by Date.'],
+				];
+			});
 		}
 		self::add_modified_column($screen->post_type);
 		add_filter( "manage_{$screen->id}_sortable_columns", function ($columns) {
