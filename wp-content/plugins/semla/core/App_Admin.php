@@ -91,10 +91,12 @@ class App_Admin {
 			// change Clubs default to only show published
 			global $submenu;
 			$url = 'edit.php?post_type=clubs';
-			foreach( $submenu[ $url ] as $key => $value ) {
-				if( $value[2] === $url ) {
-					$submenu[$url][$key][2] = "$url&post_status=publish";
-					break;
+			if (isset($submenu[ $url ])) {
+				foreach( $submenu[ $url ] as $key => $value ) {
+					if( $value[2] === $url ) {
+						$submenu[$url][$key][2] = "$url&post_status=publish";
+						break;
+					}
 				}
 			}
 		});
