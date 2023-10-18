@@ -8,7 +8,7 @@ use Semla\Utils\SMTP;
  */
 class SMTP_Page {
 	private static $test_passed;
-	
+
 	public static function render_page() {
 		if (!current_user_can('manage_options'))  {
 			wp_die('You do not have sufficient permissions to access this page.');
@@ -30,19 +30,15 @@ class SMTP_Page {
 		$active_tab = Admin_Menu::render_tabs('semla_smtp',
 			['dashboard' => 'Dashboard', 'logs'=> 'Logs']);
 		$page_and_tab = "?page=semla_smtp&tab=$active_tab";
-?>
-	<div id="poststuff">
-		<?php
-			switch ($active_tab) {
-				case 'dashboard':
-					require __DIR__ . '/views/smtp-dashboard-tab.php';
-					break;
-				case 'logs':
-					require __DIR__ . '/views/smtp-logs-tab.php';
-					break;
-			}
-		?>
-	</div>
+		switch ($active_tab) {
+			case 'dashboard':
+				require __DIR__ . '/views/smtp-dashboard-tab.php';
+				break;
+			case 'logs':
+				require __DIR__ . '/views/smtp-logs-tab.php';
+				break;
+		}
+	?>
 </div>
 <?php
 	}
@@ -58,7 +54,7 @@ class SMTP_Page {
 		add_action( 'wp_mail_succeeded', function () {
 			self::$test_passed = true;
 		});
-		ob_start(); 
+		ob_start();
 		wp_mail($send_to, 'SEMLA Email Test', 'Test message');
 		$test_result = ob_get_clean();
 		if (self::$test_passed) {

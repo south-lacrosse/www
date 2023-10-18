@@ -6,10 +6,10 @@ namespace Semla\Admin;
 class Admin_Menu {
 	public static function init() {
 		add_action('admin_menu', function() {
-			$hook_suffix = add_menu_page('SEMLA Admin Page', 'SEMLA', 'manage_semla', 'semla',
-				[Semla_Page::class, 'render_page'],
+			$hook_suffix = add_menu_page('SEMLA Fixtures From Sheet', 'SEMLA', 'manage_semla', 'semla',
+				[Fixtures_Page::class, 'render_page'],
 				'dashicons-shield-alt',	30);
-			add_action( 'load-' . $hook_suffix, [Semla_Page::class, 'load'] );
+			add_action( 'load-' . $hook_suffix, [Fixtures_Page::class, 'load'] );
 
 			// $hook_suffix = add_submenu_page('semla', 'Team Abbreviations', 'Team Abbreviations', 'manage_semla',
 			// 	'semla_team_abbrev', [Team_Abbrev_Page::class, 'render_page'] );
@@ -27,10 +27,10 @@ class Admin_Menu {
 			// 	'semla_competition', [Competition_Page::class, 'render_page'] );
 			// add_action( 'load-' . $hook_suffix, [Competition_Page::class, 'handle_actions'] );
 
-			add_submenu_page('semla', 'Settings', 'Settings', 'manage_options',
+			add_submenu_page('semla', 'SEMLA Settings', 'Settings', 'manage_options',
 				'semla_settings', [Settings_Page::class, 'render_page'] );
 
-			$hook_suffix = add_submenu_page('semla', 'Cache', 'Cache', 'manage_options',
+			$hook_suffix = add_submenu_page('semla', 'SEMLA Cache', 'Cache', 'manage_options',
 				'semla_cache', [Cache_Page::class, 'render_page'] );
 			add_action( 'load-' . $hook_suffix, [self::class, 'remove_action_query_arg'] );
 
@@ -63,7 +63,7 @@ class Admin_Menu {
 			$active_tab = array_key_first($tabs);
 		}
 		?>
-	<h2 class="nav-tab-wrapper"><?php
+	<h2 class="nav-tab-wrapper" style="margin-bottom:10px"><?php
 		foreach ($tabs as $tab_slug => $tab) {
 			echo '<a href="?page='. $page . '&tab=' . $tab_slug . '" class="nav-tab'
 				. ($active_tab === $tab_slug ? ' nav-tab-active' : '') . '">' . $tab . '</a>';

@@ -15,7 +15,7 @@ class Cache_Page {
 		}
 		?>
 <div class="wrap">
-<h1>Cache</h1>
+<h1>SEMLA Cache</h1>
 <?php
 		if (isset( $_GET[ 'action' ] )) {
 			switch ($_GET[ 'action' ]) {

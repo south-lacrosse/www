@@ -7,23 +7,51 @@ use Semla\Data_Access\Tiebreaker_Gateway;
 
 /**
  * Update Fixtures admin page.
- * 3 tabs - update, tiebreakers, flags fixtures formulas
+ * possible 4 tabs - update, tiebreakers, flags fixtures formulas, settings (for admins)
  */
-class Semla_Page {
+class Fixtures_Page {
 
 	public static function render_page() {
-		if (!current_user_can('manage_semla'))  {
+		if (!current_user_can('manage_semla')) {
 			wp_die('You do not have sufficient permissions to access this page.');
 		}
 		?>
 <div class="wrap">
-	<h1>SEMLA Admin Menu</h1>
+	<h1>SEMLA Fixtures From Sheet</h1>
 <?php
 		$fixtures_sheet_id = get_option('semla_fixtures_sheet_id');
 		if (!$fixtures_sheet_id) {
 			Admin_Menu::dismissible_error_message('No Google Fixtures Sheet specified yet.');
 		}
 
+		$tabs = ['update' => 'Update Fixtures', 'tiebreaker' => 'Tiebreakers','formulas' => 'Flags Fixtures Formulas'];
+		if (current_user_can('manage_options')) { // only administrators see settings
+			$tabs ['settings'] = 'Settings';
+		}
+		$active_tab = Admin_Menu::render_tabs('semla', $tabs );
+		$page_and_tab = "?page=semla&tab=$active_tab";
+		switch ($active_tab) {
+			case 'tiebreaker':
+				Tiebreaker_Gateway::show_tiebreakers();
+				break;
+			case 'update':
+				self::update_actions();
+				require __DIR__ . '/views/fixtures-update-tab.php';
+				break;
+			case 'formulas':
+				$rows = $fixtures_sheet_id ? Cup_Draw_Gateway::get_cup_fixtures_for_sheet() : false;
+				require __DIR__ . '/views/fixtures-formulas-tab.php';
+				break;
+			case 'settings':
+				require __DIR__ . '/views/fixtures-settings-tab.php';
+				break;
+		}
+	?>
+</div>
+		<?php
+	}
+
+	private static function update_actions() {
 		if (isset( $_GET[ 'action' ] )) {
 			switch ($_GET[ 'action' ]) {
 				case 'update':
@@ -52,28 +80,6 @@ class Semla_Page {
 					break;
 			}
 		}
-		$active_tab = Admin_Menu::render_tabs('semla',
-			['update' => 'Update Fixtures', 'tiebreaker' => 'Tiebreakers','formulas' => 'Flags Fixtures Formulas']);
-		$page_and_tab = "?page=semla&tab=$active_tab";
-?>
-	<div id="poststuff">
-		<?php
-			switch ($active_tab) {
-				case 'tiebreaker':
-					Tiebreaker_Gateway::show_tiebreakers();
-					break;
-				case 'update':
-					require __DIR__ . '/views/semla-update-tab.php';
-					break;
-				case 'formulas':
-					$rows = $fixtures_sheet_id ? Cup_Draw_Gateway::get_cup_fixtures_for_sheet() : false;
-					require __DIR__ . '/views/semla-formulas-tab.php';
-					break;
-			}
-		?>
-	</div>
-</div>
-		<?php
 	}
 
 	/**
