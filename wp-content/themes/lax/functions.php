@@ -35,6 +35,8 @@ add_action('after_setup_theme', function() {
 	add_theme_support('post-thumbnails');
 	// remove core bundled patterns
 	remove_theme_support( 'core-block-patterns' );
+	// don't allow access to the template editor (in editor can click templates then "add template")
+	remove_theme_support( 'block-templates' );
 
 	register_nav_menus([
 		'main' => 'Main Navigation',
