@@ -1,5 +1,7 @@
 <?php
 /**
+ * Template Name: Search Page
+ *
  * Template which can be used for a search page
  */
 
