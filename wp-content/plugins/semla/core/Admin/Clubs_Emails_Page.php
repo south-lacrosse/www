@@ -41,9 +41,7 @@ class Clubs_Emails_Page {
 		}
 ?>
 	<p>Download, copy, or display all club email addresses.</p>
-	<p>Note: this page will only extract emails if they are in an Attribute/Value or
-		Social Icons block. Attribute/Values should have the role as the attribute, and the
-		value should start with the name (if there is one), and contain the email address.</p>
+	<p>Note: this page will only extract emails if they are in a Contact or Social Icons block.</p>
 	<form method="post" id="emails-form">
 		<table class="form-table" role="presentation"><tbody>
 		<tr>

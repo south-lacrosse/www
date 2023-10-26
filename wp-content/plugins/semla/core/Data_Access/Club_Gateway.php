@@ -111,20 +111,20 @@ class Club_Gateway {
 	}
 
 	private static function extract_emails($club, $content, &$emails) {
-		if ($count = preg_match_all('/<div class="avf-name">([^<]*)<\/div><div class="avf-value">([^<]*)[^!]*<a [^>]*href="mailto:([^"]*)"/',
+		if ($count = preg_match_all('#<!-- wp:semla\/contact ({.*?"email".*?}) /-->#',
 		$content, $matches)) {
-		for ($i = 0; $i < $count; $i++) {
-			$email = $matches[3][$i];
-			if (!isset($emails[$email])) {
-				$emails[$email] = [
-					'club' => $club,
-					'role' => trim($matches[1][$i]),
-					'name' => trim($matches[2][$i])
-				];
+			for ($i = 0; $i < $count; $i++) {
+				$attrs = json_decode($matches[1][$i]);
+				$email = $attrs->email;
+				if (!isset($emails[$email])) {
+					$emails[$email] = [
+						'club' => $club,
+						'role' => $attrs->role ?? '',
+						'name' => $attrs->name ?? ''
+					];
+				}
 			}
 		}
-	}
-
 	}
 
 	public static function get_club_slugs() {

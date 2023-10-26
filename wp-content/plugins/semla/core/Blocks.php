@@ -5,6 +5,27 @@ namespace Semla;
  */
 class Blocks {
 
+	public static function contact($attrs) {
+		$html = '<div class="wp-block-semla-contact'
+			. ( $attrs['sameLine'] ? ' avf-same-line' : '')
+			. '"><div class="avf-name">'
+			. htmlentities($attrs['role'] ?? '', ENT_COMPAT|ENT_SUBSTITUTE) . '</div><div class="avf-value">';
+		$value = htmlentities($attrs['name'] ?? '', ENT_COMPAT|ENT_SUBSTITUTE);
+		if (!empty($attrs['email'])) {
+			if ($value) $value .= '<br>';
+			$email = esc_attr($attrs['email']);
+			$value .= "<a href=\"mailto:$email\">$email</a>";
+		}
+		if (!empty($attrs['tel'])) {
+			if ($value) $value .= '<br>';
+			$tel = esc_attr($attrs['tel']);
+			$value .= '<a href="tel:' . str_replace(' ','',$tel) . '">' . $tel . '</a>';
+		}
+		$html .= "$value</div></div>\n";
+		return $html;
+	}
+
+
 	public static function club_title( $attrs, $content, $block ) {
 		if ( ! isset( $block->context['postId'] ) ) return '';
 		$post_ID = $block->context['postId'];

@@ -1210,7 +1210,8 @@ li > ol {
 
 /*--------------- Attribute-value field layout ----------*/
 
-.wp-block-semla-attr-value {
+.wp-block-semla-attr-value,
+.wp-block-semla-contact {
 	margin-bottom: 0.75em;
 }
 .avf-name {

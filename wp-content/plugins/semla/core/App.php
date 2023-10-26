@@ -111,6 +111,9 @@ class App {
 		register_block_type( $block_dir . '/calendar', [
 			'render_callback' => [Block_Calendar::class, 'render_callback'],
 		]);
+		register_block_type( $block_dir . '/contact', [
+			'render_callback' => [Blocks::class, 'contact'],
+		]);
 		register_block_type( $block_dir . '/club-title', [
 			'render_callback' => [Blocks::class, 'club_title'],
 		]);
