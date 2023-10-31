@@ -60,7 +60,6 @@ class App {
 		// Remove comments/trackbacks
 		remove_post_type_support('page', 'comments');
 		remove_post_type_support('post', 'comments');
-		remove_post_type_support('attachment', 'comments');
 		remove_post_type_support('post', 'trackbacks');
 		add_filter('comments_open', '__return_false', 20, 2);
 		add_filter('pings_open', '__return_false', 20, 2);
