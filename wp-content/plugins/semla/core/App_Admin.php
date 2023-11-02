@@ -100,8 +100,6 @@ class App_Admin {
 				}
 			}
 		});
-
-		add_filter( 'attachment_link', '__return_empty_string' );
 	}
 
 	public static function enqueue_block_editor_assets() {

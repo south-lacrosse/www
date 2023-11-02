@@ -84,8 +84,9 @@ class App {
 			}
 			return $rules;
 		}, 99 );
-		// since we've removed author pages make sure we can't link to them
+		// since we've removed author and attachment pages make sure we can't link to them
 		add_filter( 'author_link', '__return_empty_string' );
+		add_filter( 'attachment_link', '__return_empty_string' );
 
 		// use encrypted SMTP to send emails, and monitor it
 		if (defined('SMTP_USER') && defined('SMTP_PASS')) {
