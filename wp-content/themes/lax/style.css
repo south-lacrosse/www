@@ -1438,44 +1438,6 @@ dd {
 }
 
 /* start non-editor */
-/*--------------- Social sharing ------------------------*/
-
-.share {
-	margin-bottom: 1em;
-}
-.share > h3 {
-	text-transform: uppercase;
-	margin-top: 0.75em;
-	margin-bottom: 0.5em;
-}
-.share-link {
-	padding: 0.35em 0.7em;
-	color: #fff;
-	text-decoration: none;
-}
-.share-link:hover,
-.share-link:active {
-	color: #fff;
-}
-.share-link:active {
-	position: relative;
-	top: 1px;
-}
-.tw {
-	background-color: #41b7d8;
-}
-.tw:hover,
-.tw:active {
-	background-color: #279ebf;
-}
-.fb {
-	background-color: #3b5997;
-}
-.fb:hover,
-.fb:active {
-	background-color: #2d4372;
-}
-
 /*--------------- Paging and Next/previous navigation ----------------*/
 
 /* With overflow hidden on the parent element, the parent will expand to
@@ -1767,7 +1729,6 @@ a.icon[href^='tel']::before {
 	body > footer,
 	#sidebar,
 	.callout,
-	.share,
 	#semla_toc,
 	.no-print {
 		display: none;
