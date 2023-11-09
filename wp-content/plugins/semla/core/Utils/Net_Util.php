@@ -17,10 +17,12 @@ class Net_Util {
 		$ch = self::get_curl($url);
 		if (is_wp_error($ch)) $ch;
 
-		curl_setopt($ch, CURLOPT_HEADER, 0); // no headers
-		// Fail the cURL request if response code = 400 (like 404 errors)
-		curl_setopt($ch, CURLOPT_FAILONERROR, true);
-		curl_setopt($ch, CURLOPT_ENCODING, ''); // all supported encodings
+		curl_setopt_array($ch, [
+			CURLOPT_HEADER => 0, // no headers
+			// Fail the cURL request if response code = 400 (like 404 errors)
+			CURLOPT_FAILONERROR => true,
+			CURLOPT_ENCODING => '', // all supported encodings
+		]);
 
 		$data = curl_exec($ch);
 
@@ -50,13 +52,13 @@ class Net_Util {
 		if (!$ch) {
 			return new \WP_Error('no_curl', 'Couldn\'t initialize a cURL handle');
 		}
-		curl_setopt($ch, CURLOPT_URL, $url);
-		// Return the actual result of the curl result instead of success code
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		// Follow redirects, if any
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 20); // 0 = indefinite
-		curl_setopt($ch, CURLOPT_TIMEOUT, 60); // timeout of the actual request
+		curl_setopt_array($ch, [
+			CURLOPT_URL => $url,
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_FOLLOWLOCATION => true,
+			CURLOPT_CONNECTTIMEOUT => 20,
+			CURLOPT_TIMEOUT => 60,
+		]);
 		// Do not check the SSL certificates for Windows as it can cause problems unless
 		// there's a certificates file specified
 		if (PHP_OS_FAMILY === 'Windows' && !ini_get('curl.cainfo')) {
@@ -75,8 +77,10 @@ class Net_Util {
 	public static function url_exists($url) {
 		$ch = self::get_curl($url);
 		if (is_wp_error($ch)) return $ch;
-		curl_setopt($ch, CURLOPT_HEADER, true); // we want headers
-		curl_setopt($ch, CURLOPT_NOBODY, true); // don't need body
+		curl_setopt_array($ch, [
+			CURLOPT_HEADER => true,
+			CURLOPT_NOBODY => true,
+		]);
 
 		curl_exec($ch);
 		if (curl_errno($ch)){   // should be 0
