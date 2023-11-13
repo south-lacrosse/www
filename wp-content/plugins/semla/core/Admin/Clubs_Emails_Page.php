@@ -13,7 +13,7 @@ class Clubs_Emails_Page {
 <div class="wrap">
 	<h1>Club Emails</h1>
 <?php
-		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) === 'post' ) {
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			Admin_Menu::validate_nonce('semla_clubs_emails'); ?>
 <div class="postbox"><div class="inside">
 <button id="display-copy" class="button button-secondary">Copy to clipboard</button>

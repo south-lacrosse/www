@@ -13,7 +13,7 @@ season's data has been archived by running the <a href="https://github.com/south
 </div>
 <?php
 
-if ( strtolower( $_SERVER['REQUEST_METHOD'] ) === 'post' ) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	Admin_Menu::validate_nonce('semla_settings_tab');
 }
 $fixtures_sheet_id = get_option('semla_fixtures_sheet_id');

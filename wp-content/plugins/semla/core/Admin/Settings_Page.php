@@ -16,7 +16,7 @@ class Settings_Page {
 <div class="wrap">
 	<h1>SEMLA Settings</h1>
 <?php
-		if ( strtolower( $_SERVER['REQUEST_METHOD'] ) === 'post' ) {
+		if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			Admin_Menu::validate_nonce('semla_settings');
 		}
 		$gapi_key = get_option('semla_gapi_key');
