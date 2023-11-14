@@ -51,28 +51,22 @@ class Blocks {
 		$end = strpos($content, '</p>', $start);
 		$addr = substr($content, $start, $end-$start);
 
-		// basic postcode extract - it just meets the format, no need for anything fancy
-		if (preg_match('/[A-Z]{1,2}[0-9][0-9A-Z]?\s?[0-9][A-Z]{2}/', $addr, $matches)) {
-			// Postcodes CityMapper works in
-			// London: BR|DA|CR|E\d|EN|HA|IG|KT|N\d|NW|RM|SE|SM|SW|TW|UB|W\d|WD,
-			// B\d=Birmingham, CF=Cardiff, BS=Bristol
-			if (preg_match('/^(B\d|BR|BS|DA|CF|CR|E\d|EN|HA|IG|KT|N\d|NW|RM|SE|SM|SW|TW|UB|W\d|WD)/', $matches[0])) {
-				// Find the map block inside the location to get the latLong from there
-				$latLong = false;
-				foreach ($block->parsed_block['innerBlocks'] as $innerBlock) {
-					if ($innerBlock['blockName'] === 'semla/map') {
-						$latLong = $innerBlock['attrs']['latLong'] ?? false;
-						break;
-					}
+		if (!isset($attrs['mapperLinks']) || $attrs['mapperLinks']) {
+			// Find the map block inside the location to get the latLong from there
+			$latLong = false;
+			foreach ($block->parsed_block['innerBlocks'] as $innerBlock) {
+				if ($innerBlock['blockName'] === 'semla/map') {
+					$latLong = $innerBlock['attrs']['latLong'] ?? false;
+					break;
 				}
-				if ($latLong) {
-					$content = substr($content,0,$end)
-						. ' <a href="https://citymapper.com/directions?endcoord='  . $latLong
-						. '&endname=' . urlencode(get_the_title() . ' Lacrosse Club')
-						. '&endaddress=' . urlencode(html_entity_decode($addr))
-						. '" title="CityMapper directions"><i class="icon icon-citymapper"></i></a>'
-						. substr($content,$end);
-				}
+			}
+			if ($latLong) {
+				$content = substr($content, 0, $end)
+					. ' <a href="https://citymapper.com/directions?endcoord='  . $latLong
+					. '&endname=' . urlencode(get_the_title() . ' Lacrosse Club')
+					. '&endaddress=' . urlencode(html_entity_decode($addr))
+					. '" title="CityMapper directions"><i class="icon icon-citymapper"></i></a>'
+					. substr($content,$end);
 			}
 		}
 		return $content;
