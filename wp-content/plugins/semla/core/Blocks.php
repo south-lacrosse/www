@@ -74,10 +74,12 @@ class Blocks {
 
 	public static function map($attrs, $content) {
 		if (!isset($attrs['latLong'])) return '';
-		return str_replace('!MAP!',
-			'<iframe class="gmap" data-url="https://www.google.com/maps/embed/v1/place?q='
+		return '<div class="wp-block-semla-map">'
+			. '<button class="acrd-btn" data-toggle="collapse" aria-expanded="false">Map and Directions</button>'
+			. '<div class="acrd-content">'
+			. '<iframe class="gmap" data-url="https://www.google.com/maps/embed/v1/place?q='
 			. $attrs['latLong'] . '&amp;zoom=15&amp;key=' . get_option('semla_gapi_key')
-			. '" title="Google Map" allowFullScreen></iframe>', $content);
+			. '" title="Google Map" allowFullScreen></iframe>' . $content . '</div></div>';
 	}
 
 	public static function website( $attrs ) {
