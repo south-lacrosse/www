@@ -71,7 +71,7 @@ class Clubs_Emails_Page {
 			<th scope="row">Include SEMLA Officers</th>
 			<td>
 				<p><label>
-					<input name="officers" type="checkbox" value="1" <?php checked( $officers ); ?>>
+					<input name="officers" type="checkbox" value="1"<?php checked( $officers ); ?>>
 					Add all Officers from the Contacts page</label>
 				</p>
 			</td>
@@ -149,7 +149,7 @@ class Clubs_Emails_Page {
 		foreach ($options as $option => $label) {
 			?>
 				<p><label>
-					<input name="<?= $name ?>" type="radio" value="<?= $option ?>" class="tog" <?php checked( $option, $value ); ?>>
+					<input name="<?= $name ?>" type="radio" value="<?= $option ?>" class="tog"<?php checked( $option, $value ); ?>>
 					<?= $label ?></label>
 				</p>
 <?php
