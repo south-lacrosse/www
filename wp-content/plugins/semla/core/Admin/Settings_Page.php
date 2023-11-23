@@ -1,8 +1,5 @@
 <?php
 namespace Semla\Admin;
-
-use Semla\Utils\Net_Util;
-use Semla\Utils\Util;
 /**
  * SEMLA Settings admin page
  */
