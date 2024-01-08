@@ -67,7 +67,7 @@ class Rest {
 			}
 			if ( ! is_user_logged_in()
 			&& ! preg_match('!^/(\?rest_route=|' . rest_get_url_prefix() . ')/semla/!', $_SERVER['REQUEST_URI']) ) {
-				return new \WP_Error( 'rest_not_logged_in', 'API Requests are only supported for authenticated requests.', ['status' => 401] );
+				return new \WP_Error( 'rest_not_logged_in', 'API request is only supported for authenticated users', ['status' => 401] );
 			}
 			return $result;
 		});
