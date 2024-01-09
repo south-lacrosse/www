@@ -16,12 +16,10 @@ use Semla\Data_Access\Table_Gateway;
  */
 class Clubs_Services {
 	/**
- 	 * Get and validate the club
+	 * Get and validate the club
 	 * @return string|\WP_Error club, or error if unknown
 	 */
 	private static function get_club(\WP_REST_Request $request) {
-		$error = Rest::validate_content_type($request);
-		if ($error) return $error;
 		$club = Rest::decode_club_team($request->get_param('club'));
 		if (Club_Team_Gateway::validate_club($club)) return $club;
 		return new \WP_Error('unknown_club', 'The requested club is unknown',  ['status' => 404]);
@@ -29,8 +27,6 @@ class Clubs_Services {
 	}
 
 	public static function clubs_list( \WP_REST_Request $request ) {
-		$error = Rest::validate_content_type($request);
-		if ($error) return $error;
 		$title = 'Clubs';
 		$clubs = Club_Team_Gateway::get_clubs_teams();
 		ob_start();
@@ -46,8 +42,6 @@ class Clubs_Services {
 
 	public static function clubs_gpx( \WP_REST_Request $request ) {
 		$request['extension'] = '.gpx';
-		$error = Rest::validate_content_type($request);
-		if ($error) return $error;
 		Rest::$cors_header = true;
 		$clubs = Club_Gateway::get_clubs();
 		Rest::$cache_tags = ['semla_clubs'];
@@ -57,9 +51,9 @@ class Clubs_Services {
 	}
 
 	public static function club_info( \WP_REST_Request $request ) {
+		Rest::$cors_header = true;
 		$club = self::get_club($request);
 		if (is_wp_error($club)) return $club;
-		Rest::$cors_header = true;
 		$title = 'Services for ' . $club . ' Club';
 		$parent = 'Clubs';
 		$type = 'club';
@@ -71,9 +65,9 @@ class Clubs_Services {
 	}
 
 	public static function club_fixtures_tables( \WP_REST_Request $request ) {
+		Rest::$cors_header = true;
 		$club = self::get_club($request);
 		if (is_wp_error($club)) return $club;
-		Rest::$cors_header = true;
 		$extension = empty($request['extension']) ? '.html' : $request['extension'];
 		// .js sends html, the javascript to display it is added in Rest->pre_serve_request
 		if ($extension === '.js') $extension = '.html';

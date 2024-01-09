@@ -15,20 +15,16 @@ use Semla\Data_Access\Table_Gateway;
  */
 class Teams_Services {
 	/**
- 	 * Get and validate the team
+	 * Get and validate the team
 	 * @return string|\WP_Error team, or error if unknown
 	 */
 	private static function get_team(\WP_REST_Request $request) {
-		$error = Rest::validate_content_type($request);
-		if ($error) return $error;
 		$team = Rest::decode_club_team($request->get_param('team'));
 		if (Club_Team_Gateway::validate_team($team)) return $team;
 		return new \WP_Error('unknown_team', 'The requested team is unknown',  ['status' => 404]);
 	}
 
 	public static function teams_list( \WP_REST_Request $request ) {
-		$error = Rest::validate_content_type($request);
-		if ($error) return $error;
 		$title = 'Teams';
 		$teams = Club_Team_Gateway::get_team_names();
 		ob_start();
@@ -57,18 +53,18 @@ class Teams_Services {
 
 	public static function team_fixtures_ics( \WP_REST_Request $request ) {
 		$request['extension'] = '.ics';
+		Rest::$cors_header = true;
 		$team = self::get_team($request);
 		if (is_wp_error($team)) return $team;
-		Rest::$cors_header = true;
 		$ics = Rest_Fixtures_Gateway::get_fixtures_ics($team);
 		if (!$ics) return Rest::db_error();
 		return new \WP_REST_Response($ics);
 	}
 
 	public static function team_fixtures_tables( \WP_REST_Request $request ) {
+		Rest::$cors_header = true;
 		$team = self::get_team($request);
 		if (is_wp_error($team)) return $team;
-		Rest::$cors_header = true;
 		$extension = empty($request['extension']) ? '.html' : $request['extension'];
 		// .js sends html, the javascript to display it is added in Rest->pre_serve_request
 		if ($extension === '.js') $extension = '.html';

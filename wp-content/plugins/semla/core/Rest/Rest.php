@@ -124,26 +124,6 @@ class Rest {
 	}
 
 	/**
-	 * Checks if the HTTP headers allow the correct content type e.g. text/html,
-	 *  if not then it's an error
-	 * @return \WP_Error, or false if valid
-	 */
-	public static function validate_content_type( \WP_REST_Request $request ) {
-		if (!empty($request['extension'])) {
-			$allowed_content_type = self::CONTENT_TYPES[$request['extension']];
-		} else {
-			$allowed_content_type = 'text/html';
-		}
-		$accept = $request->get_header('accept');
-		if ($accept && strpos($accept, '*/*') === false
-		&& strpos($accept, $allowed_content_type) === false) {
-			return new \WP_Error('content_type_not_supported', 'The requested content type is not supported',  ['status' => 501]);
-		}
-		$request['content_type'] = $allowed_content_type;
-		return false;
-	}
-
-	/**
 	 * Hooks into the REST API output to send the response correctly. By default
 	 * WordPress will format the response as json, so here we make sure it's sent
 	 * as html or whatever is specified.
@@ -163,22 +143,26 @@ class Rest {
 		|| !str_starts_with($request->get_route(), self::SEMLA_PREFIX) ) {
 			return $served;
 		}
-		// handle our own errors
-		if ($result->status != 200) {
+		if (!empty($request['extension'])) {
+			$content_type = self::CONTENT_TYPES[$request['extension']];
+		} elseif ($result->status != 200) {
 			// content type may not have been set if validation failed so set here
 			$extension = pathinfo($request->get_route(), PATHINFO_EXTENSION);
-			$request['content_type'] = match($extension) {
+			$content_type = match($extension) {
 				'' => 'text/html',
 				'json' => 'application/json',
 				default => 'text/plain'
 			};
+		} else {
+			$content_type = 'text/html';
 		}
+
 
 		if (! headers_sent() ) {
 			$server->send_header( 'Content-Type',
-				$request['content_type'] . '; charset=utf-8' );
+				$content_type . '; charset=utf-8' );
 			$server->send_header( 'X-Robots-Tag', 'noindex,nofollow' );
-			if ($request['content_type'] === 'text/html') {
+			if ($content_type === 'text/html') {
 				send_frame_options_header();
 			}
 			if (self::$cors_header) {
@@ -196,11 +180,11 @@ class Rest {
 			die( get_status_header_desc( 500 ) );
 		}
 		if ($result->status != 200) {
-			if ($request['content_type'] === 'application/json') {
+			if ($content_type === 'application/json') {
 				echo json_encode($data);
 			} else {
 				$err = 'Error code: ' . $data['code'] . ', message: ' . $data['message'];
-				if ($request['content_type'] === 'text/html') {
+				if ($content_type === 'text/html') {
 					echo "<p>$err</p>";
 				} else {
 					echo $err;
