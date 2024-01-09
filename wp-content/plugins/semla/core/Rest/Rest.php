@@ -89,34 +89,16 @@ class Rest {
 		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_info'],
-			'args' => [
-				'team' => [
-					'required'	=> true,
-					'type'		=> 'string',
-					'validate_callback' => [Teams_Services::class, 'validate_team']
-				]
-			],
 			'permission_callback' => '__return_true',
 		]);
-		// allow % as some calendar apps rewrite "+" to %2b
 		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)/fixtures.ics', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_fixtures_ics'],
-			'args' => [
-				'team' => [
-					'validate_callback' => [Teams_Services::class, 'validate_team']
-				]
-			],
 			'permission_callback' => '__return_true',
 		]);
 		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class,'team_fixtures_tables'],
-			'args' => [
-				'team' => [
-					'validate_callback' => [Teams_Services::class, 'validate_team']
-				]
-			],
 			'permission_callback' => '__return_true',
 		]);
 		register_rest_route( self::SEMLA_BASE, '/clubs', [
@@ -132,21 +114,11 @@ class Rest {
 		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w+_%.-]+)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Clubs_Services::class, 'club_info'],
-			'args' => [
-				'club' => [
-					'validate_callback' => [Clubs_Services::class, 'validate_club']
-				]
-			],
 			'permission_callback' => '__return_true',
 		]);
 		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w+_%.-]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Clubs_Services::class,'club_fixtures_tables'],
-			'args' => [
-				'club' => [
-					'validate_callback' => [Clubs_Services::class, 'validate_club']
-				]
-			],
 			'permission_callback' => '__return_true',
 		]);
 	}

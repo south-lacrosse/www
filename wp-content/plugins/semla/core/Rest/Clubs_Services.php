@@ -15,11 +15,17 @@ use Semla\Data_Access\Table_Gateway;
  *	  /clubs/Bath/tables
  */
 class Clubs_Services {
-	private static $club;
+	/**
+ 	 * Get and validate the club
+	 * @return string|\WP_Error club, or error if unknown
+	 */
+	private static function get_club(\WP_REST_Request $request) {
+		$error = Rest::validate_content_type($request);
+		if ($error) return $error;
+		$club = Rest::decode_club_team($request->get_param('club'));
+		if (Club_Team_Gateway::validate_club($club)) return $club;
+		return new \WP_Error('unknown_club', 'The requested club is unknown',  ['status' => 404]);
 
-	public static function validate_club($value, $request, $param) {
-		self::$club = Rest::decode_club_team($value);
-		return Club_Team_Gateway::validate_club(self::$club);
 	}
 
 	public static function clubs_list( \WP_REST_Request $request ) {
@@ -51,10 +57,10 @@ class Clubs_Services {
 	}
 
 	public static function club_info( \WP_REST_Request $request ) {
-		$error = Rest:: validate_content_type($request);
-		if ($error) return $error;
+		$club = self::get_club($request);
+		if (is_wp_error($club)) return $club;
 		Rest::$cors_header = true;
-		$title = 'Services for ' . self::$club . ' Club';
+		$title = 'Services for ' . $club . ' Club';
 		$parent = 'Clubs';
 		$type = 'club';
 		ob_start();
@@ -65,20 +71,20 @@ class Clubs_Services {
 	}
 
 	public static function club_fixtures_tables( \WP_REST_Request $request ) {
-		$error = Rest::validate_content_type($request);
-		if ($error) return $error;
+		$club = self::get_club($request);
+		if (is_wp_error($club)) return $club;
 		Rest::$cors_header = true;
 		$extension = empty($request['extension']) ? '.html' : $request['extension'];
 		// .js sends html, the javascript to display it is added in Rest->pre_serve_request
 		if ($extension === '.js') $extension = '.html';
 		if ($request['type'] === 'tables') {
-			$data = Table_Gateway::get_tables_for_team_club('club',self::$club,$extension);
+			$data = Table_Gateway::get_tables_for_team_club('club',$club,$extension);
 			if ($data === false) return Rest::db_error();
 			if ($extension === '.html') {
 				$data = Rest_Util::update_tables_classes_for_rest($data, isset($request['classes']));
 			}
 		} else {
-			$data = Rest_Fixtures_Gateway::get_fixtures('club',self::$club,$extension);
+			$data = Rest_Fixtures_Gateway::get_fixtures('club',$club,$extension);
 			if ($data === false) return Rest::db_error();
 		}
 		if ($extension !== '.json') {
