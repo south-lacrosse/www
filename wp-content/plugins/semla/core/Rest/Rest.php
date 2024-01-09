@@ -86,7 +86,7 @@ class Rest {
 			'callback' => [Teams_Services::class, 'teams_list'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+_]+)', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_info'],
 			'args' => [
@@ -99,7 +99,7 @@ class Rest {
 			'permission_callback' => '__return_true',
 		]);
 		// allow % as some calendar apps rewrite "+" to %2b
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+_%]+)/fixtures.ics', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)/fixtures.ics', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_fixtures_ics'],
 			'args' => [
@@ -109,7 +109,7 @@ class Rest {
 			],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w\+_]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class,'team_fixtures_tables'],
 			'args' => [
@@ -129,7 +129,7 @@ class Rest {
 			'callback' => [Clubs_Services::class, 'clubs_gpx'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w\+_]+)', [
+		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w+_%.-]+)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Clubs_Services::class, 'club_info'],
 			'args' => [
@@ -139,7 +139,7 @@ class Rest {
 			],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w\+_]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
+		register_rest_route( self::SEMLA_BASE, '/clubs/(?P<club>[\w+_%.-]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Clubs_Services::class,'club_fixtures_tables'],
 			'args' => [
