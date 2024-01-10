@@ -26,7 +26,7 @@ class Rest_Fixtures_Gateway {
 				$where = " IN ($teams)";
 			}
 		}
-		$rows = $wpdb->get_results( 
+		$rows = $wpdb->get_results(
 			"SELECT f.match_date, f.competition, f.home, f.away, f.result, f.points_multi,
 				f.venue, f.match_time, CASE
 				WHEN f.result = '' THEN (SELECT t.pitch_type FROM slc_team AS t WHERE t.name = COALESCE(f.venue,f.home))
@@ -57,12 +57,12 @@ class Rest_Fixtures_Gateway {
 		require __DIR__ . '/views/rest-fixtures.php';
 		return ob_get_clean();
 	}
-	
+
 	public static function get_fixtures_ics($team) {
 		global $wpdb;
 
 		$where = $wpdb->prepare('=%s',$team);
-		$rows = $wpdb->get_results( 
+		$rows = $wpdb->get_results(
 			"SELECT f.match_date, f.competition, f.home, f.away,
 				f.venue, f.match_time, t.pitch_type
 			FROM slc_fixture AS f, slc_team AS t
@@ -71,7 +71,7 @@ class Rest_Fixtures_Gateway {
 			ORDER BY f.id");
 		if ($wpdb->last_error) return false;
 		ob_start();
-		require __DIR__ . '/views/rest-fixtures-ics.php';
+		require __DIR__ . '/views/rest-fixtures.ics.php';
 		return ob_get_clean();
 	}
 }

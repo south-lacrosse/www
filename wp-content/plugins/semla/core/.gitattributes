@@ -1,0 +1,2 @@
+# iCalendar spec requires CRLF, so make sure views are checked out correctly
+*.ics.php text eol=crlf
