@@ -12,7 +12,7 @@ class History_Gateway {
 		// need accurate counts so cannot use TABLE_ROWS column as that is inaccurate
 		// for InnoDB tables
 		$rows = $wpdb->get_results(
-			'SELECT TABLE_NAME FROM information_schema.TABLES 
+			'SELECT TABLE_NAME FROM information_schema.TABLES
 			WHERE TABLE_CATALOG = "def" AND TABLE_SCHEMA = "' . DB_NAME . '"
 				AND TABLE_TYPE = "BASE TABLE"
 				AND TABLE_NAME LIKE "slh_%"');
@@ -23,6 +23,6 @@ class History_Gateway {
 		foreach ($rows as $row) {
 			$sql[] = "SELECT '$row->TABLE_NAME' AS table_name, COUNT(*) AS row_count FROM $row->TABLE_NAME";
 		}
-		return $wpdb->get_results(implode("\nUNION ", $sql));
+		return $wpdb->get_results(implode("\nUNION ALL ", $sql));
 	}
 }

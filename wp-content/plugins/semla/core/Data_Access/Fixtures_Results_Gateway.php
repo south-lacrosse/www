@@ -117,7 +117,7 @@ class Fixtures_Results_Gateway {
 					0 AS is_cup, c.seq, d.where_clause
 				FROM sl_competition AS c, slc_division AS d
 				WHERE c.id = d.comp_id
-				UNION
+				UNION ALL
 				SELECT CASE WHEN c.group_id = 1 THEN c.section_name
 					ELSE c.name END AS name,
 					1 AS is_cup, c.seq, CONCAT('=',c.id) AS where_clause
