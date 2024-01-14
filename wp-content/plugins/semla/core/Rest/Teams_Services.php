@@ -52,12 +52,33 @@ class Teams_Services {
 	}
 
 	public static function team_fixtures_ics( \WP_REST_Request $request ) {
-		$request['extension'] = '.ics';
 		Rest::$cors_header = true;
-		$team = self::get_team($request);
-		if (is_wp_error($team)) return $team;
-		$ics = Rest_Fixtures_Gateway::get_fixtures_ics($team);
-		if (!$ics) return Rest::db_error();
+		$request['extension'] = '.ics';
+		$team = Rest::decode_club_team($request->get_param('team'));
+		// Might want to stick this in the database
+		$alias = [
+			'Hillcroft' => 'Hillcroft 1',
+			'Purley' => 'Purley Raptors',
+		];
+		if (isset($alias[$team])) {
+			$team = $alias[$team];
+		}
+
+		if (Club_Team_Gateway::validate_team($team)) {
+			$ics = Rest_Fixtures_Gateway::get_fixtures_ics($team);
+			if (!$ics) return Rest::db_error();
+		} else {
+			$removed_calendars = @include __DIR__ . '/team-removed-calendars.php';
+			if (!$removed_calendars
+			|| !isset($removed_calendars[$team])) {
+				return new \WP_Error('unknown_team', 'The requested team is unknown',  ['status' => 404]);
+			}
+			// See https://github.com/south-lacrosse/www-dev/blob/main/docs/webmaster-tasks.md#calendars
+			Rest_Fixtures_Gateway::log_fixtures_ics($team);
+			ob_start();
+			require __DIR__ . '/views/rest-unsubscribe-fixtures.ics.php';
+			$ics = ob_get_clean();
+		}
 		return new \WP_REST_Response($ics);
 	}
 

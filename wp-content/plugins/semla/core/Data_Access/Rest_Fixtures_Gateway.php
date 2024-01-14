@@ -74,4 +74,12 @@ class Rest_Fixtures_Gateway {
 		require __DIR__ . '/views/rest-fixtures.ics.php';
 		return ob_get_clean();
 	}
+
+	public static function log_fixtures_ics($team) {
+		global $wpdb;
+		return $wpdb->query($wpdb->prepare(
+			'INSERT INTO `sl_calendar_log` (team) VALUES (%s)
+			ON DUPLICATE KEY UPDATE access_cnt=access_cnt+1'
+			, $team ));
+	}
 }

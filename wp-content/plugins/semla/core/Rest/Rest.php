@@ -17,8 +17,6 @@ use Semla\Data_Access\Competition_Group_Gateway;
  *      /teams/Bath - details of all REST services for team
  *      /teams/Bath/fixtures - html snippet, .json, or .js to embed
  *      /teams/Bath/fixtures.ics - calendar
- *        also aliased using add_rewrite_rule in App.php to URI /fixtures_Bath.ics
- *        If the endpoint changes make sure to update that rule, and flush rewrite rules
  *      /teams/Bath/tables - html snippet, .json, or .js to embed
  *
  * semla-admin/v1: JSON endpoints to supply data for our custom blocks
