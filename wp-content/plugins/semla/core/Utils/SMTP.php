@@ -57,7 +57,7 @@ class SMTP {
 	}
 
 	private static function log( $str ) {
-		@file_put_contents(self::get_log_filename(), date('[d-M-Y G:i:s e] ')
+		@file_put_contents(self::get_log_filename(), date('[d-M-Y H:i:s e] ')
 			. $str . PHP_EOL, FILE_APPEND | LOCK_EX);
 	}
 
