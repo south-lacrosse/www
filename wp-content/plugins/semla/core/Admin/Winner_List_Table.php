@@ -46,13 +46,21 @@ class Winner_List_Table extends \WP_List_Table {
 	}
 
 	function column_team( $item ) {
-		$actions = [];
-		$actions['edit']   = '<a href="?page=semla_team_abbrev&action=edit&id=' . $item->id
-			. '" data-id="' . $item->id . '" title="Edit">Edit</a>';
-		$actions['delete']   = '<a href="?page=semla_team_abbrev&action=delete&id=' . $item->id
-			. '" class="submitdelete" data-id="' . $item->id . '" title="Delete">Delete</a>';
 		return '<a href="?page=semla_team_abbrev&action=view&id=' . $item->id
-		. '"><strong>' . $item->team .  '</strong></a> ' . $this->row_actions( $actions ) ;
+		. '"><strong>' . $item->team .  '</strong></a> ';
+	}
+
+	protected function handle_row_actions( $item, $column_name, $primary ) {
+		if ( $primary !== $column_name ) {
+			return '';
+		}
+		$actions = [
+			'edit' => '<a href="?page=semla_team_abbrev&action=edit&id=' . $item->id
+				. '" data-id="' . $item->id . '" title="Edit">Edit</a>',
+			'delete' => '<a href="?page=semla_team_abbrev&action=delete&id=' . $item->id
+				. '" class="submitdelete" data-id="' . $item->id . '" title="Delete">Delete</a>',
+		];
+		return $this->row_actions( $actions ) ;
 	}
 
 	function get_sortable_columns() {
@@ -73,7 +81,7 @@ class Winner_List_Table extends \WP_List_Table {
 		$status_links   = [];
 		foreach ($this->counts as $key => $value) {
 			$class = ( $key == $this->page_status ) ? 'current' : 'status-' . $key;
-			$status_links[ $key ] = sprintf( 
+			$status_links[ $key ] = sprintf(
 				'<a href="%s" class="%s">%s <span class="count">(%s)</span></a>', add_query_arg( ['status' => $key], '?page=sample-page'), $class, $value['label'], $value['count'] );
 		}
 		return $status_links;

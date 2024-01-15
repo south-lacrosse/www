@@ -44,16 +44,25 @@ class Team_Abbrev_List_Table extends \WP_List_Table {
 
 	 public function column_team( $item ) {
 		$team = urlencode($item->team);
-		$actions = [];
-		$actions['edit']   = '<a href="?page=semla_team_abbrev&action=edit&team=' . $team
-			. '" data-team="' . $team . '" title="Edit">Edit</a>';
-		$actions['delete']   = '<a href="?page=semla_team_abbrev&action=delete&team=' . $team . $this->nonce
-			. '" class="submitdelete" data-team="' . $team . '" title="Delete">Delete</a>';
 		return '<a href="?page=semla_team_abbrev&action=edit&team=' . $team
-			. '"><strong>' . $item->team .  '</strong></a> ' . $this->row_actions( $actions ) ;
+			. '"><strong>' . $item->team .  '</strong></a>';
 	}
 
-	 public function get_sortable_columns() {
+	protected function handle_row_actions( $item, $column_name, $primary ) {
+		if ( $primary !== $column_name ) {
+			return '';
+		}
+		$team = urlencode($item->team);
+		$actions = [
+			'edit' => '<a href="?page=semla_team_abbrev&action=edit&team=' . $team
+				. '" data-team="' . $team . '" title="Edit">Edit</a>',
+			'delete' => '<a href="?page=semla_team_abbrev&action=delete&team=' . $team . $this->nonce
+				. '" class="submitdelete" data-team="' . $team . '" title="Delete">Delete</a>',
+		];
+		return $this->row_actions( $actions ) ;
+	}
+
+	public function get_sortable_columns() {
 		return ['team' => [ 'team', true ]];
 	}
 

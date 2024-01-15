@@ -39,13 +39,21 @@ class Competition_Group_List_Table extends \WP_List_Table {
 	}
 
 	 public function column_name( $item ) {
-		$actions = [];
-		$actions['edit']   = '<a href="?page=semla_cg&action=edit&id=' . $item->id
-			. '" data-id="' . $item->id . '" title="Edit">Edit</a>';
-		$actions['delete']   = '<a href="?page=semla_cg&action=delete&id=' . $item->id . $this->nonce
-			. '" class="submitdelete" data-id="' . $item->id . '" title="Delete">Delete</a>';
 		return '<a href="?page=semla_cg&action=edit&id=' . $item->id
-			. '"><strong>' . $item->name .  '</strong></a> ' . $this->row_actions( $actions ) ;
+			. '"><strong>' . $item->name .  '</strong></a>';
+	}
+
+	protected function handle_row_actions( $item, $column_name, $primary ) {
+		if ( $primary !== $column_name ) {
+			return '';
+		}
+		$actions = [
+			'edit' => '<a href="?page=semla_cg&action=edit&id=' . $item->id
+				. '" data-id="' . $item->id . '" title="Edit">Edit</a>',
+			'delete' => '<a href="?page=semla_cg&action=delete&id=' . $item->id . $this->nonce
+			. '" class="submitdelete" data-id="' . $item->id . '" title="Delete">Delete</a>',
+		];
+		return $this->row_actions( $actions ) ;
 	}
 
 	 public function get_sortable_columns() {
