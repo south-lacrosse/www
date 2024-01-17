@@ -11,22 +11,6 @@ class Admin_Menu {
 				'dashicons-shield-alt',	30);
 			add_action( 'load-' . $hook_suffix, [Fixtures_Page::class, 'load'] );
 
-			// $hook_suffix = add_submenu_page('semla', 'Team Abbreviations', 'Team Abbreviations', 'manage_semla',
-			// 	'semla_team_abbrev', [Team_Abbrev_Page::class, 'render_page'] );
-			// add_action( 'load-' . $hook_suffix, [Team_Abbrev_Page::class, 'handle_actions'] );
-
-			// $hook_suffix = add_submenu_page('semla', 'Winners', 'Winners', 'manage_semla',
-			// 	'semla_winner', [Winner_Page::class, 'render_page'] );
-			// add_action( 'load-' . $hook_suffix, [Winner_Page::class, 'handle_actions'] );
-
-			// $hook_suffix = add_submenu_page('semla', 'Leagues', 'Leagues', 'manage_semla',
-			// 	'semla_cg', [Competition_Group_Page::class, 'render_page'] );
-			// add_action( 'load-' . $hook_suffix, [Competition_Group_Page::class, 'handle_actions'] );
-
-			// $hook_suffix = add_submenu_page('semla', 'Competitions', 'Competitions', 'manage_semla',
-			// 	'semla_competition', [Competition_Page::class, 'render_page'] );
-			// add_action( 'load-' . $hook_suffix, [Competition_Page::class, 'handle_actions'] );
-
 			add_submenu_page('semla', 'SEMLA Settings', 'Settings', 'manage_options',
 				'semla_settings', [Settings_Page::class, 'render_page'] );
 
