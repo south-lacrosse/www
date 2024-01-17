@@ -42,9 +42,10 @@ class Club_Team_Gateway {
 	}
 
 	/**
-	 * Get all teams, with their abbreviations
+	 * Get all teams, with their abbreviations and club page
+	 * @return array 2 arrays, 'teams' for team->abbrev, and 'team_club' for team->club page
 	 */
-	public static function get_teams_abbrevs() {
+	public static function get_teams_abbrev_club_page() {
 		global $wpdb;
 		$rows = $wpdb->get_results('SELECT t.name, COALESCE(ta.abbrev,"") as abbrev, t.club_page
 			FROM slc_team AS t

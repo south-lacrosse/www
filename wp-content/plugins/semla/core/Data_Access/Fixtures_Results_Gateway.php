@@ -102,7 +102,7 @@ class Fixtures_Results_Gateway {
 			$userDate = date('d M Y', strtotime($row));
 			$dates[$userDate] = $row;
 		}
-		$data = Club_Team_Gateway::get_teams_abbrevs(); // team and team_club
+		$data = Club_Team_Gateway::get_teams_abbrev_club_page(); // team and team_club
 		if ($data === false) return false;
 		$clubs = Club_Team_Gateway::get_clubs_teams(true);
 		if ($clubs === false) return false;
