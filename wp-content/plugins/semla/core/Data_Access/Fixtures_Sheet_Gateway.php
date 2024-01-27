@@ -19,8 +19,6 @@ class Fixtures_Sheet_Gateway {
 	// Teams page
 	const TEAM_NAME=0;
 	const TEAM_CLUB_PAGE = 2;
-	const TEAM_MINIMAL=4;
-	const TEAM_SHORT=5;
 	// Deductions
 	const DEDUCT_COMPETITION = 0;
 	const DEDUCT_POINTS = 2;
@@ -96,7 +94,6 @@ class Fixtures_Sheet_Gateway {
 
 		$this->load_fixtures_deductions();
 		$this->load_flags();
-		$this->load_remarks();
 		if ($this->error->has_errors()) return $this->error;
 
 		$res = DB_Util::on_success();
@@ -122,7 +119,7 @@ class Fixtures_Sheet_Gateway {
 			$this->error->add('fixtures', 'No Teams');
 		}
 		if ($this->error->has_errors()) return;
-		$team_minimals = $team_abbrevs = $this->teams = [];
+		$this->teams = [];
 		$club_slugs = Club_Gateway::get_club_slugs();
 		if ($club_slugs === false) {
 			$this->add_db_error('Failed to load club slugs');
@@ -137,12 +134,6 @@ class Fixtures_Sheet_Gateway {
 					$this->error->add('fixtures', "Unknown team page for $team_name");
 					continue;
 				}
-			}
-			if (!empty($row[self::TEAM_MINIMAL])) {
-				$team_minimals[] = [$team_name,$row[self::TEAM_MINIMAL]];
-			}
-			if (!empty($row[self::TEAM_SHORT])) {
-				$team_abbrevs[] = [$team_name,$row[self::TEAM_SHORT]];
 			}
 			$team_rows[$key] = array_splice($row,0,4);
 		}
@@ -209,28 +200,6 @@ class Fixtures_Sheet_Gateway {
 			return;
 		}
 		$this->status[] = 'Loaded info for ' . count($team_rows) . ' teams';
-
-		if ($team_minimals) {
-			$affected = Club_Team_Gateway::save_team_minimals($team_minimals);
-			if ($affected === false) {
-				$this->add_db_error('Failed to save team minimal names');
-				return;
-			}
-			if ($affected) { // $affected is 2 per update, 1 per insert - so don't put in message
-				$this->status[] = 'Team minimal names updated';
-			}
-		}
-
-		if ($team_abbrevs) {
-			$affected = Club_Team_Gateway::save_team_abbrevs($team_abbrevs);
-			if ($affected === false) {
-				$this->add_db_error('Failed to save team abbreviations');
-				return;
-			}
-			if ($affected) { // $affected is 2 per update, 1 per insert - so don't put in message
-				$this->status[] = 'Team name abbreviations updated';
-			}
-		}
 
 		file_put_contents($this->tables_file, serialize($tables));
 		$this->tables = $tables;
@@ -887,26 +856,6 @@ class Fixtures_Sheet_Gateway {
 		}
 	}
 
-	private function load_remarks() {
-		$remarks = [];
-		// Remarks sheet is optional
-		if (array_key_exists('Remarks', $this->sheet_names)) {
-			foreach ($this->get_rows('Remarks') as $row) {
-				if (empty($row[0])) continue;
-				if (empty($this->competitions[$row[0]])) {
-					$this->error->add('fixtures', "Remarks sheet: Competition $row[0] does not exist");
-					continue;
-				}
-				$remarks[] = [$this->competitions[$row[0]]->id, $row[1]];
-			}
-		}
-		if (!Competition_Gateway::save_remarks($remarks)) {
-			$this->add_db_error('Failed to save Remarks');
-			return;
-		}
-		if ($remarks) $this->status[] = count($remarks) . ' remarks updated';
-	}
-
 	/**
 	 * Fetch the Google Sheet, and parse it into a SimpleXLSX object
 	 * @return bool true on success, false otherwise
@@ -960,7 +909,7 @@ class Fixtures_Sheet_Gateway {
 		}
 
 		$tables = ['cup_draw', 'cup_round_date', 'deduction', 'fixture', 'fixture_date',
-			'table', 'tiebreaker', 'remarks'];
+			'table', 'tiebreaker'];
 
 		$tables_count = $wpdb->get_var(
 			'SELECT COUNT(*) FROM information_schema.TABLES

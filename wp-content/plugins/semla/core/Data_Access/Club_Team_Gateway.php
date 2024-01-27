@@ -62,30 +62,6 @@ class Club_Team_Gateway {
 		return ['team' => $teams, 'team_club' => $team_club];
 	}
 
-	public static function save_team_abbrevs($rows) {
-		global $wpdb;
-		$values = [];
-		foreach ( $rows as $key => $row ) {
-			$values[] = $wpdb->prepare( "(%s,%s)", $row );
-		}
-		$query = 'INSERT INTO sl_team_abbrev (team, abbrev) VALUES '
-			. implode( ",", $values )
-			. ' ON duplicate key update abbrev = VALUES(abbrev)';
-		return $wpdb->query($query);
-	}
-
-	public static function save_team_minimals($rows) {
-		global $wpdb;
-		$values = [];
-		foreach ( $rows as $key => $row ) {
-			$values[] = $wpdb->prepare( "(%s,%s)", $row );
-		}
-		$query = 'INSERT INTO sl_team_minimal (team, minimal) VALUES '
-			. implode( ",", $values )
-			. ' ON duplicate key update minimal = VALUES(minimal)';
-		return $wpdb->query($query);
-	}
-
 	public static function validate_team($team) {
 		global $wpdb;
 		return (bool) $wpdb->get_var( $wpdb->prepare(

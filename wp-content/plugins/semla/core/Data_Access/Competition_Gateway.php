@@ -155,24 +155,4 @@ class Competition_Gateway {
 		DB_Util::add_table_to_rename('ladder');
 		return true;
 	}
-
-	public static function save_remarks($rows) {
-		global $wpdb;
-		$result = DB_Util::create_table('new_remarks',
-			'`comp_id` SMALLINT UNSIGNED NOT NULL,
-			`remarks` text NOT NULL,
-			PRIMARY KEY (`comp_id`)');
-		if ($result === false) return false;
-		if ($rows) {
-			foreach ( $rows as $key => $row ) {
-				$values[] = $wpdb->prepare( "(%d,%s)", $row );
-			}
-			$query = 'INSERT INTO new_remarks (comp_id, remarks) VALUES ';
-			$query .= implode( ",\n", $values );
-			$result = $wpdb->query($query);
-			if ($result === false) return false;
-		}
-		DB_Util::add_table_to_rename('remarks');
-		return true;
-	}
 }
