@@ -44,14 +44,15 @@ class Competition_Gateway {
 		$table = $year ? 'slh_table' : 'slc_table';
 		$query = "SELECT c.id, c.seq, c.section_name,
 			GROUP_CONCAT(t.team ORDER BY t.team SEPARATOR '|') AS teams,
-			GROUP_CONCAT(m.minimal ORDER BY t.team SEPARATOR '|') AS minimals
-			FROM $table t, sl_competition c, sl_team_minimal m
-		WHERE ";
+			GROUP_CONCAT(COALESCE(m.minimal, LEFT(t.team,4)) ORDER BY t.team SEPARATOR '|') AS minimals
+			FROM sl_competition c
+			INNER JOIN $table t ON c.id = t.comp_id
+			LEFT JOIN sl_team_minimal m ON m.team = t.team
+			WHERE ";
 		if ($year) {
 			$query .= $wpdb->prepare('t.year = %d AND ', $year);
 		}
-		$query .= $wpdb->prepare(' c.id = t.comp_id AND c.group_id = %d
-			AND m.team = t.team
+		$query .= $wpdb->prepare('c.group_id = %d
 			GROUP BY c.id', $league_id);
 		$rows = $wpdb->get_results($query, OBJECT_K);
 		if ($wpdb->last_error) return false;
