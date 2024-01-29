@@ -73,12 +73,12 @@ class Table_Renderer {
 	 */
 	private static function table($division_name, $teams, $year, $for_rest) {
 		$team0 = $teams[0];
-		$wdl_cols = $team0->won > 0 || !$year ? true : false;
-		$fa_cols = $team0->goals_for > 0 ? true : false;
-		$points_col = $team0->points > 0 || !$year ? true : false;
-		$points_avg_col = isset($team0->points_avg) ? true : false;
-		$goal_avg_col = $team0->goal_avg ? true : false;
-		$form_col = isset($team0->form) ? true : false;
+		$wdl_cols = $team0->won > 0 || !$year;
+		$fa_cols = $team0->goals_for > 0;
+		$points_col = $team0->points > 0 || !$year;
+		$points_avg_col = isset($team0->points_avg);
+		$goal_avg_col = $team0->goal_avg > 0;
+		$form_col = !empty($team0->form);
 		$deducted_col = false;
 		foreach ( $teams as $team ) {
 			if ($team->points_deducted > 0) {
