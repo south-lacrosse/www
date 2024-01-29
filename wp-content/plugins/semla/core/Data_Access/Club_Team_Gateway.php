@@ -62,6 +62,45 @@ class Club_Team_Gateway {
 		return ['team' => $teams, 'team_club' => $team_club];
 	}
 
+	public static function get_current_teams_meta() {
+		global $wpdb;
+		return $wpdb->get_results(
+			'SELECT t.name AS team, COALESCE(ta.abbrev,"") as abbrev,
+				COALESCE(tm.minimal,"") as minimal
+			FROM slc_team AS t
+			LEFT JOIN sl_team_abbrev AS ta ON ta.team = t.name
+			LEFT JOIN sl_team_minimal AS tm ON tm.team = t.name
+			ORDER BY t.name');
+	}
+
+	/**
+	 * @return int|false The number of effected rows, or false on error.
+	 */
+	public static function update_abbrev($team, $abbrev) {
+		global $wpdb;
+		if ($abbrev) {
+			$query = $wpdb->prepare('INSERT INTO sl_team_abbrev (team, abbrev) VALUES (%s,%s)
+				ON duplicate key update abbrev = VALUES(abbrev)'
+				, $team, $abbrev );
+			return $wpdb->query($query);
+		}
+		return $wpdb->delete( 'sl_team_abbrev', [ 'team' => $team ] );
+	}
+
+	/**
+	 * @return int|false The number of effected rows, or false on error.
+	 */
+	public static function update_minimal($team, $minimal) {
+		global $wpdb;
+		if ($minimal) {
+			$query = $wpdb->prepare('INSERT INTO sl_team_minimal (team, minimal) VALUES (%s,%s)
+				ON duplicate key update minimal = VALUES(minimal)'
+				, $team, $minimal );
+			return $wpdb->query($query);
+		}
+		return $wpdb->delete( 'sl_team_minimal', [ 'team' => $team ] );
+	}
+
 	public static function validate_team($team) {
 		global $wpdb;
 		return (bool) $wpdb->get_var( $wpdb->prepare(

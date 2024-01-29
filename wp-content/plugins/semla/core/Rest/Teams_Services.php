@@ -104,4 +104,29 @@ class Teams_Services {
 		}
 		return new \WP_REST_Response($data);
 	}
+
+	public static function admin_update( \WP_REST_Request $request ) {
+		$team = self::get_team($request);
+		if (is_wp_error($team)) return $team;
+		$params = $request->get_json_params();
+
+		$response = [];
+		if (isset($params['Abbreviation'])) {
+			$abbrev = trim($params['Abbreviation']);
+			$affected = Club_Team_Gateway::update_abbrev($team, $abbrev);
+			if ($affected === false) {
+				return Rest::db_error();
+			}
+			if ($affected) $response['Abbreviation'] = $abbrev;
+		}
+		if (isset($params['Minimal'])) {
+			$minimal = trim($params['Minimal']);
+			$affected = Club_Team_Gateway::update_minimal($team, $minimal);
+			if ($affected === false) {
+					return Rest::db_error();
+			}
+			if ($affected) $response['Minimal'] = $minimal;
+		}
+		return $response;
+	}
 }

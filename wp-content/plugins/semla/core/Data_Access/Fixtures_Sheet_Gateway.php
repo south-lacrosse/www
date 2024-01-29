@@ -105,6 +105,13 @@ class Fixtures_Sheet_Gateway {
 		$datetime = (new \DateTime('now', new \DateTimeZone('Europe/London')))->format('d/m/Y H:i:s');
 		update_option('semla_fixtures_datetime', $datetime, 'no');
 
+		if ($type === 'update-all') {
+			if (Competition_Gateway::clean_remarks() === false) {
+				global $wpdb;
+				$this->status[] = "Update completed, except failed to clean remarks. SQL error: $wpdb->last_error";
+			}
+		}
+
 		fclose($fp);
 		return $this->status;
 	}

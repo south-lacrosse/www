@@ -6,10 +6,18 @@ namespace Semla\Admin;
 class Admin_Menu {
 	public static function init() {
 		add_action('admin_menu', function() {
+			// Fixtures from Google Sheet
 			$hook_suffix = add_menu_page('SEMLA Fixtures From Sheet', 'SEMLA', 'manage_semla', 'semla',
-				[Fixtures_Page::class, 'render_page'],
-				'dashicons-shield-alt',	30);
+				[Fixtures_Page::class, 'render_page'], 'dashicons-shield-alt',	30);
 			add_action( 'load-' . $hook_suffix, [Fixtures_Page::class, 'load'] );
+
+			$hook_suffix = add_submenu_page('semla', 'Teams', 'Teams', 'manage_semla',
+				'semla_teams', [Teams_List_Table::class, 'render_page'] );
+			add_action( 'load-' . $hook_suffix, [Teams_List_Table::class, 'load'] );
+
+			$hook_suffix = add_submenu_page('semla', 'Competition Remarks', 'Remarks', 'manage_semla',
+				'semla_remarks', [Remarks_List_Table::class, 'render_page'] );
+			add_action( 'load-' . $hook_suffix, [Remarks_List_Table::class, 'load'] );
 
 			add_submenu_page('semla', 'SEMLA Settings', 'Settings', 'manage_options',
 				'semla_settings', [Settings_Page::class, 'render_page'] );

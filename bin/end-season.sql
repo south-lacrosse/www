@@ -49,13 +49,21 @@ SELECT 'Inserting deductions' as '';
 INSERT INTO `slh_deduction`
 (`year`, `comp_id`, `team`, `penalty`, `deduct_date`, `reason`)
 SELECT @end_year, `comp_id`, `team`, `penalty`, `deduct_date`, `reason`
-from `slc_deduction`;
+FROM `slc_deduction`;
+
+-- Clean up remarks just in case
+DELETE r FROM slc_remarks AS r
+WHERE NOT EXISTS
+	(SELECT * FROM slc_division AS d WHERE d.comp_id = r.comp_id)
+AND NOT EXISTS
+	(SELECT * FROM slc_cup_draw AS cd
+	WHERE cd.round = 1 AND cd.match_num = 1	AND cd.comp_id = r.comp_id);
 
 SELECT 'Inserting remarks' as '';
 INSERT INTO `slh_remarks`
 (`year`, `comp_id`, `remarks`)
 SELECT @end_year, `comp_id`, `remarks`
-from `slc_remarks`;
+FROM `slc_remarks`;
 
 SELECT 'Inserting competitions' as '';
 INSERT INTO `slh_competition`

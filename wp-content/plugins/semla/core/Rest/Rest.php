@@ -1,7 +1,5 @@
 <?php
 namespace Semla\Rest;
-
-use Semla\Data_Access\Competition_Group_Gateway;
 /**
  * Handle REST requests
  *
@@ -19,8 +17,10 @@ use Semla\Data_Access\Competition_Group_Gateway;
  *      /teams/Bath/fixtures.ics - calendar
  *      /teams/Bath/tables - html snippet, .json, or .js to embed
  *
- * semla-admin/v1: JSON endpoints to supply data for our custom blocks
- *      /leagues-cups
+ * semla-admin/v1: JSON endpoints for the admin area
+ *      /leagues-cups - get list of current leagues/cup for or custom data block
+ *      /teams/Bath - update team abbreviation/minimal
+ *      /competition/id - update competition data
  *
  * Note: the previous version used "+" for space in the club/team names. That is
  * a bad practice, so now "_" is used, but since it may have been used for calendars
@@ -42,6 +42,10 @@ class Rest {
 	public static $cors_header = false;
 
 	public static function init() {
+		global $wpdb;
+		// make sure even if WP_DEBUG/WP_DEBUG_DISPLAY are true we don't display errors as
+		// that will invalidate returned JSON
+		$wpdb->hide_errors();
 		// if clubs have changed then purge pages/rest routes which use club data
 		add_action( 'save_post_clubs', function() {
 			do_action( 'litespeed_purge', 'semla_clubs' );
@@ -75,8 +79,18 @@ class Rest {
 
 		register_rest_route( self::SEMLA_ADMIN_BASE, '/leagues-cups', [
 			'methods' => \WP_REST_Server::READABLE,
-			'callback' => [self::class, 'leagues_cups'],
+			'callback' => [Admin_Services::class, 'leagues_cups'],
 			'permission_callback' => '__return_true',
+		]);
+		register_rest_route( self::SEMLA_ADMIN_BASE, '/teams/(?P<team>[\w+_%.-]+)', [
+			'methods' => 'PUT',
+			'callback' => [Teams_Services::class, 'admin_update'],
+			'permission_callback' => [self::class, 'permissions_manage_semla']
+		]);
+		register_rest_route( self::SEMLA_ADMIN_BASE, '/competitions/(?P<comp_id>\d+)', [
+			'methods' => 'PUT',
+			'callback' => [Admin_Services::class, 'competition_update'],
+			'permission_callback' => [self::class, 'permissions_manage_semla']
 		]);
 
 		register_rest_route( self::SEMLA_BASE, '/teams', [
@@ -217,15 +231,6 @@ class Rest {
 		return str_replace(['_','+'],' ',urldecode($value));
 	}
 
-	public static function leagues_cups( \WP_REST_Request $request ) {
-		add_action( 'litespeed_tag_finalize', [self::class, 'add_cache_tags'] );
-		$data = Competition_Group_Gateway::get_leagues_and_cups();
-		if ($data === false) {
-			return Rest::db_error();
-		}
-		return $data;
-	}
-
 	public static function add_cache_tags() {
 		do_action( 'litespeed_tag_add', self::$cache_tags );
 	}
@@ -233,5 +238,9 @@ class Rest {
 	public static function db_error() {
 		do_action( 'litespeed_control_set_nocache', 'nocache due to database error' );
 		return new \WP_Error('database_error', 'Database error, please retry.',  ['status' => 500]);
+	}
+
+	public static function permissions_manage_semla() {
+		return current_user_can( 'manage_semla' );
 	}
 }

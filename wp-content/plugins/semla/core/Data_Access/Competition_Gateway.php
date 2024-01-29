@@ -119,6 +119,55 @@ class Competition_Gateway {
 		return $result;
 	}
 
+	public static function get_remarks() {
+		global $wpdb;
+		return $wpdb->get_results(
+			'SELECT id, name, remarks
+			FROM (
+				SELECT c.id, CASE WHEN c.group_id = 1 THEN c.section_name
+					ELSE c.name END AS name, c.seq
+				FROM sl_competition AS c, slc_division AS d
+				WHERE c.id = d.comp_id
+				UNION ALL
+				SELECT c.id, CASE WHEN c.group_id = 1 THEN c.section_name
+					ELSE c.name END AS name, c.seq
+				FROM sl_competition AS c, slc_cup_draw AS cd
+				WHERE cd.round = 1 AND cd.match_num = 1
+				AND c.id = cd.comp_id
+				) comps
+			LEFT JOIN slc_remarks AS r
+			ON r.comp_id = comps.id
+			ORDER BY seq');
+	}
+
+	/**
+	 * @return int|false The number of effected rows, or false on error.
+	 */
+	public static function update_remarks($comp_id, $remarks) {
+		global $wpdb;
+		if ($remarks) {
+			$query = $wpdb->prepare('INSERT INTO slc_remarks (comp_id, remarks) VALUES (%d,%s)
+				ON duplicate key update remarks = VALUES(remarks)'
+				, $comp_id, $remarks );
+			return $wpdb->query($query);
+		}
+		return $wpdb->delete( 'slc_remarks', [ 'comp_id' => $comp_id ], [ '%d' ] );
+	}
+
+	/**
+	 * Delete any remarks not in current competitions
+	 */
+	public static function clean_remarks() {
+		global $wpdb;
+		return $wpdb->query(
+			'DELETE r FROM slc_remarks AS r
+			WHERE NOT EXISTS
+				(SELECT * FROM slc_division AS d WHERE d.comp_id = r.comp_id)
+			AND NOT EXISTS
+				(SELECT * FROM slc_cup_draw AS cd
+				WHERE cd.round = 1 AND cd.match_num = 1	AND cd.comp_id = r.comp_id)');
+	}
+
 	public static function save_divisions_ladders($divisions, $ladders) {
 		global $wpdb;
 		$result = DB_Util::create_table('new_division',
