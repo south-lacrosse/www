@@ -90,27 +90,27 @@ class App {
 		add_filter( 'auto_update_plugin', '__return_true' );
 
 		$block_dir = dirname(__DIR__) . '/blocks';
-		register_block_type( $block_dir . '/attr-value' );
-		register_block_type( $block_dir . '/calendar', [
+		register_block_type_from_metadata( $block_dir . '/attr-value' );
+		register_block_type_from_metadata( $block_dir . '/calendar', [
 			'render_callback' => [Block_Calendar::class, 'render_callback'],
 		]);
-		register_block_type( $block_dir . '/contact', [
+		register_block_type_from_metadata( $block_dir . '/contact', [
 			'render_callback' => [Blocks::class, 'contact'],
 		]);
-		register_block_type( $block_dir . '/club-title', [
+		register_block_type_from_metadata( $block_dir . '/club-title', [
 			'render_callback' => [Blocks::class, 'club_title'],
 		]);
-		register_block_type( $block_dir . '/data', [
+		register_block_type_from_metadata( $block_dir . '/data', [
 			'render_callback' => [Block_Data::class, 'render_callback'],
 		]);
-		register_block_type( $block_dir . '/location', [
+		register_block_type_from_metadata( $block_dir . '/location', [
 			'render_callback' => [Blocks::class, 'location'],
 		]);
-		register_block_type( $block_dir . '/map', [
+		register_block_type_from_metadata( $block_dir . '/map', [
 			'render_callback' => [Blocks::class, 'map'],
 		]);
-		register_block_type( $block_dir . '/toc' );
-		register_block_type( $block_dir . '/website', [
+		register_block_type_from_metadata( $block_dir . '/toc' );
+		register_block_type_from_metadata( $block_dir . '/website', [
 			'render_callback' => [Blocks::class, 'website'],
 		]);
 		add_filter('render_block_core/post-date', function($block_content, $block, $instance) {
