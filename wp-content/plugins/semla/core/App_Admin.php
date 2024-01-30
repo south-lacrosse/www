@@ -6,6 +6,12 @@ use Semla\Admin\Admin_Menu;
  * Handling initialisation for the admin pages
  */
 class App_Admin {
+	// post types to show in the dashboard "At a Glance" meta box, and their
+	// dashicon codes
+	private const POST_TYPES = [
+		'clubs' => 'f332', 'history' => 'f495'
+	];
+
 	public static function init() {
 		// if clubs have changed then purge pages/rest routes which use club data
 		add_action('save_post_clubs', function() {
@@ -183,8 +189,7 @@ class App_Admin {
 
 		/** Show our custom post types on the dashboard. */
 		add_filter('dashboard_glance_items', function($items = []) {
-			foreach( App::$post_types as $app_post_type ) {
-				$type = $app_post_type['post_type'];
+			foreach( self::POST_TYPES as $type => $dashicon ) {
 				if( ! post_type_exists( $type ) ) continue;
 				$num_posts = wp_count_posts( $type );
 				if( $num_posts ) {
@@ -207,12 +212,10 @@ class App_Admin {
 		add_action('admin_head', function() {
 			echo '<style>';
 			/** Add styles to show the correct icons for our custom post types */
-			foreach( App::$post_types as $app_post_type ) {
-				$post_type = $app_post_type['post_type'];
-				$dashicon_code = $app_post_type['dashicon_code'];
+			foreach( self::POST_TYPES as $post_type => $dashicon ) {
 				echo "#dashboard_right_now a.$post_type-count:before,"
 					. "#dashboard_right_now span.$post_type-count:before{content:"
-					. "\"\\$dashicon_code\";}";
+					. "\"\\$dashicon\";}";
 			}
 			echo "</style>\n";
 		});

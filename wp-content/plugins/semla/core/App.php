@@ -8,43 +8,6 @@ use Semla\Utils\SMTP;
  * The core functionality of the plugin.
  */
 class App {
-	public static $post_types = [
-		[
-			'post_type' => 'clubs',
-			'name' => 'Club',
-			'args' => [
-				'menu_icon' => 'dashicons-shield',
-				'supports' => [
-					'title',
-					'editor',
-					'revisions',
-					'thumbnail'
-				],
-			],
-			'dashicon_code' => 'f332',
-		],
-		/* Note: history pages won't be shown in the WP Admin menu because of the capabilities set.
-		 * To enable people to edit either remove the capability_type so anyone with access to
-		 * posts can edit, or add the required capabilities to a role. e.g. using WP-CLI
-		 * wp cap add administrator edit_histories edit_others_histories delete_histories publish_histories read_private_histories delete_private_histories delete_published_histories delete_others_histories edit_private_histories edit_published_histories
-		 */
-		[
-			'post_type' => 'history',
-			'name' => 'History Page',
-			'args' => [
-				'menu_icon' => 'dashicons-media-spreadsheet',
-				'exclude_from_search' => true,
-				'capability_type' => ['history','histories'],
-				// no revisions as history pages are generated from our tables and won't need revisions
-				'supports' => [
-					'title',
-					'editor',
-				]
-			],
-			'dashicon_code' => 'f495'
-		],
-	];
-
 	/**
 	 * Initialise the plugin. Called from init hook.
 	 *
@@ -64,10 +27,30 @@ class App {
 		add_filter('comments_open', '__return_false', 20, 2);
 		add_filter('pings_open', '__return_false', 20, 2);
 
-		foreach (self::$post_types as $post_type) {
-			self::register_post_type($post_type['post_type'],
-				$post_type['name'], $post_type['args']);
-		}
+		self::register_post_type('clubs', 'Club', [
+			'menu_icon' => 'dashicons-shield',
+			'supports' => [
+				'title',
+				'editor',
+				'revisions',
+				'thumbnail'
+			],
+		]);
+		/* Note: history pages won't be shown in the WP Admin menu because of the capabilities set.
+		 * To enable people to edit either remove the capability_type so anyone with access to
+		 * posts can edit, or add the required capabilities to a role. e.g. using WP-CLI
+		 * wp cap add administrator edit_histories edit_others_histories delete_histories publish_histories read_private_histories delete_private_histories delete_published_histories delete_others_histories edit_private_histories edit_published_histories
+		 */
+		self::register_post_type('history', 'History Page', [
+			'menu_icon' => 'dashicons-media-spreadsheet',
+			'exclude_from_search' => true,
+			'capability_type' => ['history','histories'],
+			// no revisions as history pages are generated from our tables and won't need revisions
+			'supports' => [
+				'title',
+				'editor',
+			]
+		]);
 
 		// Remove rewrite rules for the legacy comment feed, post type comment pages,
 		// author pages, trackback, attachment pages, embeds
