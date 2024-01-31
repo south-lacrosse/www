@@ -203,7 +203,7 @@ class App {
 			$args['labels'] = [
 				'name' => $plural_name,
 				'singular_name' => $single_name,
-				'add_new' => 'Add New',
+				'add_new' => "Add New $single_name",
 				'add_new_item' => "Add New $single_name",
 				'edit_item' => "Edit $single_name",
 				'new_item' => "New $single_name",
