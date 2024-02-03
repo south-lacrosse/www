@@ -8,10 +8,17 @@ if ( ! class_exists ( 'WP_List_Table' ) ) {
 	require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 }
 class Inline_Edit_List_Table extends \WP_List_Table {
+	// All subclasses should add this to the CSS so that edited rows fade back in
+	const ROW_TRANSITION_CSS = '#the-list>tr{transition:opacity 1s linear}';
+
 	/**
-	 * Render complete page for inline edit list table
+	 * Render complete page for inline edit list table.
+	 *
+	 * If the rest endpoint starts with 'wp/' then the javascript will update
+	 * the post/custom post metadata. All input fields must have 'data-meta' set
+	 * to the meta data key.
 	 */
-	public function render_inline_edit_page($title, $url) {
+	public function render_inline_edit_page($title, $rest_endpoint) {
 		$this->prepare_items();
 		?>
 <div class="wrap">
@@ -25,10 +32,12 @@ class Inline_Edit_List_Table extends \WP_List_Table {
 		wp_enqueue_script( 'semla-inline-edit',
 			plugins_url('js/inline-edit' . SEMLA_MIN . '.js', dirname(__DIR__)),
 			['wp-a11y'], '1.0', true );
-		wp_localize_script( 'semla-inline-edit', 'semlaEdit', [
-			'url' => $url,
-			'nonce' => wp_create_nonce( 'wp_rest' )
-		]);
+		$vars = [
+			'url' => rest_url($rest_endpoint),
+			'nonce' => wp_create_nonce( 'wp_rest' ),
+			'wpMeta' => str_starts_with($rest_endpoint, 'wp/')
+		];
+		wp_add_inline_script('semla-inline-edit', 'const semlaEdit=' . json_encode( $vars ), 'before' );
 	}
 
 	protected function get_table_classes() {
@@ -78,7 +87,13 @@ class Inline_Edit_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Fields for inline edit row.
+	 * Fields for the inline edit row.
+	 *
+	 * All input tags must have their name attribute set as this is used to
+	 * send/receive name/value pairs to the server, and the data-colname must
+	 * match the value on the corresponding table cell (i.e the column title).
+	 *
+	 * See subclasses for examples.
 	 */
 	protected function inline_edit_fields() {
 		die( 'function Inline_Edit_List_Table::protected function inline_edit_fields() must be overridden in a subclass.' );

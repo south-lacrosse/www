@@ -16,9 +16,9 @@ class Teams_List_Table extends Inline_Edit_List_Table {
 		}
 		self::$list_table = new Teams_List_Table();
 		add_action( 'admin_head', function() {
-			echo '<style>'
+			echo "\n<style>"
+				. parent::ROW_TRANSITION_CSS
 				. '.fixed .column-abbrev{width:25%}.fixed .column-minimal{width:15%}'
-				. '#the-list>tr{transition:opacity 1s linear}'
 				. '</style>';
 		});
 		get_current_screen()->add_help_tab( [
@@ -37,8 +37,7 @@ class Teams_List_Table extends Inline_Edit_List_Table {
 	 * Menu page callback to render output
 	 */
 	public static function render_page() {
-		self::$list_table->render_inline_edit_page(
-			'Teams', rest_url('semla-admin/v1/teams/'));
+		self::$list_table->render_inline_edit_page('Teams', 'semla-admin/v1/teams/');
 	}
 
 	public function __construct() {
@@ -80,11 +79,11 @@ class Teams_List_Table extends Inline_Edit_List_Table {
 				<div class="inline-edit-col" style="max-width:60ch">
 				<label>
 					<span class="title">Abbreviation</span>
-					<span class="input-text-wrap"><input type="text" name="Abbreviation" class="ptitle" maxlength="30" /></span>
+					<span class="input-text-wrap"><input type="text" name="abbrev" data-colname="Abbreviation" class="ptitle" maxlength="30" /></span>
 				</label>
 				<label>
 					<span class="title">Minimal</span>
-					<span class="input-text-wrap"><input type="text" name="Minimal" class="ptitle" maxlength="10" /></span>
+					<span class="input-text-wrap"><input type="text" name="minimal" data-colname="Minimal" class="ptitle" maxlength="10" /></span>
 				</label>
 				</div>
 		<?php

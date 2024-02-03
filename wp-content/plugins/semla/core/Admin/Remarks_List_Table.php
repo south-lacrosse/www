@@ -15,8 +15,8 @@ class Remarks_List_Table extends Inline_Edit_List_Table {
 			wp_die('You do not have sufficient permissions to access this page.');
 		}
 		add_action( 'admin_head', function() {
-			echo '<style>'
-				. '#the-list>tr{transition:opacity 1s linear}'
+			echo "\n<style>"
+				. parent::ROW_TRANSITION_CSS
 				. '</style>';
 		});
 		get_current_screen()->add_help_tab( [
@@ -36,7 +36,7 @@ class Remarks_List_Table extends Inline_Edit_List_Table {
 		// create here rather than in load() so the screen options don't show
 		$list_table = new Remarks_List_Table();
 		$list_table->render_inline_edit_page(
-			'Competition Remarks', rest_url('semla-admin/v1/competitions/'));
+			'Competition Remarks', 'semla-admin/v1/competitions/');
 	}
 
 	public function __construct() {
@@ -87,7 +87,7 @@ class Remarks_List_Table extends Inline_Edit_List_Table {
 				<div class="inline-edit-col">
 				<label>
 					<span class="title">Remarks</span>
-					<span class="input-text-wrap"><textarea style="width:100%" rows="5" name="Remarks" class="ptitle"></textarea></span>
+					<span class="input-text-wrap"><textarea style="width:100%" rows="5" name="remarks" data-colname="Remarks" class="ptitle"></textarea></span>
 				</label>
 				</div>
 		<?php

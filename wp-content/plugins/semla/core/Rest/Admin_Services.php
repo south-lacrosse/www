@@ -23,13 +23,13 @@ class Admin_Services {
 		$params = $request->get_json_params();
 
 		$response = [];
-		if (isset($params['Remarks'])) {
-			$remarks = trim($params['Remarks']);
+		if (isset($params['remarks'])) {
+			$remarks = trim($params['remarks']);
 			$affected = Competition_Gateway::update_remarks($comp_id, $remarks);
 			if ($affected === false) {
 				return Rest::db_error();
 			}
-			if ($affected) $response['Remarks'] = $remarks;
+			if ($affected) $response['remarks'] = $remarks;
 		}
 		return $response;
 	}

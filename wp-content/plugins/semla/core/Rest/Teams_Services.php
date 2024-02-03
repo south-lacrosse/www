@@ -111,21 +111,21 @@ class Teams_Services {
 		$params = $request->get_json_params();
 
 		$response = [];
-		if (isset($params['Abbreviation'])) {
-			$abbrev = trim($params['Abbreviation']);
+		if (isset($params['abbrev'])) {
+			$abbrev = trim($params['abbrev']);
 			$affected = Club_Team_Gateway::update_abbrev($team, $abbrev);
 			if ($affected === false) {
 				return Rest::db_error();
 			}
-			if ($affected) $response['Abbreviation'] = $abbrev;
+			if ($affected) $response['abbrev'] = $abbrev;
 		}
-		if (isset($params['Minimal'])) {
-			$minimal = trim($params['Minimal']);
+		if (isset($params['minimal'])) {
+			$minimal = trim($params['minimal']);
 			$affected = Club_Team_Gateway::update_minimal($team, $minimal);
 			if ($affected === false) {
 					return Rest::db_error();
 			}
-			if ($affected) $response['Minimal'] = $minimal;
+			if ($affected) $response['minimal'] = $minimal;
 		}
 		return $response;
 	}

@@ -6,6 +6,7 @@
  * then sent to a REST endpoint passed in the semlaEdit global.
  */
 /* global semlaEdit, wp */
+/* eslint-env es6 */
 (function () {
 	const theList = document.getElementById('the-list');
 
@@ -16,13 +17,19 @@
 	 */
 	let editRow, editRowParent;
 	/**
-	 * The data in the table that is currently being edited
+	 * The data in the table that is currently being edited. dataFields is keyed
+	 * on name
 	 */
 	let dataRow, dataFields;
 	/**
-	 * Elements in the editRow
+	 * Elements in the editRow. fields is keyed on colname
 	 */
 	let primaryTitle, fields, firstField, spinner, errorNotice, errorMessage;
+	/**
+	 * If we are sending to a standard WordPress endpoint then the query is set
+	 * to restrict the fields returned.
+	 */
+	let query;
 
 	theList.addEventListener(
 		'click',
@@ -64,20 +71,20 @@
 			}
 		};
 
-		fields = {};
-		editRow.querySelectorAll('input, textarea').forEach((elem) => {
+		fields = new Map();
+		editRow.querySelectorAll('input, textarea').forEach((inputField) => {
 			// Save the inline edits when pressing Enter inside the inline editor.
-			elem.addEventListener('keydown', saveOnEnter);
+			inputField.addEventListener('keydown', saveOnEnter);
 			// save fields
-			if (!firstField) firstField = elem;
-			fields[elem.name] = elem;
+			if (!firstField) firstField = inputField;
+			fields.set(inputField.dataset.colname, inputField);
 		});
 
 		primaryTitle = editRow.querySelector('.inline-edit-title');
 		spinner = editRow.querySelector('.spinner');
 	}
 
-	function inlineEdit(elem) {
+	function inlineEdit(editButton) {
 		if (editRow.parentNode !== editRowParent) {
 			// in case we are moving from editing one item to another
 			resetDataRow();
@@ -85,8 +92,8 @@
 		// remove here before we update the fields
 		editRow.remove();
 
-		dataRow = elem.closest('tr');
-		dataFields = {};
+		dataRow = editButton.closest('tr');
+		dataFields = new Map();
 		const cells = dataRow.cells;
 
 		for (let c = 0; c < cells.length; c++) {
@@ -96,13 +103,16 @@
 				continue;
 			}
 			const colname = cell.dataset.colname;
-			if (colname && fields[colname]) {
-				fields[colname].value = cell.innerText;
-				dataFields[colname] = cell;
+			if (colname && fields.has(colname)) {
+				const editInput = fields.get(colname);
+				editInput.value = cell.innerText;
+				// key is the name of the field as that's used in the response
+				// from the server
+				dataFields.set(editInput.name, cell);
 			}
 		}
 
-		elem.setAttribute('aria-expanded', 'true');
+		editButton.setAttribute('aria-expanded', 'true');
 		dataRow.hidden = true;
 		dataRow.insertAdjacentElement('afterend', editRow);
 		// extra row to keep striping
@@ -122,15 +132,31 @@
 	async function save() {
 		spinner.classList.add('is-active');
 		resetErrorMessage();
-		const url =
+		let url =
 			semlaEdit.url +
 			// if we have an id then assume it's in the format comp-123 where 123 is the id
 			(dataRow.id
 				? dataRow.id.substring(dataRow.id.indexOf('-') + 1)
 				: primaryTitle.textContent.replaceAll(' ', '+'));
-		const data = {};
-		for (const [colname, input] of Object.entries(fields)) {
-			data[colname] = input.value;
+
+		if (semlaEdit.wpMeta) {
+			// if we're using the standard WP REST endpoints to update metadata
+			// then make sure we only return the fields necessary
+			if (!query) {
+				const metaKeys = [];
+				for (const input of fields.values()) {
+					metaKeys.push(input.name);
+				}
+				query = '?_fields=meta.' + metaKeys.join(',meta.');
+			}
+			url += query;
+		}
+		let data = {};
+		for (const input of fields.values()) {
+			data[input.name] = input.value.trim();
+		}
+		if (semlaEdit.wpMeta) {
+			data = { meta: data };
 		}
 		try {
 			const response = await fetch(url, {
@@ -155,16 +181,16 @@
 			// response may contain a refreshed nonce
 			const nonce = response.headers.get('X-Wp-Nonce');
 			if (nonce) semlaEdit.nonce = nonce;
-			// fade in the edited row
-			dataRow.style.opacity = 0;
-			revertEditRow();
-			dataRow.style.opacity = 1;
 			// We allow the server to alter the sent data if needed, so update
 			// the data using the server response
 			const json = await response.json();
-			for (const [colname, value] of Object.entries(json)) {
-				if (dataFields[colname]) dataFields[colname].textContent = value;
+			for (const [key, value] of Object.entries(semlaEdit.wpMeta ? json.meta : json)) {
+				if (dataFields.has(key)) dataFields.get(key).textContent = value;
 			}
+			// fade in the edited row, assumes CSS transitions set
+			dataRow.style.opacity = 0;
+			revertEditRow();
+			dataRow.style.opacity = 1;
 			wp.a11y.speak('Changes saved.');
 		} catch (error) {
 			setErrorMessage('Error while saving the changes. ' + error.message);
