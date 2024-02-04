@@ -17,6 +17,7 @@ class Settings_Page {
 			Admin_Menu::validate_nonce('semla_settings');
 		}
 		$gapi_key = get_option('semla_gapi_key');
+		$fixtures_source = get_option('semla_fixtures_source','gsheet');
 		if (isset($_POST['gapi_key'])) {
 			$new = trim($_POST['gapi_key']);
 			if ($new != $gapi_key) {
@@ -31,6 +32,14 @@ class Settings_Page {
 				}
 			}
 		}
+		if (isset($_POST['fixtures_source'])) {
+			if ($fixtures_source !== $_POST['fixtures_source']) {
+				$fixtures_source = $_POST['fixtures_source'];
+				update_option('semla_fixtures_source', $fixtures_source, 'no');
+				Admin_Menu::dismissible_success_message(
+					'Fixtures source changed. Now <a href="?page=semla">update the fixtures</a>.');
+		}
+		}
 ?>
 	<form method="post">
 		<table class="form-table" role="presentation"><tbody>
@@ -40,6 +49,14 @@ class Settings_Page {
 			<p>You should already have an API key, but if not <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">follow these instructions</a></p>
 			<p>And don't forget to <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/webmaster-tasks.md#rotate-google-api-key">rotate the API key</a> periodically.</p>
 			</td>
+		</tr>
+		<tr>
+			<th scope="row">Fixtures Source</th>
+			<td><fieldset>
+				<legend class="screen-reader-text"><span>Fixtures Source</span></legend>
+				<label><input type="radio" name="fixtures_source" value="lacrosseplay"<?php checked( $fixtures_source, 'lacrosseplay' ); ?>>LacrossePlay</label>
+				<br><label><input type="radio" name="fixtures_source" value="gsheet"<?php checked( $fixtures_source, 'gsheet' ); ?>>Google Sheet</label>
+			</fieldset></td>
 		</tr>
 		</tbody></table>
 		<p class="submit">
