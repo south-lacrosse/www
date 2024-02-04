@@ -1,7 +1,7 @@
 <?php
 namespace Semla\CLI;
 /**
- * Manage SEMLA fixtures/tables/flags from the Google Sheet.
+ * Manage SEMLA fixtures/tables/flags from the LacrossePlay API.
  *
  * Note it is better to use the SEMLA WordPress Admin menu as that purges fewer
  * cached pages than the CLI version because of the way LiteSpeed cache works.
@@ -12,20 +12,33 @@ namespace Semla\CLI;
  *     $ wp fixtures update
  */
 
-use Semla\Data_Access\Fixtures_Sheet_Gateway;
+use Semla\Data_Access\Lacrosse_Play_Gateway;
 use \WP_CLI;
-class Fixtures_Command {
+class Lacrosse_Play_Fixtures_Command {
 	/**
 	 * Update the fixtures and tables.
 	 *
 	 * ## OPTIONS
 	 *
+	 * [--flags]
+	 * : Load flags,  which is the default behaviour. Use `--no-flags` to ignore flags.
+	 *
+	 * [--tables]
+	 * : Load tables,  which is the default behaviour. Use `--no-tables` to ignore tables.
+	 *
+	 * [--fixtures]
+	 * : Load fixtures,  which is the default behaviour. Use `--no-fixtures` to ignore fixtures.
+	 *
 	 * [--all]
 	 * : also update the divisions and teams
 	 */
 	public function update($args, $assoc_args) {
-		$type = isset($assoc_args['all']) ? 'update-all' : 'update';
-		$result = (new Fixtures_Sheet_Gateway())->update($type);
+		$load_competition_data = isset($assoc_args['all']);
+		$data = [];
+		foreach (['fixtures','tables','flags'] as $flag) {
+			$data[$flag] =  WP_CLI\Utils\get_flag_value( $assoc_args, $flag, true );
+		}
+		$result = (new Lacrosse_Play_Gateway())->update($load_competition_data, $data);
 		if (is_wp_error($result)) {
 			WP_CLI::warning('Update failed (no data has been changed)');
 			$this->handle_wp_error($result);
@@ -34,21 +47,6 @@ class Fixtures_Command {
 		foreach ($result as $message) {
 			WP_CLI::log($message);
 		}
-		$this->done();
-	}
-
-	/**
-	 * Revert last fixtures update.
-	 *
-	 * Only run as a last resort to quickly undo an update. It won't work if the
-	 * teams or divisions were changed.
-	 */
-	public function revert() {
-		$result = Fixtures_Sheet_Gateway::revert();
-		if (is_wp_error($result)) {
-			$this->handle_wp_error($result);
-		}
-		WP_CLI::success($result);
 		$this->done();
 	}
 
