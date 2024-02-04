@@ -54,6 +54,18 @@ class Rest {
 		});
 		add_filter('upload_mimes', [Image::class, 'allow_svg_mimes'], 10, 1);
 
+		// Make sure we can update our meta data on the clubs post type.
+		// Note: we do this here rather than when the post type is created so
+		// that custom fields are only available in REST, and users cannot enter
+		// them on the edit screen.
+		add_post_type_support('clubs', 'custom-fields');
+		register_post_meta('clubs', 'lacrosseplay_club', [
+			'type'         => 'string',
+			'show_in_rest' => true,
+			'single'       => true,
+			'sanitize_callback' => 'sanitize_text_field',
+		]);
+
 		// Remove the oembed/1.0/embed REST route.
 		add_filter( 'rest_endpoints', function( $endpoints ) {
 			unset( $endpoints['/oembed/1.0/embed'] );
