@@ -1,3 +1,4 @@
-/Data_Access/lock.txt
-/Data_Access/empty-tables.txt
+/Data_Access/*.txt
+/Data_Access/*_Config.php
 /.cache*/
+

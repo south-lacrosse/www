@@ -201,6 +201,12 @@ class Table_Gateway {
 		return true;
 	}
 
+	/**
+	 * Accepts either an array of:
+	 *  - tables, which are an array of teams as objects
+	 *  - array of values including position
+	 * @param array tables
+	 */
 	public static function save_tables($tables) {
 		global $wpdb;
 		// points deducted and points are decimal(4,1) in history as there were
@@ -225,16 +231,24 @@ class Table_Gateway {
 			UNIQUE KEY `team_comp` (`team`,`comp_id`)');
 		if ($result === false) return false;
 
+		if (empty($tables)) return;
 		$query = 'INSERT INTO new_table (comp_id, position, team, played, won, drawn, lost, goals_for,
 			goals_against, goal_avg, points_deducted, points, divider, form, tiebreaker) VALUES ';
-		foreach ($tables as $comp_id => $table) {
-			$pos = 1;
-			foreach ($table as $team) {
-				$played = $team->won + $team->drawn + $team->lost;
-				$values[] = $wpdb->prepare("($comp_id,$pos,%s,$played, $team->won, $team->drawn,"
-					."$team->lost, $team->goals_for, $team->goals_against, $team->goal_avg, $team->points_deducted,"
-					."$team->points,$team->divider,'$team->form',$team->tiebreaker)",$team->team);
-				$pos++;
+		if (is_object(current(current($tables)))) {
+			foreach ($tables as $comp_id => $table) {
+				$pos = 1;
+				foreach ($table as $team) {
+					$played = $team->won + $team->drawn + $team->lost;
+					$values[] = $wpdb->prepare("($comp_id,$pos,%s,$played,$team->won,$team->drawn,"
+						."$team->lost,$team->goals_for,$team->goals_against,$team->goal_avg,$team->points_deducted,"
+						."$team->points,$team->divider,'$team->form',$team->tiebreaker)",$team->team);
+					$pos++;
+				}
+			}
+		} else {
+			foreach ($tables as $team) {
+				$played = $team[3] + $team[4] + $team[5];
+				$values[] = $wpdb->prepare("(%d,%d,%s,$played,%d,%d,%d,%d,%d,%f,%f,%f,%d,%s,%d)", $team);
 			}
 		}
 		$query .= implode( ",\n", $values );

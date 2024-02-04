@@ -6,10 +6,16 @@ namespace Semla\Admin;
 class Admin_Menu {
 	public static function init() {
 		add_action('admin_menu', function() {
-			// Fixtures from Google Sheet
-			$hook_suffix = add_menu_page('SEMLA Fixtures From Sheet', 'SEMLA', 'manage_semla', 'semla',
-				[Fixtures_Page::class, 'render_page'], 'dashicons-shield-alt',	30);
-			add_action( 'load-' . $hook_suffix, [Fixtures_Page::class, 'load'] );
+			$fixtures_source = get_option('semla_fixtures_source');
+			if ($fixtures_source === 'lacrosseplay') {
+				add_menu_page('SEMLA LacrossePlay Fixtures', 'SEMLA', 'manage_semla', 'semla',
+					[Lacrosse_Play_Page::class, 'render_page'],	'dashicons-shield-alt',	30);
+			} else {
+				// Fixtures from Google Sheet
+				$hook_suffix = add_menu_page('SEMLA Fixtures From Sheet', 'SEMLA', 'manage_semla', 'semla',
+					[Fixtures_Page::class, 'render_page'], 'dashicons-shield-alt',	30);
+				add_action( 'load-' . $hook_suffix, [Fixtures_Page::class, 'load'] );
+			}
 
 			$hook_suffix = add_submenu_page('semla', 'Teams', 'Teams', 'manage_semla',
 				'semla_teams', [Teams_List_Table::class, 'render_page'] );
@@ -29,6 +35,11 @@ class Admin_Menu {
 			$hook_suffix = add_submenu_page('edit.php?post_type=clubs', 'Club Emails', 'Emails', 'manage_semla',
 				'semla_clubs_emails', [Clubs_Emails_Page::class, 'render_page'] );
 			add_action( 'load-' . $hook_suffix, [Clubs_Emails_Page::class, 'check_download'] );
+			if ($fixtures_source === 'lacrosseplay') {
+				$hook_suffix = add_submenu_page('edit.php?post_type=clubs', 'Club Alias', 'Club Alias', 'manage_semla',
+					'semla_club_alias', [Club_Alias_List_Table::class, 'render_page'] );
+				add_action( 'load-' . $hook_suffix, [Club_Alias_List_Table::class, 'load'] );
+			}
 
 			add_options_page('SMTP', 'SMTP', 'manage_options','semla_smtp',
 				[SMTP_Page::class, 'render_page'] );
@@ -43,7 +54,7 @@ class Admin_Menu {
 
 	// Utility functions
 	/**
-	 * Render tabs, and return active tab, page and tab
+	 * Render tabs, and return active tab
 	 */
 	public static function render_tabs($page, $tabs) {
 		if (isset( $_GET[ 'tab' ] )) {
@@ -65,20 +76,20 @@ class Admin_Menu {
 		return $active_tab;
 	}
 
-	public static function dismissible_error_message($message) {
+	public static function notice($classes, $message) {
 		?>
-<div class="notice notice-error is-dismissible">
+<div class="notice <?= $classes ?>">
 <p><?= $message ?></p>
 </div>
 <?php
 	}
 
+	public static function dismissible_error_message($message) {
+		self::notice('notice-error is-dismissible', $message);
+	}
+
 	public static function dismissible_success_message($message) {
-		?>
-<div class="notice notice-success is-dismissible">
-<p><?= $message ?></p>
-</div>
-<?php
+		self::notice('notice-success is-dismissible', $message);
 	}
 
 	public static function validate_nonce($action) {

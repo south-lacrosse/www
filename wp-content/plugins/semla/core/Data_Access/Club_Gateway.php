@@ -137,4 +137,31 @@ class Club_Gateway {
 		if ($wpdb->last_error) return false;
 		return $res;
 	}
+
+	/**
+	 * Return array containing 2 items, an array of club->slug, and alias->club
+	 */
+	public static function get_club_slugs_aliases() {
+		global $wpdb;
+		$rows = $wpdb->get_results("SELECT post_title, post_name, meta_value FROM {$wpdb->posts}
+			LEFT JOIN {$wpdb->postmeta} ON post_id = ID AND meta_key = 'lacrosseplay_club'
+			WHERE post_type = 'clubs' AND post_status = 'publish'");
+		if ($wpdb->last_error) return false;
+		$club_slug = $club_alias = [];
+		foreach ($rows as $row) {
+			$club_slug[$row->post_title] = $row->post_name;
+			if ($row->meta_value) $club_alias[$row->meta_value] = $row->post_title;
+		}
+		return [ 'club_slug' => $club_slug, 'club_alias' => $club_alias ];
+	}
+
+	public static function get_current_clubs_alias() {
+		global $wpdb;
+		return $wpdb->get_results(
+			"SELECT ID, post_title, meta_value AS lp_club FROM {$wpdb->posts}
+			LEFT JOIN {$wpdb->postmeta} ON post_id = ID AND meta_key = 'lacrosseplay_club'
+			WHERE post_type = 'clubs' AND post_status = 'publish'
+			ORDER BY post_title");
+	}
+
 }

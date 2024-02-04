@@ -132,18 +132,20 @@ class Cup_Draw_Gateway {
 			`home_team` TINYINT NOT NULL,
 			PRIMARY KEY (`comp_id`, `round`, `match_num`)');
 		if ($result === false) return false;
-		foreach ( $rows as $key => $row ) {
-			$values[] = "($row[0],$row[1],$row[2],"
-				. $wpdb->prepare( '%s,%s,', $row[3], $row[4] )
-				. ($row[5] == '' ? 'null' : $row[5]) . ','
-				. ($row[6] == '' ? 'null' : $row[6])
-				. ",'',$row[7])";
+		if (!empty($rows)) {
+			foreach ( $rows as $key => $row ) {
+				$values[] = "($row[0],$row[1],$row[2],"
+					. $wpdb->prepare( '%s,%s,', $row[3], $row[4] )
+					. ($row[5] == '' ? 'null' : $row[5]) . ','
+					. ($row[6] == '' ? 'null' : $row[6])
+					. ",'',$row[7])";
+			}
+			$query = 'INSERT INTO new_cup_draw (comp_id, round, match_num, team1, team2,
+				team1_goals, team2_goals, result_extra, home_team) VALUES ';
+			$query .= implode( ",\n", $values );
+			$result = $wpdb->query($query);
+			if ($result === false) return false;
 		}
-		$query = 'INSERT INTO new_cup_draw (comp_id, round, match_num, team1, team2,
-			team1_goals, team2_goals, result_extra, home_team) VALUES ';
-		$query .= implode( ",\n", $values );
-		$result = $wpdb->query($query);
-		if ($result === false) return false;
 		DB_Util::add_table_to_rename('cup_draw');
 
 		$result = DB_Util::create_table('new_cup_round_date',
@@ -152,14 +154,16 @@ class Cup_Draw_Gateway {
 			  `match_date` DATE NOT NULL,
 			  PRIMARY KEY (`comp_id`, `round`)');
 		if ($result === false) return false;
-		$query = 'INSERT INTO new_cup_round_date (comp_id, round, match_date) VALUES ';
-		$values = [];
-		foreach ( $round_dates as $row ) {
-			$values[] = "($row[0],$row[1],'$row[2]')";
+		if (!empty($round_dates)) {
+			$query = 'INSERT INTO new_cup_round_date (comp_id, round, match_date) VALUES ';
+			$values = [];
+			foreach ( $round_dates as $row ) {
+				$values[] = "($row[0],$row[1],'$row[2]')";
+			}
+			$query .= implode( ",\n", $values );
+			$result = $wpdb->query($query);
+			if ($result === false) return false;
 		}
-		$query .= implode( ",\n", $values );
-		$result = $wpdb->query($query);
-		if ($result === false) return false;
 		DB_Util::add_table_to_rename('cup_round_date');
 		return true;
 	}

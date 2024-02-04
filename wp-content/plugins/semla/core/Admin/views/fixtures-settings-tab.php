@@ -32,7 +32,7 @@ if (isset($_POST['fixtures_sheet_id'])) {
 				Admin_Menu::dismissible_error_message('Error in checking if Spreadsheet exists: ' . $res->get_error_message());
 			} elseif ( $res === true ) {
 				update_option('semla_fixtures_sheet_id', $fixtures_sheet_id, 'no');
-				Admin_Menu::dismissible_success_message('The Fixtures Sheet ID was updated. Now update the Fixtures from the SEMLA Admin Menu');
+				Admin_Menu::dismissible_success_message('The Fixtures Sheet ID was updated. Now update the Fixtures.');
 			} elseif (!$res) {
 				Admin_Menu::dismissible_error_message('The Fixtures Sheet at ' . $sheet_url
 					. ' does not exist');
