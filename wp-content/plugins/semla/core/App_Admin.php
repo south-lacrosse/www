@@ -266,12 +266,10 @@ class App_Admin {
 		});
 		add_action( "manage_{$post_type}_posts_custom_column", function ($column_name, $post_id) {
 			if ( $column_name === 'modified' ) {
-				$author = get_the_modified_author();
-				if ( $author ) {
+				$post = get_post($post_id);
+				if ($post->post_modified_gmt !== $post->post_date_gmt) {
 					the_modified_date('Y/m/d g:i a');
-					echo "<br>by $author";
 				}
-				echo '</p>';
 			}
 		}, 10, 2);
 	}
