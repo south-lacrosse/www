@@ -65,9 +65,10 @@ class Rest_Fixtures_Gateway {
 		$rows = $wpdb->get_results(
 			"SELECT f.match_date, f.competition, f.home, f.away,
 				f.venue, f.match_time, t.pitch_type
-			FROM slc_fixture AS f, slc_team AS t
+			FROM slc_fixture AS f
+			LEFT JOIN slc_team AS t
+			ON t.name = COALESCE(f.venue,f.home)
 			WHERE (f.home$where OR f.away$where) AND (f.result = '' OR f.home_goals IS NOT NULL)
-			AND t.name = COALESCE(f.venue,f.home)
 			ORDER BY f.id");
 		if ($wpdb->last_error) return false;
 		ob_start();
