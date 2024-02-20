@@ -115,7 +115,7 @@ class Fixtures_Grid_Renderer {
 				echo date('d M', strtotime($row->match_date));
 			}
 			if ($row->points_multi > 1) {
-				echo ' <sup>*2</sup>';
+				echo ' <sup>*' . $row->points_multi . '</sup>';
 				self::$keys['*'] = '<i>*2</i> = multiple points';
 			}
 			if (!empty($row->extra)) echo $row->extra;

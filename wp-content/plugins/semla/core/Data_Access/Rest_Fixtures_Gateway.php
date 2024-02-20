@@ -46,6 +46,7 @@ class Rest_Fixtures_Gateway {
 				}
 				if (!empty($row->result)) {
 					unset($row->match_time);
+					unset($row->venue);
 				}
 				if ($row->points_multi == 1) {
 					unset($row->points_multi);

@@ -13,18 +13,21 @@ foreach ($rows as $row) {
 	} else {
 		$date = '';
 	}
-	if ($row->result == '') {
+	if ($row->result) {
+		$result = $row->result;
+	} else {
 		$result = Util::format_time($row->match_time);
 		if ($row->pitch_type) {
 			$result .= ' ' . $row->pitch_type;
 		}
-		if ($row->venue) {
-			$result .= "<br>at $row->venue";
-		}
-	} else {
-		$result = $row->result;
 	}
-	?>
+	if ($row->points_multi > 1) {
+		$result .= ' <sup>*' . $row->points_multi . '</sup>';
+	}
+	if (!$row->result && $row->venue) {
+		$result .= "<br>at $row->venue";
+	}
+?>
 <tr><td><?= $date ?></td><td><?= $row->home ?></td><td><?= $result ?></td><td><?= $row->away ?></td><td><?= $row->competition ?></td></tr>
 <?php
 } ?>
