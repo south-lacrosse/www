@@ -468,8 +468,7 @@ class Fixtures_Sheet_Gateway {
 							$h->form .='D';
 							$a->drawn += $multi;
 							$a->form .= 'D';
-							$h_points = $this->points['D'];
-							$a_points = $this->points['D'];
+							$h_points = $a_points = $this->points['D'];
 							$h_win = $a_win = 0;
 						}
 					}
@@ -488,6 +487,17 @@ class Fixtures_Sheet_Gateway {
 				switch ($h_goals) {
 					case 'V':
 						$result = 'Void';
+						// If points are awarded for a void game they will be in
+						// the away goals column, otherwise it'll be V
+						if (is_int($a_goals) && $is_league) {
+							$result .= " ({$a_goals}pts)";
+							$h = $this->tables[$h_comp_id][$home];
+							$a = $this->tables[$a_comp_id][$away];
+							$h_points = $a_points = $a_goals;
+							$ha_points = $a_goals * $multi;
+							$h->points += $ha_points;
+							$a->points += $ha_points;
+						}
 						break;
 					case 'C':
 						$result = 'Cancelled';
