@@ -478,8 +478,8 @@ class Fixtures_Sheet_Gateway {
 					// by record between teams inside a division
 					if ($h_comp_id === $a_comp_id) {
 						$division_fixtures[$comp_id][] = ['h' => $home, 'a' => $away,
-							'h_data' => ['points' => $h_points, 'goal_diff'=> $h_goals - $a_goals, 'win' => $h_win],
-							'a_data' => ['points' => $a_points, 'goal_diff'=> $a_goals - $h_goals, 'win' => $a_win],
+							'h_data' => ['points' => $h_points, 'goal_diff'=> $h_goals - $a_goals, 'goals_for' => $h_goals],
+							'a_data' => ['points' => $a_points, 'goal_diff'=> $a_goals - $h_goals, 'goals_for' => $a_goals],
 						];
 					}
 				}
@@ -650,7 +650,9 @@ class Fixtures_Sheet_Gateway {
 		}
 		for ($i = $start; $i < $size && $table[$i]->points === $points; $i++) {
 			$tiebreakers[$table[$i]->team] =
-				['played' => 0, 'points' => 0, 'goal_diff' => 0, 'wins' => 0,
+				['played' => 0, 'h2h_points' => 0, 'h2h_goal_diff' => 0, 'h2h_goals_for' => 0,
+					'goal_diff' => $table[$i]->goals_for - $table[$i]->goals_against,
+					'goals_for' => $table[$i]->goals_for,
 					'position' => $i + 1, 'row' => $table[$i]];
 		}
 		// calculate the head2head record for all teams on the same points
@@ -693,9 +695,9 @@ class Fixtures_Sheet_Gateway {
 
 	private function add_h2h(&$h2h_row, $data) {
 		$h2h_row['played'] += 1;
-		$h2h_row['points'] += $data['points'];
-		$h2h_row['goal_diff'] += $data['goal_diff'];
-		$h2h_row['wins'] += $data['win'];
+		$h2h_row['h2h_points'] += $data['points'];
+		$h2h_row['h2h_goal_diff'] += $data['goal_diff'];
+		$h2h_row['h2h_goals_for'] += $data['goals_for'];
 	}
 
 	/**
@@ -713,11 +715,15 @@ class Fixtures_Sheet_Gateway {
 	 * Compare 2 rows in tiebreaker
 	 */
 	private function cmp_tiebreaker($a, $b) {
-		$cmp = $b['points'] - $a['points'];
+		$cmp = $b['h2h_points'] - $a['h2h_points'];
+		if ($cmp) return $cmp;
+		$cmp = $b['h2h_goal_diff'] - $a['h2h_goal_diff'];
+		if ($cmp) return $cmp;
+		$cmp = $b['h2h_goals_for'] - $a['h2h_goals_for'];
 		if ($cmp) return $cmp;
 		$cmp = $b['goal_diff'] - $a['goal_diff'];
 		if ($cmp) return $cmp;
-		$cmp = $b['wins'] - $a['wins'];
+		$cmp = $b['goals_for'] - $a['goals_for'];
 		if ($cmp) return $cmp;
 		return $a['position'] - $b['position'];
 	}
