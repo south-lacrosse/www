@@ -64,7 +64,7 @@ class Table_Renderer {
 			}
 		}
 		if ($has_tiebreaker) {
-			echo "\n<p><i>*</i> = position changed because of results between teams</p>";
+			echo "\n<p><i>*</i> = position changed because of tie-break rules</p>";
 		}
 	}
 
