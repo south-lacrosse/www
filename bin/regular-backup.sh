@@ -50,7 +50,7 @@ SL_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like 'sl\_%'")
 if [[ $OSTYPE == *win* ]]; then
 	SL_TABLES=$(echo $SL_TABLES | tr -d '\r')
 fi
-BACKUP_TABLES="$SL_TABLES ${PFX}commentmeta ${PFX}comments ${PFX}links ${PFX}options ${PFX}postmeta ${PFX}posts ${PFX}term_relationships ${PFX}term_taxonomy ${PFX}termmeta ${PFX}terms ${PFX}usermeta ${PFX}users"
+BACKUP_TABLES="$SL_TABLES slc_remarks ${PFX}commentmeta ${PFX}comments ${PFX}links ${PFX}options ${PFX}postmeta ${PFX}posts ${PFX}term_relationships ${PFX}term_taxonomy ${PFX}termmeta ${PFX}terms ${PFX}usermeta ${PFX}users"
 
 echo "Backing up $DBNAME to $(realpath $BACKUP_FILE)"
 echo Dumping tables $BACKUP_TABLES
