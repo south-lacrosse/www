@@ -108,26 +108,46 @@ WHERE home_team = 0 -- FIXME: works so long as the final is the only round witho
 ORDER BY comp_id;
 
 -- Varsity winners
--- SELECT 'Inserting varsity winners' as '';
--- INSERT IGNORE INTO `slh_winner`
--- (`comp_id`,`year`,`winner`,`runner_up`,`result`,`has_data`)
--- SELECT comp_id, @end_year,
--- 	CASE
--- 		WHEN home_goals = away_goals THEN 'Drawn'
--- 		WHEN home_goals > away_goals THEN home
---		ELSE away END,
--- 	CASE
--- 		WHEN home_goals = away_goals THEN NULL
--- 		WHEN home_goals > away_goals THEN away
---		 ELSE home END,
--- 	CASE
--- 		WHEN home_goals > away_goals THEN CONCAT(home_goals, ' - ', away_goals)
---		ELSE CONCAT(away_goals, ' - ', home_goals) END,
---	 0
--- FROM slc_fixture f, sl_competition c
--- WHERE c.name = 'Varsity'
--- AND f.home IN ('Oxford Uni','Cambridge Uni')
--- AND f.home_goals IS NOT NULL
--- AND f.comp_id = c.id;
+SELECT 'Inserting varsity winners' as '';
+INSERT IGNORE INTO `slh_winner`
+(`comp_id`,`year`,`winner`,`runner_up`,`result`,`has_data`)
+SELECT comp_id, @end_year,
+	CASE
+		WHEN home_goals = away_goals THEN 'Drawn'
+		WHEN home_goals > away_goals THEN home
+		ELSE away END,
+	CASE
+		WHEN home_goals = away_goals THEN NULL
+		WHEN home_goals > away_goals THEN away
+		 ELSE home END,
+	CASE
+		WHEN home_goals > away_goals THEN CONCAT(home_goals, ' - ', away_goals)
+		ELSE CONCAT(away_goals, ' - ', home_goals) END,
+	 0
+FROM slc_fixture f, sl_competition c
+WHERE c.name = 'Varsity'
+AND f.home IN ('Oxford Uni','Cambridge Uni')
+AND f.home_goals IS NOT NULL
+AND f.comp_id = c.id;
+
+-- Other competitions - Iroquois Cup/Wilkinson Sword (if played)
+SELECT 'Inserting other competition winners' as '';
+INSERT IGNORE INTO `slh_winner`
+(`comp_id`,`year`,`winner`,`runner_up`,`result`,`has_data`)
+SELECT comp_id, @end_year,
+	CASE
+		WHEN home_goals > away_goals THEN home
+		ELSE away END,
+	CASE
+		WHEN home_goals > away_goals THEN away
+		 ELSE home END,
+	CASE
+		WHEN home_goals > away_goals THEN CONCAT(home_goals, ' - ', away_goals)
+		ELSE CONCAT(away_goals, ' - ', home_goals) END,
+	 0
+FROM slc_fixture f
+WHERE f.comp_id IN (70,74)
+AND f.home_goals IS NOT NULL;
+
 
 SELECT 'History database updates completed' as '';
