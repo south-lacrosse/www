@@ -213,40 +213,44 @@ class Fixtures_Sheet_Gateway {
 	}
 
 	private function load_fixtures_deductions() {
-		$rows = $this->get_rows('Deductions');
-		if ($rows === null) {
-			return;
-		}
+		$tiebreak_option = get_option('semla_tiebreak','P');
+		$tiebreak_compare = $tiebreak_option === 'P' ?
+			function($row) { return $row->points; } :
+			function($row) { return "$row->points|$row->goal_avg"; };
+
 		$deductions=[];
-		foreach($rows as $row) {
-			$comp = $row[self::DEDUCT_COMPETITION];
-			if (empty($this->competitions[$comp])) {
-				$this->error->add('fixtures_deduct', "Unknown league/division '$comp' in Deductions");
-				continue;
+		$rows = $this->get_rows('Deductions');
+		if ($rows !== null) {
+			foreach($rows as $row) {
+				$comp = $row[self::DEDUCT_COMPETITION];
+				if (empty($this->competitions[$comp])) {
+					$this->error->add('fixtures_deduct', "Unknown league/division '$comp' in Deductions");
+					continue;
+				}
+				$comp_id = $this->competitions[$comp]->id;
+				$points_deducted = trim($row[self::DEDUCT_POINTS]);
+				if (!is_numeric($points_deducted)) {
+					$this->error->add('fixtures_deduct', "Deduction $points_deducted is not numeric");
+					continue;
+				}
+				$points_deducted = (float)$points_deducted;
+				if ($points_deducted <= 0 || $points_deducted > 10
+				|| $points_deducted !== round($points_deducted,1)) {
+					$this->error->add('fixtures_deduct', "Deduction $points_deducted is invalid (must be > 0, <= 10, max 1 decimal place)");
+					continue;
+				}
+				$deductions[] = [$comp_id,$row[1],$points_deducted,$row[3],$row[4]];
+				$team = $this->tables[$comp_id][$row[1]];
+				$team->points -= $points_deducted;
+				$team->points_deducted += $points_deducted;
 			}
-			$comp_id = $this->competitions[$comp]->id;
-			$points_deducted = trim($row[self::DEDUCT_POINTS]);
-			if (!is_numeric($points_deducted)) {
-				$this->error->add('fixtures_deduct', "Deduction $points_deducted is not numeric");
-				continue;
-			}
-			$points_deducted = (float)$points_deducted;
-			if ($points_deducted <= 0 || $points_deducted > 10
-			|| $points_deducted !== round($points_deducted,1)) {
-				$this->error->add('fixtures_deduct', "Deduction $points_deducted is invalid (must be > 0, <= 10, max 1 decimal place)");
-				continue;
-			}
-			$deductions[] = [$comp_id,$row[1],$points_deducted,$row[3],$row[4]];
-			$team = $this->tables[$comp_id][$row[1]];
-			$team->points -= $points_deducted;
-			$team->points_deducted += $points_deducted;
+			if ($this->error->has_errors()) return;
+			$this->status[] = 'Loaded ' . count($rows) . ' deductions';
 		}
-		if ($this->error->has_errors()) return;
 		if (!Table_Gateway::save_deductions($deductions)) {
 			$this->add_db_error('Failed to save Deductions');
 			return;
 		}
-		$this->status[] = 'Loaded ' . count($rows) . ' deductions';
 
 		$rows = $this->get_rows('Fixtures', false);
 		if (!$rows || count($rows) === 1) {
@@ -588,23 +592,23 @@ class Fixtures_Sheet_Gateway {
 				usort($table, [$this, 'cmp_tables']);
 
 				if ($table[0]->played > 0) {
-					if ($table[0]->points === $table[1]->points) {
+					if ($tiebreak_compare($table[0]) === $tiebreak_compare($table[1])) {
 						// top = 2nd, order by head-to-head
-						$this->tiebreaker_reorder($comp_id, $table, 0, $division_fixtures[$comp_id]);
+						$this->tiebreaker_reorder($tiebreak_compare, $comp_id, $table, 0, $division_fixtures[$comp_id]);
 						if ($this->error->has_errors()) return;
 					}
 					if ($promoted != 0 && $table[$promoted]->points > 0
-					&& $table[$promoted]->points === $table[$promoted-1]->points
+					&& $tiebreak_compare($table[$promoted]) === $tiebreak_compare($table[$promoted-1])
 					// check we haven't already done a tie-break for champions
-					&& $table[$promoted]->points !== $table[0]->points) {
-						$this->tiebreaker_reorder($comp_id, $table, $promoted - 1, $division_fixtures[$comp_id]);
+					&& $tiebreak_compare($table[$promoted]) !== $tiebreak_compare($table[0])) {
+						$this->tiebreaker_reorder($tiebreak_compare, $comp_id, $table, $promoted - 1, $division_fixtures[$comp_id]);
 						if ($this->error->has_errors()) return;
 					}
-					if ($relegated_after != 0 && $table[$relegated_after]->points > 0
-					&& $table[$relegated_after]->points === $table[$relegated_after-1]->points
+					if ($relegated_after != 0 && $tiebreak_compare($table[$relegated_after]) > 0
+					&& $tiebreak_compare($table[$relegated_after]) === $tiebreak_compare($table[$relegated_after-1])
 					// check we haven't already done a tie-break which could have gone this far
-					&& $table[$relegated_after]->points !== $table[$promoted]->points) {
-						$this->tiebreaker_reorder($comp_id, $table, $relegated_after - 1, $division_fixtures[$comp_id]);
+					&& $tiebreak_compare($table[$relegated_after]) !== $tiebreak_compare($table[$promoted])) {
+						$this->tiebreaker_reorder($tiebreak_compare, $comp_id, $table, $relegated_after - 1, $division_fixtures[$comp_id]);
 						if ($this->error->has_errors()) return;
 					}
 				}
@@ -640,15 +644,15 @@ class Fixtures_Sheet_Gateway {
 	 * Reorder table for those equal on points into head to head order
 	 * Also flag if teams have same points etc.
 	 */
-	private function tiebreaker_reorder($comp_id, &$table, $row, $fixtures) {
+	private function tiebreaker_reorder($compare, $comp_id, &$table, $row, $fixtures) {
 		$tiebreakers = [];
 		$size = count($table);
-		$points = $table[$row]->points;
+		$test = $compare($table[$row]);
 		$start = $row;
-		for ($i = $row - 1; $i >= 0 && $table[$i]->points === $points; $i--) {
+		for ($i = $row - 1; $i >= 0 && $compare($table[$i]) === $test; $i--) {
 			$start = $i;
 		}
-		for ($i = $start; $i < $size && $table[$i]->points === $points; $i++) {
+		for ($i = $start; $i < $size && $compare($table[$i]) === $test; $i++) {
 			$tiebreakers[$table[$i]->team] =
 				['played' => 0, 'h2h_points' => 0, 'h2h_goal_diff' => 0, 'h2h_goals_for' => 0,
 					'goal_diff' => $table[$i]->goals_for - $table[$i]->goals_against,
@@ -684,7 +688,7 @@ class Fixtures_Sheet_Gateway {
 			}
 			$i++;
 		}
-		if (!Tiebreaker_Gateway::save($comp_id, $start + 1, $points, $tiebreakers)) {
+		if (!Tiebreaker_Gateway::save($comp_id, $start + 1, $table[$row]->points, $tiebreakers)) {
 			$this->add_db_error('Failed to save tiebreakers table');
 			return;
 		}

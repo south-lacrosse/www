@@ -6,6 +6,7 @@ use Semla\Utils\Util;
 
 $POINTS = ['W' => 'Win', 'D' => 'Draw', 'L' => 'Loss',
 		'C' => 'Conceded', 'C24' => 'Conceded within 24 hours'];
+$TIEBREAK_OPTIONS = ['P' => 'Points', 'GAvg' => 'Points and Goal Average'];
 ?>
 <div class="notice notice-warning inline">
 <p><b>Important:</b> If you are changing the Fixtures Google Sheet ID for a new season make sure that the previous
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $fixtures_sheet_id = get_option('semla_fixtures_sheet_id');
 if (isset($_POST['fixtures_sheet_id'])) {
 	$new = trim($_POST['fixtures_sheet_id']);
-	if ($new != $fixtures_sheet_id) {
+	if ($new !== $fixtures_sheet_id) {
 		$fixtures_sheet_id = $new;
 		if (!preg_match('/^[a-zA-Z0-9\-_]*$/', $fixtures_sheet_id)) {
 			$fixtures_sheet_id = esc_attr($fixtures_sheet_id);
@@ -58,6 +59,14 @@ if (isset($_POST['W'])) {
 		$points = $points_new;
 	}
 }
+$tiebreak_option = get_option('semla_tiebreak');
+if (isset($_POST['tiebreak'])) {
+	if ($_POST['tiebreak'] !== $tiebreak_option) {
+		update_option('semla_tiebreak', $_POST['tiebreak'], 'no');
+		Admin_Menu::dismissible_success_message('Tiebreak option updated');
+		$tiebreak_option = $_POST['tiebreak'];
+	}
+}
 ?>
 <form method="post">
 	<table class="form-table" role="presentation"><tbody>
@@ -76,6 +85,21 @@ if (isset($_POST['W'])) {
 	</tr>
 	<?php endforeach;?>
 	</tbody></table>
+	<h2>Tiebreak For League Winners/Relegation</h2>
+	<table class="form-table" role="presentation"><tbody>
+	<tr>
+		<th scope="row"><label for="tiebreak">Trigger when equal</label></th>
+		<td>
+			<?php foreach ($TIEBREAK_OPTIONS as $option => $label) : ?>
+				<p><label>
+					<input name="tiebreak" type="radio" value="<?= $option ?>" class="tog"<?php checked( $option, $tiebreak_option ); ?>>
+					<?= $label ?></label>
+				</p>
+			<?php endforeach;?>
+		</td>
+	</tr>
+	</tbody></table>
+	<p class="description">Note: tiebreaks are evaluated on head-to-head points/goal difference/goals, then goal difference/goals.</p>
 	<p class="submit">
 		<?php wp_nonce_field('semla_settings_tab') ?>
 		<input type="submit" class="button-primary" name="update" value="Save Changes" />
