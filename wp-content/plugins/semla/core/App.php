@@ -113,13 +113,7 @@ class App {
 		register_block_type_from_metadata( $block_dir . '/website', [
 			'render_callback' => [Blocks::class, 'website'],
 		]);
-		add_filter('render_block_core/post-date', function($block_content, $block, $instance) {
-			if ($block['attrs']['displayType'] ?? '' ===  'modified'
-			&& str_contains($block['attrs']['className'] ?? '', 'entry-meta')) {
-				$block_content = str_replace('<time', 'Modified: <time', $block_content);
-			}
-			return $block_content;
-		}, 0, 3);
+		add_filter('render_block_core/post-date', [Blocks::class, 'render_post_date'], 0, 3);
 
 		// we have all urls correctly set to https, so stop unnecessary logic running and a database lookup
 		remove_filter( 'the_content', 'wp_replace_insecure_home_url' );

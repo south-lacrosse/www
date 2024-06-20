@@ -82,6 +82,32 @@ class Blocks {
 			. '" title="Google Map" allowFullScreen></iframe>' . $content . '</div></div>';
 	}
 
+	/**
+	 * Filter to override post-date core block. For "modified" display type, and
+	 * displayed on Club page (i.e. with entry-meta class) then always display
+	 * modified date (core block does not display if = post date).
+	 */
+	public static function render_post_date($block_content, $block, $instance) {
+		if ($block['attrs']['displayType'] ?? '' ===  'modified'
+		&& str_contains($block['attrs']['className'] ?? '', 'entry-meta')) {
+			if (empty($block_content)) {
+				$post_ID          = $instance->context['postId'];
+				$attributes       = $block['attrs'];
+				$formatted_date   = get_the_modified_date( empty( $attributes['format'] ) ? '' : $attributes['format'], $post_ID );
+				$unformatted_date = esc_attr( get_the_modified_date( 'c', $post_ID ) );
+
+				return sprintf(
+					'<div class="wp-block-post-date__modified-date %1$s wp-block-post-date">Modified: <time datetime="%2$s">%3$s</time></div>',
+					$attributes['className'],
+					$unformatted_date,
+					$formatted_date
+				);
+			}
+			$block_content = str_replace('<time', 'Modified: <time', $block_content);
+		}
+		return $block_content;
+	}
+
 	public static function website( $attrs ) {
 		if (!isset($attrs['url'])) return '';
 		$url = $attrs['url'];
