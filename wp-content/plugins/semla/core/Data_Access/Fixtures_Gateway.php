@@ -8,7 +8,7 @@ class Fixtures_Gateway {
 	/** Return html for fixtures grid */
 	public static function get_grid($year, $league_id) {
 		global $wpdb;
-		
+
 		$divisions = Competition_Gateway::get_divisions($year, $league_id);
 		if ($wpdb->last_error) return DB_Util::db_error();
 		if (!$divisions) return;
@@ -42,7 +42,7 @@ class Fixtures_Gateway {
 		Fixtures_Grid_Renderer::grid($year, $divisions, $fixtures, $postponed_fixtures);
 		return ob_get_clean();
 	}
-	
+
 	public static function save_fixtures($rows) {
 		global $wpdb;
 
@@ -65,23 +65,26 @@ class Fixtures_Gateway {
 			UNIQUE KEY `date_id` (`match_date`, `id`),
 			UNIQUE KEY `comp_idx` (`comp_id`,`id`)');
 		if ($result === false) return false;
-		foreach ( $rows as $key => $row ) {
-			unset($row['sort']);
-			unset($row['sort2']);
-			$values[] = $wpdb->prepare( '(%s,%s,%d,%s,%s,%s,', array_slice($row,0,6))
-				. ($row[6] === null ? 'null' : $row[6]) . ','
-				. ($row[7] === null ? 'null' : $row[7]) . ','
-				. ($row[8] === null ? 'null' : $wpdb->prepare( '%s', $row[8]))
-				. $wpdb->prepare( ',%s,', $row[9])
-				. ($row[10] === null ? 'null' : $row[10]) . ','
-				. ($row[11] === null ? 'null' : $row[11])
-				. ",$row[12])";
+		if ($rows) {
+			$values = [];
+			foreach ( $rows as $key => $row ) {
+				unset($row['sort']);
+				unset($row['sort2']);
+				$values[] = $wpdb->prepare( '(%s,%s,%d,%s,%s,%s,', array_slice($row,0,6))
+					. ($row[6] === null ? 'null' : $row[6]) . ','
+					. ($row[7] === null ? 'null' : $row[7]) . ','
+					. ($row[8] === null ? 'null' : $wpdb->prepare( '%s', $row[8]))
+					. $wpdb->prepare( ',%s,', $row[9])
+					. ($row[10] === null ? 'null' : $row[10]) . ','
+					. ($row[11] === null ? 'null' : $row[11])
+					. ",$row[12])";
+			}
+			$query = 'INSERT INTO new_fixture (match_date, match_time, comp_id, competition, home, away,
+				home_goals, away_goals, venue, result, home_points, away_points, points_multi) VALUES ';
+			$query .= implode( ",\n", $values );
+			$result = $wpdb->query($query);
+			if ($result === false) return false;
 		}
-		$query = 'INSERT INTO new_fixture (match_date, match_time, comp_id, competition, home, away,
-			home_goals, away_goals, venue, result, home_points, away_points, points_multi) VALUES ';
-		$query .= implode( ",\n", $values );
-		$result = $wpdb->query($query);
-		if ($result === false) return false;
 		DB_Util::add_table_to_rename('fixture');
 
 		// add a table of all the dates
