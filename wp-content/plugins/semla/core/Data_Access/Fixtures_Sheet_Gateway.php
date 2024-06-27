@@ -219,33 +219,35 @@ class Fixtures_Sheet_Gateway {
 			function($row) { return "$row->points|$row->goal_avg"; };
 
 		$deductions=[];
-		$rows = $this->get_rows('Deductions');
-		if ($rows !== null) {
-			foreach($rows as $row) {
-				$comp = $row[self::DEDUCT_COMPETITION];
-				if (empty($this->competitions[$comp])) {
-					$this->error->add('fixtures_deduct', "Unknown league/division '$comp' in Deductions");
-					continue;
+		if (array_key_exists('Deductions', $this->sheet_names)) {
+			$rows = $this->get_rows('Deductions');
+			if ($rows !== null) {
+				foreach($rows as $row) {
+					$comp = $row[self::DEDUCT_COMPETITION];
+					if (empty($this->competitions[$comp])) {
+						$this->error->add('fixtures_deduct', "Unknown league/division '$comp' in Deductions");
+						continue;
+					}
+					$comp_id = $this->competitions[$comp]->id;
+					$points_deducted = trim($row[self::DEDUCT_POINTS]);
+					if (!is_numeric($points_deducted)) {
+						$this->error->add('fixtures_deduct', "Deduction $points_deducted is not numeric");
+						continue;
+					}
+					$points_deducted = (float)$points_deducted;
+					if ($points_deducted <= 0 || $points_deducted > 10
+					|| $points_deducted !== round($points_deducted,1)) {
+						$this->error->add('fixtures_deduct', "Deduction $points_deducted is invalid (must be > 0, <= 10, max 1 decimal place)");
+						continue;
+					}
+					$deductions[] = [$comp_id,$row[1],$points_deducted,$row[3],$row[4]];
+					$team = $this->tables[$comp_id][$row[1]];
+					$team->points -= $points_deducted;
+					$team->points_deducted += $points_deducted;
 				}
-				$comp_id = $this->competitions[$comp]->id;
-				$points_deducted = trim($row[self::DEDUCT_POINTS]);
-				if (!is_numeric($points_deducted)) {
-					$this->error->add('fixtures_deduct', "Deduction $points_deducted is not numeric");
-					continue;
-				}
-				$points_deducted = (float)$points_deducted;
-				if ($points_deducted <= 0 || $points_deducted > 10
-				|| $points_deducted !== round($points_deducted,1)) {
-					$this->error->add('fixtures_deduct', "Deduction $points_deducted is invalid (must be > 0, <= 10, max 1 decimal place)");
-					continue;
-				}
-				$deductions[] = [$comp_id,$row[1],$points_deducted,$row[3],$row[4]];
-				$team = $this->tables[$comp_id][$row[1]];
-				$team->points -= $points_deducted;
-				$team->points_deducted += $points_deducted;
+				if ($this->error->has_errors()) return;
+				$this->status[] = 'Loaded ' . count($rows) . ' deductions';
 			}
-			if ($this->error->has_errors()) return;
-			$this->status[] = 'Loaded ' . count($rows) . ' deductions';
 		}
 		if (!Table_Gateway::save_deductions($deductions)) {
 			$this->add_db_error('Failed to save Deductions');
