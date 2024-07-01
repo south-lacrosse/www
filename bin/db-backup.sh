@@ -2,6 +2,7 @@
 
 # Backup tables. Options are:
 #  sl - all SEMLA tables (prefix sl_, slc_, and slh_)
+#  slonly - just the sl_ tables, so not slc_ or slh_
 #  slc - all SEMLA current fixtures/flags/league tables (prefix slc_)
 #  slh - all SEMLA history tables (prefix slh_)
 #  wp - all core WordPress tables
@@ -22,6 +23,13 @@ case "$1" in
 		;;
 	sl|slc|slh|dmarc)
 		BACKUP_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like '$1%'")
+		[[ $? -ne 0 ]] && exit 1
+		if [[ $OSTYPE == *win* ]]; then
+			BACKUP_TABLES=$(echo $BACKUP_TABLES | tr -d '\r')
+		fi
+		;;
+	slonly)
+		BACKUP_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like 'sl\_%'")
 		[[ $? -ne 0 ]] && exit 1
 		if [[ $OSTYPE == *win* ]]; then
 			BACKUP_TABLES=$(echo $BACKUP_TABLES | tr -d '\r')
