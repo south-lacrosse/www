@@ -24,10 +24,8 @@ class Fixtures_Page {
 			Admin_Menu::dismissible_error_message('No Google Fixtures Sheet specified yet.');
 		}
 
-		$tabs = ['update' => 'Update Fixtures', 'tiebreaker' => 'Tiebreakers','formulas' => 'Flags Fixtures Formulas'];
-		if (current_user_can('manage_options')) { // only administrators see settings
-			$tabs ['settings'] = 'Settings';
-		}
+		$tabs = ['update' => 'Update Fixtures', 'tiebreaker' => 'Tiebreakers'
+			,'formulas' => 'Flags Fixtures Formulas', 'settings' => 'Settings'];
 		$active_tab = Admin_Menu::render_tabs('semla', $tabs );
 		$page_and_tab = "?page=semla&tab=$active_tab";
 		switch ($active_tab) {
