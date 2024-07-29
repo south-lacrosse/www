@@ -9,7 +9,7 @@ use Semla\Data_Access\Competition_Group_Gateway;
  */
 class Admin_Services {
 	public static function leagues_cups( \WP_REST_Request $request ) {
-		add_action( 'litespeed_tag_finalize', [self::class, 'add_cache_tags'] );
+		add_action( 'litespeed_tag_finalize', [Rest::class, 'add_cache_tags'] );
 		$data = Competition_Group_Gateway::get_leagues_and_cups();
 		if ($data === false) {
 			return Rest::db_error();
