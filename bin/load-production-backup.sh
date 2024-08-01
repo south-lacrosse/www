@@ -50,7 +50,16 @@ if [[ $prompt != "y" && $prompt != "Y" ]] ; then
 fi
 source ./db-creds.sh
 if [[ "$file" =~ \.gz$ ]]; then
-	gunzip < "$file" | sed "s/$WWW/$URL/g" | mysql --defaults-extra-file=.my.cnf
+	if [[ "$URL" == 'dev.southlacrosse.org.uk' ]]; then
+		# Later versions of MariaDB that run on the server have a breaking change
+		# to enable sandbox mode.
+		# In dev we probably use Local, which has an older version of MariaDB or MySQL,
+		# so we remove that line. Note it only checks the 1st line.
+		# Note: MariaDB say they will modify this change to be non-breaking at some point
+		gunzip < "$file" | sed "1{/999999.*sandbox/d}" | sed "s/$WWW/$URL/g" | mysql --defaults-extra-file=.my.cnf
+	else
+		gunzip < "$file" | sed "s/$WWW/$URL/g" | mysql --defaults-extra-file=.my.cnf
+	fi
 else
 	sed "s/$WWW/$URL/g" "$file" | mysql --defaults-extra-file=.my.cnf
 fi
