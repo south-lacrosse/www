@@ -64,11 +64,12 @@ class Rest {
 
 		// block REST access if not logged in, but not for 'semla' endpoints
 		add_filter( 'rest_authentication_errors', function( $result ) {
+			global $wp;
 			if ( ! empty( $result ) ) {
 				return $result;
 			}
 			if ( ! is_user_logged_in()
-			&& ! preg_match('!^/(\?rest_route=|' . rest_get_url_prefix() . ')/semla/!', $_SERVER['REQUEST_URI']) ) {
+			&& ! str_starts_with($wp->query_vars['rest_route'], '/semla/') ) {
 				return new \WP_Error( 'rest_not_logged_in', 'API request is only supported for authenticated users', ['status' => 401] );
 			}
 			return $result;
