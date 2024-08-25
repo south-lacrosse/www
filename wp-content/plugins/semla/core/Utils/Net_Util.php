@@ -14,6 +14,10 @@ class Net_Util {
 	 * @return mixed string on success, WP_Error on failure.
 	 */
 	public static function get_url($url, $expected_content_type = '') {
+		// allow override e.g. for testing
+		$result = apply_filters( 'semla_get_url', null );
+		if ($result) return $result;
+
 		$ch = self::get_curl($url);
 		if (is_wp_error($ch)) $ch;
 
