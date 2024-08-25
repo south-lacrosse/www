@@ -147,6 +147,7 @@ class Fixtures_Sheet_Gateway {
 		$divisions = $tables = $ladders = [];
 		foreach ($division_rows as $row) {
 			$competition = $row[self::LEAGUE_DIVISION];
+			if (empty($competition)) continue;
 			if (empty($this->competitions[$competition])) {
 				$this->error->add('fixtures', 'Division does not exist on the competitions table: ' . $competition);
 				continue;
