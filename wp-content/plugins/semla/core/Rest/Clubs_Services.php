@@ -21,7 +21,9 @@ class Clubs_Services {
 	 */
 	private static function get_club(\WP_REST_Request $request) {
 		$club = Rest::decode_club_team($request->get_param('club'));
-		if (Club_Team_Gateway::validate_club($club)) return $club;
+		$valid = Club_Team_Gateway::validate_club($club);
+		if ($valid === null) return Rest::db_error();
+		if ($valid) return $club;
 		return new \WP_Error('unknown_club', 'The requested club is unknown',  ['status' => 404]);
 
 	}

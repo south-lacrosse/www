@@ -157,7 +157,11 @@ class Rest {
 			return $served;
 		}
 		if (!empty($request['extension'])) {
-			$content_type = self::CONTENT_TYPES[$request['extension']];
+			if ($result->status != 200 && $request['extension'] == '.ics') {
+				$content_type = 'text/plain';
+			} else {
+				$content_type = self::CONTENT_TYPES[$request['extension']];
+			}
 		} elseif ($result->status != 200) {
 			// content type may not have been set if validation failed so set here
 			$extension = pathinfo($request->get_route(), PATHINFO_EXTENSION);
@@ -227,8 +231,7 @@ class Rest {
 
 	public static function decode_club_team($value) {
 		// Allow old format with + for spaces, as well as the better new version with _
-		// Some calendar apps replace + with %2b, so we need to decode the url, then
-		// also substitute the +
+		// Some calendar apps replace + with %2b, so we need to decode the url first
 		return str_replace(['_','+'],' ',urldecode($value));
 	}
 

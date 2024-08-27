@@ -77,11 +77,11 @@ class Rest_Fixtures_Gateway {
 		return ob_get_clean();
 	}
 
-	public static function log_fixtures_ics($team) {
+	public static function log_fixtures_ics($team, $info = '') {
 		global $wpdb;
 		return $wpdb->query($wpdb->prepare(
-			'INSERT INTO `sl_calendar_log` (team) VALUES (%s)
-			ON DUPLICATE KEY UPDATE access_cnt=access_cnt+1'
-			, $team ));
+			'INSERT INTO `sl_calendar_log` (team, info) VALUES (%s, %s)
+			ON DUPLICATE KEY UPDATE access_cnt=access_cnt+1, info=VALUES(info)'
+			, $team, $info ));
 	}
 }

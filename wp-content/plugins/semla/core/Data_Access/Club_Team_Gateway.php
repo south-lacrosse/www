@@ -74,6 +74,19 @@ class Club_Team_Gateway {
 	}
 
 	/**
+	 * @return string|null|false team name for alias, or false on error
+	 */
+	public static function team_from_alias($alias) {
+		global $wpdb;
+		$res = $wpdb->get_var( $wpdb->prepare(
+			'SELECT team FROM sl_calendar_team ct WHERE ct.alias = %s
+			AND (ct.team = "REMOVED" OR EXISTS (SELECT * FROM slc_team t WHERE t.name = ct.team))'
+			, $alias));
+		if ($wpdb->last_error) return false;
+		return $res;
+	}
+
+	/**
 	 * @return int|false The number of effected rows, or false on error.
 	 */
 	public static function update_abbrev($team, $abbrev) {
@@ -101,16 +114,26 @@ class Club_Team_Gateway {
 		return $wpdb->delete( 'sl_team_minimal', [ 'team' => $team ] );
 	}
 
+	/**
+	 * @return boolean|null whether the team is valid, null on error
+	 */
 	public static function validate_team($team) {
 		global $wpdb;
-		return (bool) $wpdb->get_var( $wpdb->prepare(
+		$res = $wpdb->get_var( $wpdb->prepare(
 			'SELECT COUNT(*) FROM slc_team WHERE name = %s', $team));
+		if ($res === null) return $res;
+		return (bool) $res;
 	}
 
+	/**
+	 * @return boolean|null whether the club is valid, null on error
+	 */
 	public static function validate_club($club) {
 		global $wpdb;
-		return (bool) $wpdb->get_var( $wpdb->prepare(
+		$res = $wpdb->get_var( $wpdb->prepare(
 			'SELECT COUNT(*) FROM slc_club WHERE name = %s', $club));
+		if ($res === null) return $res;
+		return (bool) $res;
 	}
 
 	public static function save_teams($rows) {
