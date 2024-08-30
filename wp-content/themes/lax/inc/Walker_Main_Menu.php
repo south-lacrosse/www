@@ -50,9 +50,10 @@ class Walker_Main_Menu extends \Walker {
 			// focus is)
 			$output .= "<a href=\"#\" class=\"ma mp$class mi$depth\"$attrs"
 			. ' role="button" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown">'
-			. "$item->title</a>\n";
+			. htmlspecialchars($item->title, ENT_NOQUOTES) . "</a>\n";
 		} else {
-			$output .= "<a href=\"$url\" class=\"ma mi$depth$class\"$attrs>$item->title</a>\n";
+			$output .= "<a href=\"$url\" class=\"ma mi$depth$class\"$attrs>"
+			. htmlspecialchars($item->title, ENT_NOQUOTES) . "</a>\n";
 		}
 	}
 

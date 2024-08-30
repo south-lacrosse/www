@@ -30,7 +30,8 @@ class Walker_Basic_Menu extends \Walker {
 		} else {
 			$class = '';
 		}
-		$output .= "\n<a href=\"$url\" class=\"$this->class$class\">$item->title</a>";
+		$output .= "\n<a href=\"$url\" class=\"$this->class$class\">"
+			. htmlspecialchars($item->title, ENT_NOQUOTES) . '</a>';
 	}
 	private function filter_builtin_classes($var) {
 		return preg_match('/item|menu/', $var) ? '' : $var;
