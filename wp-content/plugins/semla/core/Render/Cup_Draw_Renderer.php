@@ -161,7 +161,7 @@ class Cup_Draw_Renderer {
 	private static function team_name($want_team1,$team1_first,$match,$round,$offset,$match_num) {
 		$team = (string) ($want_team1 ? (empty($match->team1) ? '' : $match->team1)
 				: (empty($match->team2) ? '' : $match->team2));
-		if ($team || $round === 1) return htmlspecialchars($team, ENT_NOQUOTES);
+		if ($team || $round === '1') return htmlspecialchars($team, ENT_NOQUOTES);
 		$match_offset = ($team1_first && !$want_team1) || (!$team1_first && $want_team1) ? 1 : 0;
 		$win_match = ($match_num * 2) - 1 + $match_offset;
 		return 'Winner ' . self::ROUNDS_SHORT[$round + $offset - 1] . ' match ' . $win_match;
