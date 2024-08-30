@@ -1,5 +1,4 @@
 <?php
-
 use Semla\Utils\Util;
 
 $last_date = '';
@@ -20,13 +19,16 @@ foreach ( $rows as $row ) {
 	if (is_numeric(substr($home, -1))) {
 		$home .= 's';
 	}
-	if (is_numeric(substr($row->away, -1))) {
-		$row->away .= 's';
+	$home = htmlspecialchars($home, ENT_NOQUOTES);
+	$away = $row->away;
+	if (is_numeric(substr($away, -1))) {
+		$away .= 's';
 	}
+	$away = htmlspecialchars($away, ENT_NOQUOTES);
 	if ($row->result && $row->result !== 'R - R' && !ctype_digit($row->result[0])) {
-		echo "$row->competition $home v $row->away $row->result";
+		echo "$row->competition $home v $away $row->result";
 	} else {
-		echo "$row->competition $home $result $row->away";
+		echo "$row->competition $home $result $away";
 	}
 	if (!$row->result) {
 		$extra = '';
@@ -35,7 +37,7 @@ foreach ( $rows as $row ) {
 		}
 		if ($row->venue) {
 			if ($extra) $extra .= ' ';
-			$extra .= "at $row->venue";
+			$extra .= 'at ' . htmlspecialchars($row->venue, ENT_NOQUOTES);
 		}
 		if ($extra) {
 			echo " ($extra)";

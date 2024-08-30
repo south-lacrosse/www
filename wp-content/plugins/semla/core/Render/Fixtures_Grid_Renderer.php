@@ -31,23 +31,24 @@ class Fixtures_Grid_Renderer {
 			if ($not_ladder) {
 				echo $column_count . '">Away</th></tr><tr><th>Home</th>';
 				foreach (explode('|', $division->minimals) as $key => $minimal) {
-					echo '<th><abbr title="' . $teams[$key] . '">' . $minimal . '</abbr></th>';
+					echo '<th><abbr title="' . htmlentities($teams[$key]) . '">' . htmlspecialchars($minimal, ENT_NOQUOTES) . '</abbr></th>';
 				}
 			} else {
 				echo $column_count . '">' . $divisions[$division->ladder_comp_id2]->section_name
 					. '</th></tr><tr><th>' . $divisions[$division->ladder_comp_id1]->section_name . '</th>';
 				foreach (explode('|', $division->minimals2) as $key => $minimal) {
-					echo '<th><abbr title="' . $teams2[$key] . '">' . $minimal . '</abbr></th>';
+					echo '<th><abbr title="' . htmlentities($teams2[$key]) . '">' . htmlspecialchars($minimal, ENT_NOQUOTES) . '</abbr></th>';
 				}
 			}
 			echo "</tr></thead>\n<tbody>\n";
 			foreach ($teams as $home) {
+				$esc_home = htmlspecialchars($home, ENT_NOQUOTES);
 				echo '<tr><td class="left">';
 				if ($not_ladder) {
 					echo '<a class="tb-link" href="' . $fixtures_page . '?team='
-						. urlencode($home) . '">' . $home . '</a>';
+						. urlencode($home) . '">' . $esc_home . '</a>';
 				} else {
-					echo $home;
+					echo $esc_home;
 				}
 				echo '</td>';
 				if ($not_ladder) {

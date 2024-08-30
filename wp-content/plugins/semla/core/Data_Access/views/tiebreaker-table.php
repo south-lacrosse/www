@@ -3,6 +3,7 @@ $cols = ['New Pos', 'Orig Pos', 'Team', 'H2H Points', 'H2H GD', 'H2H G', 'GD', '
 $last_comp = '';
 $last_points = 0;
 foreach ($rows as $row) {
+	$row['team'] = htmlspecialchars($row['team'], ENT_NOQUOTES);
 	$comp = $row['name'];
 	unset($row['name']);
 	$orig_points =  $row['original_points'];

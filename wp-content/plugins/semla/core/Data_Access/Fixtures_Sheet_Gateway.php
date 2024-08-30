@@ -135,6 +135,10 @@ class Fixtures_Sheet_Gateway {
 		$club_slugs = array_flip($club_slugs);
 		foreach ($team_rows as $key => $row) {
 			$team_name = $row[self::TEAM_NAME];
+			if (!preg_match('/^[a-zA-Z1-9 \/&-]*$/', $team_name)) {
+				$this->error->add('fixtures', "Invalid team name $team_name - allowed characters \"a-zA-Z1-9 /&-\"");
+				continue;
+		}
 			$this->teams[$team_name] = 1;
 			if (!empty($row[self::TEAM_CLUB_PAGE])) {
 				if (!array_key_exists($row[self::TEAM_CLUB_PAGE], $club_slugs)) {

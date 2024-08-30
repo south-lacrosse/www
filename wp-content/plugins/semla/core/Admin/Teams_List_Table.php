@@ -54,7 +54,10 @@ class Teams_List_Table extends Inline_Edit_List_Table {
 	protected function column_name( $item ) {
 		return '<button type="button" class="button-link row-title editinline" aria-label="Edit &#8220;'
 			. esc_attr( $item->team ) . '&#8221; inline" aria-expanded="false">'
-			. $item->team . "</button>";
+			. htmlspecialchars($item->team, ENT_NOQUOTES) . "</button>";
+	}
+	protected function column_default( $item, $column_name ) {
+		return htmlspecialchars($item->$column_name, ENT_NOQUOTES);
 	}
 
 	public function get_columns() {

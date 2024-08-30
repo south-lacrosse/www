@@ -135,9 +135,12 @@
 		let url =
 			semlaEdit.url +
 			// if we have an id then assume it's in the format comp-123 where 123 is the id
+
+			// spaces to _, and Apache will just reject encoded "/" (%2F) for security reasons,
+			// so convert to ~
 			(dataRow.id
 				? dataRow.id.substring(dataRow.id.indexOf('-') + 1)
-				: primaryTitle.textContent.replaceAll(' ', '+'));
+				: encodeURI(primaryTitle.textContent.replaceAll(' ', '_').replaceAll('/', '~')));
 
 		if (semlaEdit.wpMeta) {
 			// if we're using the standard WP REST endpoints to update metadata

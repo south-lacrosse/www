@@ -161,7 +161,7 @@ class Cup_Draw_Renderer {
 	private static function team_name($want_team1,$team1_first,$match,$round,$offset,$match_num) {
 		$team = (string) ($want_team1 ? (empty($match->team1) ? '' : $match->team1)
 				: (empty($match->team2) ? '' : $match->team2));
-		if ($team || $round === 1) return $team;
+		if ($team || $round === 1) return htmlspecialchars($team, ENT_NOQUOTES);
 		$match_offset = ($team1_first && !$want_team1) || (!$team1_first && $want_team1) ? 1 : 0;
 		$win_match = ($match_num * 2) - 1 + $match_offset;
 		return 'Winner ' . self::ROUNDS_SHORT[$round + $offset - 1] . ' match ' . $win_match;
@@ -283,12 +283,12 @@ class Cup_Draw_Renderer {
 			}
 			echo '<li><div class="match-panel"><div>' . $ha1;
 			if (!empty($match->team1)) {
-				echo (empty($match->alias1) ? $match->team1 : $match->alias1);
+				echo htmlspecialchars(empty($match->alias1) ? $match->team1 : $match->alias1, ENT_NOQUOTES);
 			}
 			echo  (isset($match->team1_goals) && $match->team1_goals != null ? '<span class="score">' . $match->team1_goals . '</span>' : '')
 			. '</div><div>'	. $ha2;
 			if (!empty($match->team2)) {
-				echo (empty($match->alias2) ? $match->team2 : $match->alias2);
+				echo htmlspecialchars(empty($match->alias2) ? $match->team2 : $match->alias2, ENT_NOQUOTES);
 			}
 			echo (isset($match->team2_goals) && $match->team2_goals != null ? '<span class="score">' . $match->team2_goals . '</span>' : '')
 			. '</div></div>' . $after . '</li>';

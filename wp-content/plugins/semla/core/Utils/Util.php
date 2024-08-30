@@ -5,6 +5,9 @@
 namespace Semla\Utils;
 
 class Util {
+	/**
+	 * Make an HTML id attribute from a string
+	 */
 	public static function make_id($str) {
 		return urlencode(strtr($str,[
 			' ' => '-', '(' => '',')' => '',

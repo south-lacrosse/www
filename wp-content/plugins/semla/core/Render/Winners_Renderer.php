@@ -38,7 +38,7 @@ class Winners_Renderer {
 				$has_data = false;
 				$last_year = $row->year;
 			}
-			$winners[$row->comp_id] = $row->winner;
+			$winners[$row->comp_id] = htmlspecialchars($row->winner, ENT_NOQUOTES);
 			if ($row->has_data) $has_data = true;
 		}
 		self::do_fixed_year($last_year, $comps_reverse, $winners, $has_data, $full_page);
@@ -112,7 +112,7 @@ class Winners_Renderer {
 				$has_data = $row->has_data;
 			}
 			$row_comps[] = $row->comp_id;
-			$cols[] = $row->winner;
+			$cols[] = htmlspecialchars($row->winner, ENT_NOQUOTES);
 		}
 		echo self::do_variable_year($prev_year,$cols,$row_comps,$comps,$has_data,$full_page);
 		echo "</tbody></table></div>\n";

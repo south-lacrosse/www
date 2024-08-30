@@ -56,7 +56,7 @@ class Club_Team_Gateway {
 		$teams = [];
 		$team_club = [];
 		foreach ( $rows as $row ) {
-			$teams[$row->name] = $row->abbrev;
+			$teams[$row->name] = htmlentities($row->abbrev);
 			$team_club[$row->name] = $row->club_page;
 		}
 		return ['team' => $teams, 'team_club' => $team_club];

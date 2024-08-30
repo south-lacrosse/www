@@ -25,10 +25,10 @@ foreach ($rows as $row) {
 		$result .= ' <sup>*' . $row->points_multi . '</sup>';
 	}
 	if (!$row->result && $row->venue) {
-		$result .= "<br>at $row->venue";
+		$result .= '<br>at ' . htmlspecialchars($row->venue, ENT_NOQUOTES);
 	}
 ?>
-<tr><td><?= $date ?></td><td><?= $row->home ?></td><td><?= $result ?></td><td><?= $row->away ?></td><td><?= $row->competition ?></td></tr>
+<tr><td><?= $date ?></td><td><?= htmlspecialchars($row->home, ENT_NOQUOTES) ?></td><td><?= $result ?></td><td><?= htmlspecialchars($row->away, ENT_NOQUOTES) ?></td><td><?= $row->competition ?></td></tr>
 <?php
 } ?>
 </tbody></table>

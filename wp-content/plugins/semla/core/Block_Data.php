@@ -160,7 +160,7 @@ class Block_Data {
 			case 'team':
 			case 'club':
 			case 'comp':
-				$title = "$this->arg $this->fix_res";
+				$title = htmlspecialchars($this->arg, ENT_NOQUOTES) . " $this->fix_res";
 				if ($year) $title .= " $year";
 				break;
 			case 'date':
@@ -244,11 +244,11 @@ class Block_Data {
 			$html .= '<option value="" selected="" disabled="">Select...</option>';
 		}
 		foreach (array_keys($arr) as $opt) {
-			$html .= '<option' . ($opt === $selected ? ' selected': '') . '>' . $opt . "</option>\n";
+			$html .= '<option' . ($opt === $selected ? ' selected': '') . '>' . htmlspecialchars($opt, ENT_NOQUOTES) . "</option>\n";
 		}
 		$html .= '</select>';
 		foreach ($hidden as $key=> $value) {
-			$html .= '<input type="hidden" name="' . $key . '" value="' . $value . '">';
+			$html .= '<input type="hidden" name="' . $key . '" value="' . htmlentities($value, ENT_NOQUOTES) . '">';
 		}
 		$html .= '<input type="submit" value="Select"></form>' . "\n";
 		return $html;

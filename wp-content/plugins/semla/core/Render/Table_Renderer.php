@@ -47,7 +47,7 @@ class Table_Renderer {
 					echo self::table($teams[0]->name, $teams, $year, $for_rest);
 				}
 				if (isset($remarks[$comp_id])) {
-					echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
+					echo '<p>' . htmlspecialchars($remarks[$comp_id]->remarks, ENT_NOQUOTES) . '</p>';
 				}
 				$comp_id = $row->comp_id;
 				$teams = [];
@@ -130,16 +130,17 @@ class Table_Renderer {
 		foreach ($teams as $team) {
 			echo '<tr' . (!empty($team->divider) ? ' class="divider"' : '')
 				.  '><td>' . $team->position . '</td><td class="left">';
+			$esc_team = htmlspecialchars($team->team, ENT_NOQUOTES);
 			if ($for_rest) {
-				echo $team->team;
+				echo $esc_team;
 			} elseif ($year == 0) {
 				echo '<a class="tb-link" href="/fixtures?team='
-					. urlencode($team->team) . '">' . $team->team . '</a>';
+					. urlencode($team->team) . '">' . $esc_team . '</a>';
 			} elseif ($year >= 2003) {
 				echo '<a class="tb-link" href="results-' . $year . '?team='
-					. urlencode($team->team) . '">' . $team->team . '</a>';
+					. urlencode($team->team) . '">' . $esc_team . '</a>';
 			} else {
-				echo $team->team;
+				echo $esc_team;
 			}
 			if ($team->tiebreaker) echo '<sup>*</sup>';
 			echo '</td><td>' . $team->played . '</td>';

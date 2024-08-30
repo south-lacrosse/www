@@ -1,6 +1,7 @@
 <?php
 namespace Semla\Render;
 
+use Semla\Rest\Rest;
 use Semla\Utils\Util;
 
 class Fixtures_Renderer {
@@ -70,7 +71,7 @@ class Fixtures_Renderer {
 				$keys['*'] = '<i>*2</i> = multiple points';
 			}
 			if (!$row->result && $row->venue) {
-				$result .= "<br>at $row->venue";
+				$result .= '<br>at ' . htmlspecialchars($row->venue, ENT_NOQUOTES);
 				$hl = ' hl';
 			}
 			echo '<td class="result' . $hl . '">' . $result . '</td>';
@@ -93,7 +94,7 @@ class Fixtures_Renderer {
 		}
 		if ($year == 0) {
 			if ($type === 'team') {
-				$cal_url = site_url( rest_get_url_prefix() . '/semla/v1/teams/' . str_replace(' ','_',$arg) . '/fixtures.ics');
+				$cal_url = Rest::get_calendar_url($arg);
 				echo '<p class="no-print">';
 				if (!empty($options['team_club'][$arg])) {
 					echo 'Go to <a href="clubs/'.$options['team_club'][$arg].'">club page</a> or ';
@@ -190,24 +191,25 @@ class Fixtures_Renderer {
 	}
 
 	private function td_team($team, $extra, $addLink = false) {
+		$esc_team = htmlspecialchars($team, ENT_NOQUOTES);
 		if ($team && isset($this->options['team'][$team])) {
 			if (!empty($this->options['team'][$team]) ) {
 				$short = $this->options['team'][$team];
 				if ($addLink && !empty($this->options['team_club'][$team])) {
 					$uri = $this->options['team_club'][$team];
-					echo "<td$extra><a class=\"tb-link no-ul\" href=\"/clubs/$uri\" data-sml-text=\"$short\"><span>$team</span></a></td>\n";
+					echo "<td$extra><a class=\"tb-link no-ul\" href=\"/clubs/$uri\" data-sml-text=\"$short\"><span>$esc_team</span></a></td>\n";
 				} else {
-					echo "<td$extra data-sml-text=\"$short\"><span>$team</span></td>\n";
+					echo "<td$extra data-sml-text=\"$short\"><span>$esc_team</span></td>\n";
 				}
 				return;
 			}
 			if ($addLink) {
 				$uri = $this->options['team_club'][$team];
-				echo "<td$extra><a class=\"tb-link no-ul\" href=\"/clubs/$uri\">$team</a></td>\n";
+				echo "<td$extra><a class=\"tb-link no-ul\" href=\"/clubs/$uri\">$esc_team</a></td>\n";
 				return;
 			}
 		}
-		echo "<td$extra>$team</td>";
+		echo "<td$extra>$esc_team</td>";
 	}
 
 }

@@ -24,7 +24,7 @@ class Fixtures_Results_Gateway {
 		}
 
 		// otherwise build arrays from database, and serialize
-		$teams = $comps = $cups = $dates = [];
+		$teams = $comps = $dates = [];
 		//team
 		$rows = $wpdb->get_results( $wpdb->prepare(
 			'SELECT DISTINCT r.home, COALESCE(ta.abbrev,"") AS abbrev
@@ -35,7 +35,7 @@ class Fixtures_Results_Gateway {
 			ORDER BY r.home', $year));
 		if ($wpdb->last_error) return false;
 		foreach ( $rows as $row ) {
-			$teams[$row->home] = $row->abbrev;
+			$teams[$row->home] = htmlentities($row->abbrev);
 		}
 
 		// competition

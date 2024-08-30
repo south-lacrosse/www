@@ -41,7 +41,7 @@ if ($comp->head_to_head && count($wins) > 0) {
 		if ($total !== 0) {
 			echo ', ';
 		}
-		echo $winner . ' ' . $count;
+		echo htmlspecialchars($winner, ENT_NOQUOTES) . ' ' . $count;
 		$total += $count;
 	}
 	echo ' (Total: ' .$total  . ")</p>\n";
@@ -59,9 +59,10 @@ foreach ($rows as $row) {
 	} else {
 		echo $row->year;
 	}
-	echo "</th><td>$row->winner</td>";
+	echo '</th><td>' . htmlspecialchars($row->winner, ENT_NOQUOTES) . '</td>';
 	if ($rup) {
-		echo '<td class="center">', $row->result, "</td><td>$row->runner_up</td>";
+		echo ($row->result ? '<td class="center">' : '<td>'), $row->result, '</td><td>'
+			. htmlspecialchars($row->runner_up, ENT_NOQUOTES) . '</td>';
 	}
 	echo "</tr>\n";
 }

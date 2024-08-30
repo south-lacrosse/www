@@ -33,7 +33,6 @@ class Rest {
 		'.ics' => 'text/calendar',
 		'.js' => 'application/javascript',
 		'.json' => 'application/json',
-		// '.txt' => 'text/plain',
 	];
 	const SEMLA_BASE = 'semla/v1';
 	const SEMLA_PREFIX = '/semla/v1/';
@@ -83,7 +82,7 @@ class Rest {
 			'callback' => [Admin_Services::class, 'leagues_cups'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_ADMIN_BASE, '/teams/(?P<team>[\w+_%.-]+)', [
+		register_rest_route( self::SEMLA_ADMIN_BASE, '/teams/(?P<team>[\w+_~&%.-]+)', [
 			'methods' => 'PUT',
 			'callback' => [Teams_Services::class, 'admin_update'],
 			'permission_callback' => [self::class, 'permissions_manage_semla']
@@ -99,17 +98,17 @@ class Rest {
 			'callback' => [Teams_Services::class, 'teams_list'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_~&%.-]+)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_info'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)/fixtures.ics', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_~&%.-]+)/fixtures.ics', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class, 'team_fixtures_ics'],
 			'permission_callback' => '__return_true',
 		]);
-		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_%.-]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
+		register_rest_route( self::SEMLA_BASE, '/teams/(?P<team>[\w+_~&%.-]+)/(?P<type>fixtures|tables)(?P<extension>|.js|.json)', [
 			'methods' => \WP_REST_Server::READABLE,
 			'callback' => [Teams_Services::class,'team_fixtures_tables'],
 			'permission_callback' => '__return_true',
@@ -229,10 +228,28 @@ class Rest {
 		return true;
 	}
 
+
+	/**
+	 * Encode team name so it can be used in the path part of a REST URL
+	 */
+	public static function encode_club_team($value) {
+		// Apache will just reject an encoded "/" (%2F) for security reasons, so we
+		// converted it ~, and the following decode_club_team() will reverse that
+	   return str_replace([' ','/'],['_','~'], $value);
+	}
+
 	public static function decode_club_team($value) {
-		// Allow old format with + for spaces, as well as the better new version with _
-		// Some calendar apps replace + with %2b, so we need to decode the url first
-		return str_replace(['_','+'],' ',urldecode($value));
+		// Allow old format with + for spaces, as well as the better new version with _.
+		// Some calendar apps replace + with %2b, so we need to decode the url first.
+		// Apache will just reject encoded "/" (%2F) for security reasons, so we will have
+		// converted it ~, so reverse that here too.
+		return str_replace(['_','+','~'],[' ',' ','/'],urldecode($value));
+	}
+
+
+	public static function get_calendar_url($team) {
+		return site_url( rest_get_url_prefix() . self::SEMLA_PREFIX . 'teams/'
+			. self::encode_club_team($team) . '/fixtures.ics');
 	}
 
 	public static function add_cache_tags() {
