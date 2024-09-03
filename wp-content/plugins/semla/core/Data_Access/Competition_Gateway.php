@@ -62,7 +62,7 @@ class Competition_Gateway {
 			$query = $wpdb->prepare(
 				'SELECT c.id, c.seq, c.section_name, c.ladder_comp_id1, c.ladder_comp_id2
 				FROM slh_competition hc, sl_competition c
-				WHERE hc.year = %d AND c.id = hc.id AND c.group_id = %d
+				WHERE hc.year = %d AND c.id = hc.comp_id AND c.group_id = %d
 				AND c.type = "ladder"', $year, $league_id);
 		} else {
 			$query = $wpdb->prepare(

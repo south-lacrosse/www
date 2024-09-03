@@ -67,7 +67,7 @@ FROM `slc_remarks`;
 
 SELECT 'Inserting competitions' as '';
 INSERT INTO `slh_competition`
-(`year`, `id`, `where_clause`)
+(`year`, `comp_id`, `where_clause`)
 SELECT @end_year, comp_id, CONCAT('=',comp_id) FROM slc_ladder
 UNION
 SELECT @end_year, comp_id, where_clause FROM slc_division

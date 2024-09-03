@@ -45,7 +45,7 @@ class Fixtures_Results_Gateway {
 					ELSE c.name	END AS name,
 				IF (c.type = 'cup',1,0) AS is_cup, hc.where_clause
 			FROM slh_competition as hc, sl_competition AS c
-			WHERE hc.year = %d AND c.id = hc.id
+			WHERE hc.year = %d AND c.id = hc.comp_id
 			AND (c.type = 'cup' OR c.type LIKE 'league%')
 			ORDER BY c.seq", $year));
 		if ($wpdb->last_error) return false;
