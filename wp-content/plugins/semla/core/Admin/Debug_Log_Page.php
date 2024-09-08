@@ -21,7 +21,7 @@ class Debug_Log_Page {
 				@unlink($log_path);
 				Admin_Menu::dismissible_success_message('Log file deleted');
 			} ?>
-<p><a class="button-secondary" href="<?= wp_nonce_url('?page=semla_debug_log&action=delete_log', 'semla_delete_log') ?>">Delete Log File</a></p>
+<p><a class="button-secondary" href="<?= wp_nonce_url('?page=semla_debug_log&amp;action=delete_log', 'semla_delete_log') ?>">Delete Log File</a></p>
 <?php
 			 if (file_exists($log_path)) { ?>
 <div class="postbox">

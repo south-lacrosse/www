@@ -50,10 +50,10 @@ class Cache_Page {
 	</div>
 </div>
 <h2>Clear SEMLA Caches</h2>
-<p><a class="button-secondary" href="<?= wp_nonce_url(self::PAGE_URL . '&action=clear_cache', 'semla_clear_cache') ?>">Current tables/fixtures etc.</a>
-<a class="button-secondary" href="<?= wp_nonce_url(self::PAGE_URL . '&action=clear_cachehist', 'semla_clear_cachehist') ?>">History dropdowns</a>
+<p><a class="button-secondary" href="<?= wp_nonce_url(self::PAGE_URL . '&amp;action=clear_cache', 'semla_clear_cache') ?>">Current tables/fixtures etc.</a>
+<a class="button-secondary" href="<?= wp_nonce_url(self::PAGE_URL . '&amp;action=clear_cachehist', 'semla_clear_cachehist') ?>">History dropdowns</a>
 <?php if (current_theme_supports('semla')) { ?>
-<a class="button-secondary" href="<?= wp_nonce_url(self::PAGE_URL . '&action=clear_menu_cache', 'semla_clear_menu_cache') ?>">Menu</a>
+<a class="button-secondary" href="<?= wp_nonce_url(self::PAGE_URL . '&amp;action=clear_menu_cache', 'semla_clear_menu_cache') ?>">Menu</a>
 <?php } ?>
 </p>
 <?php if (defined('LSCWP_V')) { ?>
