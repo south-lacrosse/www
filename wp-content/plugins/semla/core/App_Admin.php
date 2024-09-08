@@ -238,9 +238,16 @@ class App_Admin {
 				add_action( 'pre_get_posts', function( $query ) {
 					$query->set('orderby','title');
 					$query->set('order','asc');
-
 				});
 			}
+			// make sure Clubs submenu item is highlighted, as we have changed
+			// the submenu item earlier
+			add_filter( 'submenu_file', function( $submenu_file, $parent_file ) {
+				if ($submenu_file === 'edit.php?post_type=clubs') {
+					return 'edit.php?post_type=clubs&post_status=publish';
+				}
+				return $submenu_file;
+			},10,2);
 			// need to make sure the sortable columns match our new order
 			add_filter( "manage_{$screen->id}_sortable_columns", function ($columns) {
 				return [
