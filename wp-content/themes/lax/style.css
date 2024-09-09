@@ -778,17 +778,16 @@ h4 {
 		padding-right: 0.5em;
 	}
 }
-/* short names, prefix r=results */
+/* short names, prefix r=results for search */
 .rd {
-	font-size: 0.875em;
 	line-height: 1.4;
-	margin-bottom: 1.75em;
+	margin-bottom: 1.5rem;
 }
 .rh {
-	font-size: 1.25em;
+	font-size: 1.125rem;
 	font-weight: normal;
 	margin-top: 0;
-	margin-bottom: 3px;
+	margin-bottom: 0.1875rem;
 }
 .ra {
 	text-decoration: none;
@@ -797,6 +796,7 @@ h4 {
 	text-decoration: underline;
 }
 .rp {
+	font-size: 0.875rem;
 	margin-top: 0;
 	margin-bottom: 0;
 	max-width: 45em;
