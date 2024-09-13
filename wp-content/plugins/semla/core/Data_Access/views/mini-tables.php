@@ -57,7 +57,7 @@ foreach ($rows as $row) {
 		$last_comp_id = $row->comp_id;
 	}
 	echo '<tr' . (!empty($row->divider) ? ' class="divider"' : '') .  '><td>' . $row->position . '</td><td class="left">'
-		. '<a class="tb-link" href="fixtures?team='
+		. '<a class="no-ul font-semibold" href="fixtures?team='
 		. urlencode($row->team) . '">' . htmlspecialchars($row->abbrev ? $row->abbrev : $row->team, ENT_NOQUOTES)
 		. '</a></td><td>' . $row->played . '</td><td class="points">' . floatval($row->points) . '</td>'
 		. "</tr>\n";

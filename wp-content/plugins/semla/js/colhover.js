@@ -4,17 +4,19 @@
  *
  * This script adds 'hover' class to all td cells in the same column within a table which has
  * class 'col-hover'.
- * The first column is excluded as that's assumed to be a row header.
+ * If the first column is a heading it should be a TH cell as that will be ignored.
  * Only cells within tbody are affected, and will work with multiple tables on the same page.
  *
  * The .hover class can then be styled to highlight the column
- * Format of table must be table>tbody>tr>td
+ * Format of table must be table>tbody>tr>th+td
  *
  * Used on fixtures grid so uses can highlight row and column at the same time.
  */
 (function () {
 	'use strict';
-	if (document.querySelector) {
+	// this is a progressive enhancement, so only run if a browser has the
+	// required capabilities
+	if (document.querySelector && document.body.classList) {
 		// add event listener to tbody - otherwise we'd have to put
 		// a listener on all cells with the table
 		var tbodys = document.querySelectorAll('.col-hover>tbody');
@@ -26,50 +28,44 @@
 
 	function mouseover(event) {
 		var target = event.target;
-		// only process TD elements, and ignore first column
-		if (target.tagName !== 'TD' || target === target.parentNode.firstElementChild) {
+		// only process TD elements, if first column is a header it should be TH
+		if (target.tagName !== 'TD') {
 			return;
 		}
 		// add .hover to rest of column
-		var index = position(target);
+		var col = position(target);
 		// td->parent(tr)->parent(tbody)
 		var rows = target.parentNode.parentNode.getElementsByTagName('tr');
-		for (var j = rows.length; j--; ) {
-			var cellsInRow = rows[j].getElementsByTagName('td');
-			if (index < cellsInRow.length) {
-				// don't use classlist as that doesn't exist in IE9
-				var cell = cellsInRow[index];
-				if (cell.className.indexOf('hover') === -1) {
-					cell.className += ' hover';
-				}
+		for (var i = rows.length; i--; ) {
+			var cellsInRow = rows[i].getElementsByTagName('td');
+			if (col < cellsInRow.length) {
+				cellsInRow[col].classList.add('hover');
 			}
 		}
 	}
 
 	function mouseout(event) {
 		var target = event.target;
-		// only process TD elements, and ignore first column
-		if (target.tagName !== 'TD' || target === target.parentNode.firstElementChild) {
+		// only process TD elements
+		if (target.tagName !== 'TD') {
 			return;
 		}
 		// remove .hover from all tbody td cells
-		var cellsInTable = target.parentNode.parentNode.getElementsByTagName('td');
-		for (var j = cellsInTable.length; j--; ) {
-			var cell = cellsInTable[j];
-			cell.className = cell.className.replace(' hover', '');
+		// td->parent(tr)->parent(tbody)
+		var hoverCells = target.parentNode.parentNode.querySelectorAll('td.hover');
+		for (var i = hoverCells.length; i--; ) {
+			hoverCells[i].classList.remove('hover');
 		}
 	}
 
-	// Returns the relative position of a node within it's parent
+	// Returns the relative position of a td node within it's parent.
+	// Note getElementsByTagName is an HTMLCollection not an array, so indexOf
+	// doesn't work
 	function position(node) {
-		var children = node.parentNode.childNodes;
-		var num = 0;
+		var children = node.parentNode.getElementsByTagName('td');
 		for (var i = 0; i < children.length; i++) {
 			if (children[i] === node) {
-				return num;
-			}
-			if (children[i].nodeType === Node.ELEMENT_NODE) {
-				num++;
+				return i;
 			}
 		}
 		return -1;

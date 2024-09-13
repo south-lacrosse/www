@@ -134,10 +134,10 @@ class Table_Renderer {
 			if ($for_rest) {
 				echo $esc_team;
 			} elseif ($year == 0) {
-				echo '<a class="tb-link" href="/fixtures?team='
+				echo '<a class="no-ul font-semibold" href="/fixtures?team='
 					. urlencode($team->team) . '">' . $esc_team . '</a>';
 			} elseif ($year >= 2003) {
-				echo '<a class="tb-link" href="results-' . $year . '?team='
+				echo '<a class="no-ul font-semibold" href="results-' . $year . '?team='
 					. urlencode($team->team) . '">' . $esc_team . '</a>';
 			} else {
 				echo $esc_team;

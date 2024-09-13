@@ -197,7 +197,7 @@ class Fixtures_Renderer {
 				$short = $this->options['team'][$team];
 				if ($addLink && !empty($this->options['team_club'][$team])) {
 					$uri = $this->options['team_club'][$team];
-					echo "<td$extra><a class=\"tb-link no-ul\" href=\"/clubs/$uri\" data-sml-text=\"$short\"><span>$esc_team</span></a></td>\n";
+					echo "<td$extra><a class=\"no-ul\" href=\"/clubs/$uri\" data-sml-text=\"$short\"><span>$esc_team</span></a></td>\n";
 				} else {
 					echo "<td$extra data-sml-text=\"$short\"><span>$esc_team</span></td>\n";
 				}
@@ -205,7 +205,7 @@ class Fixtures_Renderer {
 			}
 			if ($addLink) {
 				$uri = $this->options['team_club'][$team];
-				echo "<td$extra><a class=\"tb-link no-ul\" href=\"/clubs/$uri\">$esc_team</a></td>\n";
+				echo "<td$extra><a class=\"no-ul\" href=\"/clubs/$uri\">$esc_team</a></td>\n";
 				return;
 			}
 		}

@@ -18,9 +18,10 @@
 
 /*--------------------- Normalize rules -------------------*/
 
-/* Based on https://github.com/sindresorhus/modern-normalize
+/* Based on https://github.com/sindresorhus/modern-normalize which is used in
+   Tailwind.
    Omitted rules that are set later (our opinionated versions), or don't apply
-   e.g legend */
+   e.g legend. */
 
 /* all % sizes include border and padding */
 *,
@@ -152,7 +153,7 @@ h1 {
 h1,
 h2 {
 	padding-bottom: 0.1em;
-	border-bottom: 1px solid #eee;
+	border-bottom: 1px solid #e6e8ea;
 }
 .with-byline {
 	margin-bottom: 0.2em;
@@ -244,7 +245,7 @@ a {
 a:visited {
 	color: #551a8b;
 }
-/* link on team name in fixtures */
+/* no underline unless hover, e.g. on team name in fixtures */
 .no-ul {
 	text-decoration: none;
 }
@@ -347,8 +348,9 @@ a.btn {
 	margin-left: auto;
 	margin-right: auto;
 }
+/* have to override things like ".table-data thead th", so use important */
 .left {
-	text-align: left;
+	text-align: left !important;
 }
 .right {
 	text-align: right;
@@ -358,6 +360,9 @@ a.btn {
 }
 .center.left {
 	text-align: left;
+}
+.font-semibold {
+	font-weight: 600;
 }
 
 /*--------------- Table of contents ----------------*/
@@ -473,16 +478,14 @@ th {
 	width: 100%;
 }
 .table-data > caption {
-	font-size: 1.15em;
+	font-size: 1.125em;
 	font-weight: 600;
 	text-align: left;
-	border-bottom: 1px solid #dbdbdb;
-	margin-bottom: 10px;
+	margin-bottom: 0.5em;
 }
 .caption-text {
-	border-bottom: 4px solid #121212;
+	border-bottom: 0.25em solid #121212;
 	color: #121212;
-	/* padding-bottom: 3px; */
 	display: inline-block;
 }
 .table-data > caption > a {
@@ -494,26 +497,25 @@ th {
 	color: #333;
 }
 .table-data th {
-	text-align: center;
-	background-color: #f7f7f5;
-	border-bottom: 1px solid #dbdbdb;
-	padding: 14px 3px 4px 3px;
-	vertical-align: bottom;
 	font-weight: 600;
 }
-th.left {
-	text-align: left;
+.table-data thead th {
+	text-align: center;
+	background-color: #f6f6f6;
+	border-bottom: 1px solid #dbdbdb;
+	padding: 0.375rem 0.1875rem;
+	vertical-align: bottom;
 }
 .table-data td {
-	padding: 3px;
-	border-bottom: 1px solid #ededed;
+	padding: 0.1875rem;
+	border-bottom: 1px solid #e6e8ea;
 }
 .table-data > tbody > tr:hover,
 .hover {
-	background-color: #f7f7f5;
+	background-color: #f6f6f6;
 }
 tr.divider > td {
-	border-bottom: 1px dashed #252525;
+	border-bottom: 1px solid #545658;
 }
 /* fixtures */
 /* leave td as this ensures the same priority as .table-data td rule,
@@ -540,7 +542,7 @@ td.away {
 	text-align: left;
 }
 td.result {
-	padding: 3px 5px;
+	padding: 0.1875em 0.3125em;
 	white-space: nowrap;
 }
 td.comp {
@@ -549,27 +551,19 @@ td.comp {
 td.points {
 	font-weight: 600;
 }
-/* hl = hightligh result field for non-default time/pitch */
+/* hl = highlight result field for non-default time/pitch */
 .hl {
 	background-color: #ffa;
 }
 tr:hover > .hl {
 	background-color: #f6f7b2;
 }
-th.no-bb {
-	border-bottom: none;
-}
-.grid th {
-	padding-top: 4px;
-}
-.grid th + th {
-	border-left: 1px solid #dbdbdb;
-}
-.grid td + td {
-	border-left: 1px solid #ededed;
+.grid th,
+.grid td {
+	border: 1px solid #dbdbdb;
 }
 
-/* link colors */
+/* link colours */
 th > a:link,
 th > a:visited,
 .table-data a:link,
@@ -715,7 +709,6 @@ li > ol {
 .tab-item {
 	display: inline-block;
 	position: relative;
-	display: inline-block;
 	border-top: 1px solid #dbdbdb;
 	border-left: 1px solid #dbdbdb;
 	border-bottom: 1px solid #dbdbdb;
@@ -820,7 +813,7 @@ dd {
     to the next element, so correct that here */
 .scrollable {
 	overflow-x: auto;
-	margin-bottom: 1.25em;
+	margin-bottom: 1.25rem;
 }
 .scrollable > table:last-child {
 	margin-bottom: 0;
@@ -875,7 +868,7 @@ code {
 	display: none;
 }
 .gmap {
-	/* embeded Google map */
+	/* embedded Google map */
 	width: 100%;
 	height: 400px;
 	border: 1px solid #333;

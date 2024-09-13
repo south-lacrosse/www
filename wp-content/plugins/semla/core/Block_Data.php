@@ -229,7 +229,7 @@ class Block_Data {
 	private function curr_grid($league_id) {
 		wp_enqueue_script( 'semla-colhover',
 			plugins_url('js/colhover' . SEMLA_MIN . '.js', __DIR__),
-			[], '1.0', true );
+			[], '1.1', true );
 		return Fixtures_Gateway::get_grid(0,$league_id);
 	}
 
