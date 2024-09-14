@@ -71,7 +71,8 @@ class Fixtures_Renderer {
 				$keys['*'] = '<i>*2</i> = multiple points';
 			}
 			if (!$row->result && $row->venue) {
-				$result .= '<br>at ' . htmlspecialchars($row->venue, ENT_NOQUOTES);
+				$venue = empty($this->options['team'][$row->venue]) ? $row->venue : $this->options['team'][$row->venue];
+				$result .= '<br>at ' . htmlspecialchars($venue, ENT_NOQUOTES);
 				$hl = ' hl';
 			}
 			echo '<td class="result' . $hl . '">' . $result . '</td>';

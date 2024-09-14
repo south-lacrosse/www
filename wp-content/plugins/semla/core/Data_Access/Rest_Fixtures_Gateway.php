@@ -27,8 +27,12 @@ class Rest_Fixtures_Gateway {
 			}
 		}
 		$rows = $wpdb->get_results(
-			"SELECT f.match_date, f.competition, f.home, f.away, f.result, f.points_multi,
-				f.venue, f.match_time, CASE
+			"SELECT f.match_date, f.competition, f.home, f.away, f.result, f.points_multi, f.match_time,
+			CASE
+				WHEN f.result = '' AND f.venue <> '' THEN (SELECT COALESCE(ta.abbrev, f.venue) FROM sl_team_abbrev AS ta WHERE ta.team = f.venue)
+				ELSE null
+			END AS venue,
+			CASE
 				WHEN f.result = '' THEN (SELECT t.pitch_type FROM slc_team AS t WHERE t.name = COALESCE(f.venue,f.home))
 				ELSE null
 			END AS pitch_type
