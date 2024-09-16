@@ -11,9 +11,9 @@ class Fixtures_Grid_Renderer {
 			$teams = explode('|', $division->teams);
 			if (empty($division->teams2)) {
 				$column_count = count($teams);
-				$not_ladder = true;
+				$ladder = false;
 			} else {
-				$not_ladder = false;
+				$ladder = true;
 				$teams2 = explode('|', $division->teams2);
 				$column_count = count($teams2);
 			}
@@ -21,14 +21,15 @@ class Fixtures_Grid_Renderer {
 			// offset for the sticky menu not work as a link target.
 			echo '<div id="' . esc_attr(str_replace(' ','-',$division->section_name))
 				. '" class="alignwide"><div class="scrollable">'
-				. '<table class="table-data grid col-hover"';
+				. '<table class="table-data grid col-hover'
+				. ($ladder ? ' ladder': '').  '"';
 			if ($column_count < 8) { //
 				echo ' style="max-width:' . ($column_count * 6 + 12) . 'em"';
 			}
 			echo  '><caption><span class="caption-text">'
 				. $division->section_name . "</span></caption>\n"
 				. '<thead><tr><th rowspan="2">';
-			if ($not_ladder) {
+			if (! $ladder) {
 				echo 'Home</th><th colspan="' . $column_count . '">Away</th></tr><tr>';
 				foreach (explode('|', $division->minimals) as $key => $minimal) {
 					echo '<th><abbr title="' . htmlentities($teams[$key]) . '">' . htmlspecialchars($minimal, ENT_NOQUOTES) . '</abbr></th>';
@@ -45,14 +46,14 @@ class Fixtures_Grid_Renderer {
 			foreach ($teams as $home) {
 				$esc_home = htmlspecialchars($home, ENT_NOQUOTES);
 				echo '<tr><th>';
-				if ($not_ladder) {
+				if (! $ladder) {
 					echo '<a class="no-ul" href="' . $fixtures_page . '?team='
 						. urlencode($home) . '">' . $esc_home . '</a>';
 				} else {
 					echo $esc_home;
 				}
 				echo '</th>';
-				if ($not_ladder) {
+				if (! $ladder) {
 					foreach ($teams as $away) {
 						$key = "$division->id|$home|$away";
 						echo '<td>';

@@ -155,7 +155,7 @@ class App_Public {
 		if (str_ends_with(get_the_title($post), ' Results Grid')) {
 			wp_enqueue_script( 'semla-colhover',
 				plugins_url('js/colhover' . SEMLA_MIN . '.js', __DIR__),
-				[], '1.1', true );
+				[], '2.0', true );
 		}
 		?>
 <nav><ul class="breadcrumbs nav-list">
