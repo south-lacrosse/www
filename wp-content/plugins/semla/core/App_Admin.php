@@ -65,6 +65,7 @@ class App_Admin {
 					self::init_edit($screen);
 					break;
 				case 'post': // post/page editor
+					add_filter( 'default_content', [self::class, 'default_content'], 10, 2);
 					add_filter('litespeed_bypass_metabox', '__return_true');
 					break;
 				case 'user':
@@ -106,6 +107,25 @@ class App_Admin {
 				}
 			}
 		});
+	}
+
+	/**
+	 * Test if the user wants to duplicate an existing page/post/CPT, and if so
+	 * set the content of the new post. A 'Duplicate' link is added to each post in
+	 * the relevant list table, and links to the new-post page with the duplicate
+	 * query var set.
+	 */
+	public static function default_content($post_content, $post) {
+		if ( isset( $_GET['duplicate'] ) ) {
+			$duplicate = absint( $_GET['duplicate'] );
+			if ($duplicate && current_user_can( 'edit_post', $duplicate ))  {
+				$duplicated_post = get_post( $duplicate );
+				if ( $duplicated_post instanceof \WP_Post ) {
+					return $duplicated_post->post_content;
+				}
+			}
+		}
+		return $post_content;
 	}
 
 	public static function enqueue_block_editor_assets() {
@@ -264,6 +284,18 @@ class App_Admin {
 		add_action('admin_enqueue_scripts', function() {
 			echo '<style>.fixed .column-modified{width:14%}</style>';
 		});
+
+		// add link to allow users to duplicate a post
+		$action_type = $screen->post_type === 'page' ? 'page' : 'post';
+		add_filter("{$action_type}_row_actions", function($actions, $post) {
+			if (current_user_can( 'edit_post', $post->ID )) {
+				$actions['semla_duplicate'] = '<a href="post-new.php'
+					. ('post' === $post->post_type ? '' : "?post_type=$post->post_type")
+					. '&amp;duplicate=' . $post->ID
+					. '" aria-label="Duplicate &#8220;' . esc_attr($post->post_title) . '&#8221;">Duplicate</a>';
+			}
+			return $actions;
+		}, 10, 2);
 	}
 
 	private static function add_modified_column($post_type) {
