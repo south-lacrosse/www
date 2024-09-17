@@ -222,10 +222,10 @@ class App_Admin {
 	}
 
 	private static function init_edit($screen) {
-		if ($screen->post_type == 'clubs') {
+		if ($screen->post_type === 'clubs') {
 			// check if coming back from editor, and only show published
-			if (count($_GET) === 1 &&
-			str_contains($_SERVER['HTTP_REFERER'] ?? '', '/wp-admin/post.php?') ) {
+			if (count($_GET) === 1 && !empty($_SERVER['HTTP_REFERER'])
+			&& preg_match('!/wp-admin/post(-new|).php\?!',$_SERVER['HTTP_REFERER']) ) {
 				// setting request URI will ensure correct page links, and also WP
 				// will set the canonical link and use that to change the browser
 				// address bar to match. Alternative is to redirect here, but that
