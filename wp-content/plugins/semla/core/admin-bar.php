@@ -21,7 +21,17 @@ add_action('wp_before_admin_bar_render', function() {
 		'meta'	=> ['target' => '_blank'],
 	]);
 
-	if (!is_admin()) return;
+	if (!is_admin()) {
+		$wp_admin_bar->remove_menu('appearance');
+		$wp_admin_bar->remove_menu('plugins');
+		$wp_admin_bar->add_node([
+			'parent' => 'site-name',
+			'id'    => 'semla-fixtures',
+			'title' => 'Fixtures Import',
+			'href'  => admin_url('admin.php?page=semla'),
+		]);
+		return;
+	}
 	if (!$screen = get_current_screen()) return;
 	if (str_starts_with($screen->base, 'user') || $screen->base === 'profile') {
 		$children = [ 'Users' => 'users'];
