@@ -7,7 +7,7 @@ use Semla\Data_Access\Tiebreaker_Gateway;
 
 /**
  * Update Fixtures admin page.
- * possible 4 tabs - update, tiebreakers, flags fixtures formulas, settings (for admins)
+ * possible 4 tabs - update, tiebreakers, flags fixtures formulas, settings
  */
 class Fixtures_Page {
 

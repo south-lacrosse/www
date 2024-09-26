@@ -1,5 +1,4 @@
 <?php
-
 use Semla\Utils\Util;
 
 $fixtures_datetime = get_option('semla_fixtures_datetime');
@@ -11,11 +10,6 @@ The fixtures will be loaded from <a href="<?= Util::get_fixtures_sheet_url($fixt
 <?php } ?>
 See also <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/fixtures-sheet-format.md">Information on the Format of the Google Sheet</a>.</p>
 <?php
-if (current_user_can('manage_options'))  : ?>
-<p>To use a different Google Sheet, or change the points per win/draw/loss, go to the <a href="?page=semla&tab=settings">Settings Tab</a>.</p>
-<?php else : ?>
-<p>Note: the Google Sheet used, and points per win/draw/loss, can only be changed by Administrators.</p>
-<?php endif;
 if ($fixtures_sheet_id) {?>
 <p>Only update everything at the beginning of the season, or if you have changed any of the divisions or teams.</p>
 <p><a class="button-primary" href="<?= wp_nonce_url($page_and_tab .'&amp;action=update','semla_update') ?>">Update fixtures & flags</a>
