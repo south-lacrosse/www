@@ -13,6 +13,7 @@ namespace Semla;
 defined('WPINC') || die;
 
 ! defined('SEMLA_MIN') && define('SEMLA_MIN', '.min');
+! defined('SEMLA_FEEDS') && define('SEMLA_FEEDS', false);
 // Make sure the production blog is discoverable by search engines, and,
 // equally important, everything else isn't. IMPORTANT: if you remove this code
 // also change App_Admin as that removes the blog_public option from the admin Reading screen

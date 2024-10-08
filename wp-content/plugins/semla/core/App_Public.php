@@ -34,8 +34,11 @@ class App_Public {
 	public static function wp_hook() {
 		global $post;
 		if (is_feed()) {
-			if (is_comment_feed()) {
-				wp_redirect( home_url(), 301 );
+			if (!SEMLA_FEEDS || is_comment_feed()) {
+				// shouldn't get here, but it is possible to set ?feed=xxx etc in the query vars
+				status_header( 404 );
+				header('Content-Type: text/html', true);
+				include( get_query_template( '404' ) );
 				exit;
 			}
 			// no WordPress version number in rss feeds

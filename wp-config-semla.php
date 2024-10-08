@@ -101,6 +101,12 @@ define('WP_CACHE', true); // if LSCache installed on host, though it should add 
 // Only set Google Analytics id in production
 define('SEMLA_ANALYTICS', 'UA-xxxxxxxx-y');
 
+// Set to true if you want to enable RSS feeds. Note that you will need to flush the rewrite
+// rules for this to take effect, so run `wp rewrite flush` from the command line, or
+// Save from Settings->Permalinks.
+// Will also add <link rel="alternate" type="application/rss+xml"... tage to the <head>.
+// define('SEMLA_FEEDS', true);
+
 // Set SMTP_USER and SMTP_PASS on production & staging sites, or on development when testing
 // If not set the Local development tool will intercept emails in Mailhog
 define('SMTP_USER', '<user to send emails>' );

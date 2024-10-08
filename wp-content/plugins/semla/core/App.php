@@ -52,16 +52,19 @@ class App {
 			]
 		]);
 
-		// Remove rewrite rules for the legacy comment feed, post type comment pages,
-		// author pages, trackback, attachment pages, embeds
+		// Remove rewrite rules we don't need or don't want, namely comment
+		// pages and feeds, author pages, trackbacks, attachment pages, embeds,
+		// post formats
+
+		// favicon is already handled outside WP
+		// wp-app and wp-register are deprecated and we don't need to handle them
 		add_filter( 'rewrite_rules_array', function($rules) {
+			// remove all feeds or just legacy feeds
+			$query_remove_regex = '/attachment|embed=true|post_format=|feed=' .
+				(SEMLA_FEEDS ? 'old' : '') . '/';
 			foreach ( $rules as $regex => $query ) {
-				if ( false !== strpos( $regex, '|commentsrss2' ) ) {
-					$new_k = str_replace( '|commentsrss2', '', $regex );
-					unset( $rules[ $regex ] );
-					$rules[ $new_k ] = $query;
-				} else if ( preg_match( '/(attachment|trackback|comment|author\/)/', $regex )
-				|| preg_match( '/attachment|embed=true/', $query ) ) {
+				if ( preg_match( '/attachment|trackback|comment|author\/|favicon|wp-app\\\.php|wp-register\.php/', $regex )
+				|| preg_match( $query_remove_regex, $query ) ) {
 					unset( $rules[ $regex ] );
 				}
 			}
