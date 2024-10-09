@@ -50,8 +50,8 @@ want to download the fixtures without blocking then use the asynchronous method 
 <p>Put the <i>&lt;div&gt;</i> tag where you want the fixtures to appear, and the <i>&lt;script&gt;</i> tag
 before the closing <i>&lt;/body&gt;</i> tag (or as late on the page as you can). You also need to make sure
 the <i>id</i> is unique on your page, and the <i>data-target</i> matches the <i>id</i>.</p>
-<pre><code>&lt;div id="my-div"&gt;&lt;/div&gt;
-&lt;script data-target="my-div" src="<?= $url ?>/fixtures.js?async" async&gt;&lt;/script&gt;</code></pre>
+<pre><code>&lt;div id="semla-fixtures"&gt;&lt;/div&gt;
+&lt;script data-target="semla-fixtures" src="<?= $url ?>/fixtures.js?async" async&gt;&lt;/script&gt;</code></pre>
 <h3>Embed <?= $type ?>'s league tables</h3>
 <p>Put the following tag where you want the league tables to appear. <b>Note:</b> this method will
 block the rendering of your page until the tables are downloaded from our server. If the
@@ -62,5 +62,5 @@ to download the tables without blocking then use the asynchronous method below.<
 <p>Put the <i>&lt;div&gt;</i> tag where you want the league tables to appear, and the <i>&lt;script&gt;</i> tag
 before the closing <i>&lt;/body&gt;</i> tag (or as late on the page as you can). You also need to make sure
 the <i>id</i> is unique on your page, and the <i>data-target</i> matches the <i>id</i>.</p>
-<pre><code>&lt;div id="my-div"&gt;&lt;/div&gt;
-&lt;script data-target="my-div" src="<?= $url ?>/tables.js?async" async&gt;&lt;/script&gt;</code></pre>
+<pre><code>&lt;div id="semla-tables"&gt;&lt;/div&gt;
+&lt;script data-target="semla-tables" src="<?= $url ?>/tables.js?async" async&gt;&lt;/script&gt;</code></pre>
