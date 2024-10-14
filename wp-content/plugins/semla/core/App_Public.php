@@ -61,6 +61,10 @@ class App_Public {
 		remove_action('wp_head', 'wlwmanifest_link');
 		remove_action('wp_head', 'rsd_link');
 		remove_action('wp_head', 'wp_shortlink_wp_head');
+		if (!SEMLA_FEEDS) {
+			remove_action ('wp_head', 'feed_links', 2);
+			remove_action ('wp_head', 'feed_links_extra', 3);
+		}
 		remove_action('template_redirect', 'wp_shortlink_header', 11);
 
 		// Remove the REST API lines from the HTTP Header
