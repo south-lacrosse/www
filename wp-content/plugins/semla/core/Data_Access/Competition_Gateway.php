@@ -11,7 +11,7 @@ class Competition_Gateway {
 	public static function get_competitions() {
 		global $wpdb;
 		$rows = $wpdb->get_results(
-			"SELECT id, name, abbrev, seq, type, ladder_comp_id1, ladder_comp_id2 FROM sl_competition");
+			"SELECT id, name, abbrev, seq, type, related_comp_id, related_comp_id2 FROM sl_competition");
 		if ($wpdb->last_error) return false;
 		$data = [];
 		foreach ( $rows as $row ) {
@@ -60,13 +60,13 @@ class Competition_Gateway {
 		// add ladders to divisions
 		if ($year) {
 			$query = $wpdb->prepare(
-				'SELECT c.id, c.seq, c.section_name, c.ladder_comp_id1, c.ladder_comp_id2
+				'SELECT c.id, c.seq, c.section_name, c.related_comp_id, c.related_comp_id2
 				FROM slh_competition hc, sl_competition c
 				WHERE hc.year = %d AND c.id = hc.comp_id AND c.group_id = %d
 				AND c.type = "ladder"', $year, $league_id);
 		} else {
 			$query = $wpdb->prepare(
-				'SELECT c.id, c.seq, c.section_name, c.ladder_comp_id1, c.ladder_comp_id2
+				'SELECT c.id, c.seq, c.section_name, c.related_comp_id, c.related_comp_id2
 				FROM slc_ladder l, sl_competition c
 				WHERE c.id = l.comp_id AND c.group_id = %d', $league_id);
 		}
@@ -74,8 +74,8 @@ class Competition_Gateway {
 		if ($wpdb->last_error) return false;
 
 		foreach ($ladders as $ladder) {
-			$comp1 = $rows[$ladder->ladder_comp_id1];
-			$comp2 = $rows[$ladder->ladder_comp_id2];
+			$comp1 = $rows[$ladder->related_comp_id];
+			$comp2 = $rows[$ladder->related_comp_id2];
 			$ladder->teams = $comp1->teams;
 			$ladder->minimals = $comp1->minimals;
 			$ladder->teams2 = $comp2->teams;

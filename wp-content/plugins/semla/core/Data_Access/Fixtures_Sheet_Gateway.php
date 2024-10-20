@@ -187,7 +187,7 @@ class Fixtures_Sheet_Gateway {
 				$relegated_after, "=$comp_id"];
 		}
 		foreach ($ladders as $ladder) {
-			foreach ([$ladder->ladder_comp_id1, $ladder->ladder_comp_id2] as $ladder_comp_id) {
+			foreach ([$ladder->related_comp_id1, $ladder->related_comp_id2] as $ladder_comp_id) {
 				/** Add ladder to where clause for division so ladder matches will appear on
 				 *  fixtures for division */
 				$where = $divisions[$ladder_comp_id][self::DIVISIONS_WHERE];
@@ -371,11 +371,11 @@ class Fixtures_Sheet_Gateway {
 				$comp_short = $c->abbrev ?? $c->name;
 				$comp_id = $c->id;
 				if ($c->type === 'ladder') {
-					$ladder_comp_id1 = $c->ladder_comp_id1;
-					$ladder_comp_id2 = $c->ladder_comp_id2;
+					$related_comp_id1 = $c->related_comp_id1;
+					$related_comp_id2 = $c->related_comp_id2;
 					$is_league = true;
 				} else {
-					$ladder_comp_id1 = 0;
+					$related_comp_id1 = 0;
 					if (str_starts_with($c->type, 'league')) $is_league = true;
 				}
 			} else {
@@ -405,14 +405,14 @@ class Fixtures_Sheet_Gateway {
 
 			if ($is_league) {
 				// cater for ladders - most of the time it won't be
-				if ($ladder_comp_id1 === 0) {
+				if ($related_comp_id1 === 0) {
 					$h_comp_id = $a_comp_id = $comp_id;
-				} elseif (isset($this->tables[$ladder_comp_id1][$home])) {
-					$h_comp_id = $ladder_comp_id1;
-					$a_comp_id = $ladder_comp_id2;
+				} elseif (isset($this->tables[$related_comp_id1][$home])) {
+					$h_comp_id = $related_comp_id1;
+					$a_comp_id = $related_comp_id2;
 				} else {
-					$h_comp_id = $ladder_comp_id2;
-					$a_comp_id = $ladder_comp_id1;
+					$h_comp_id = $related_comp_id2;
+					$a_comp_id = $related_comp_id1;
 				}
 				if (!isset($this->tables[$h_comp_id][$home])) {
 					$this->error->add('fixtures', "$date $home v $away, $home is not in division $competition, row $row_no");

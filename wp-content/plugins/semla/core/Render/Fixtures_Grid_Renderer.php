@@ -35,8 +35,8 @@ class Fixtures_Grid_Renderer {
 					echo '<th><abbr title="' . htmlentities($teams[$key]) . '">' . htmlspecialchars($minimal, ENT_NOQUOTES) . '</abbr></th>';
 				}
 			} else {
-				echo $divisions[$division->ladder_comp_id1]->section_name . '</th><th colspan="'
-					. $column_count . '">' . $divisions[$division->ladder_comp_id2]->section_name
+				echo $divisions[$division->related_comp_id]->section_name . '</th><th colspan="'
+					. $column_count . '">' . $divisions[$division->related_comp_id2]->section_name
 					. '</th></tr><tr>';
 				foreach (explode('|', $division->minimals2) as $key => $minimal) {
 					echo '<th><abbr title="' . htmlentities($teams2[$key]) . '">' . htmlspecialchars($minimal, ENT_NOQUOTES) . '</abbr></th>';
