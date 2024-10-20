@@ -230,7 +230,7 @@ class Block_Data {
 		wp_enqueue_script( 'semla-colhover',
 			plugins_url('js/colhover' . SEMLA_MIN . '.js', __DIR__),
 			[], '2.0', true );
-		return Fixtures_Gateway::get_grid(2003,$league_id);
+		return Fixtures_Gateway::get_grid(0,$league_id);
 	}
 
 	/**

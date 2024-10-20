@@ -52,7 +52,7 @@ class Winner_Gateway {
 		$group = $wpdb->get_row( $wpdb->prepare(
 			'SELECT type, page,
 				(select count(*) FROM sl_competition c
-					WHERE c.group_id = g.id) AS count
+					WHERE c.group_id = g.id AND c.related_comp_id = 0) AS count
 			FROM sl_competition_group g WHERE g.id = %d', $group_id));
 		if ($wpdb->last_error) return false;
 		if ($group->count > 4) {
@@ -77,7 +77,7 @@ class Winner_Gateway {
 		$comps = $wpdb->get_results( $wpdb->prepare(
 			"SELECT id, COALESCE(section_name, name) AS name$col
 			FROM sl_competition
-			WHERE group_id = %d$order_by", $group_id));
+			WHERE group_id = %d AND related_comp_id = 0$order_by", $group_id));
 		if ($wpdb->last_error) return false;
 		ob_start();
 		if ($group->count > 4) {

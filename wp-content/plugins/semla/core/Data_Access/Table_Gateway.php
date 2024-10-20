@@ -58,7 +58,7 @@ class Table_Gateway {
 		if ($year) {
 			Table_Renderer::year_navigation($page, $grid_page, $year, $years);
 		}
-		Table_Renderer::tables($rows, false, $year, $remarks);
+		Table_Renderer::tables($rows, 'league', $year, $remarks);
 		return ob_get_clean();
 	}
 
@@ -104,7 +104,7 @@ class Table_Gateway {
 			return Rest_Util::json_encode($tables);
 		}
 		ob_start();
-		Table_Renderer::tables($rows, true);
+		Table_Renderer::tables($rows, 'rest');
 		return ob_get_clean();
 	}
 
@@ -159,6 +159,7 @@ class Table_Gateway {
 			INNER JOIN sl_competition AS c ON c.id = t.comp_id
 			INNER JOIN sl_competition_group AS g ON g.id = c.group_id
 			LEFT JOIN sl_team_abbrev AS ta ON ta.team = t.team
+			WHERE g.type = "league"
 			ORDER BY c.seq, c.id, t.position');
 		if ($wpdb->last_error) return DB_Util::db_error();
 		if (!$rows) return '';

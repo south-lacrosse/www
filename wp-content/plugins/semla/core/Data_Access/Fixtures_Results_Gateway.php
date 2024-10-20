@@ -110,22 +110,14 @@ class Fixtures_Results_Gateway {
 
 		// competition
 		$rows = $wpdb->get_results(
-			"SELECT name, is_cup, where_clause
-			FROM (
-				SELECT CASE WHEN c.group_id = 1 THEN c.section_name
-					ELSE c.name END AS name,
-					0 AS is_cup, c.seq, d.where_clause
-				FROM sl_competition AS c, slc_division AS d
-				WHERE c.id = d.comp_id
-				UNION ALL
-				SELECT CASE WHEN c.group_id = 1 THEN c.section_name
-					ELSE c.name END AS name,
-					1 AS is_cup, c.seq, CONCAT('=',c.id) AS where_clause
-				FROM sl_competition AS c, slc_cup_draw AS cd
-				WHERE cd.round = 1 AND cd.match_num = 1
-				AND c.id = cd.comp_id
-				) a
-			ORDER BY seq");
+			"SELECT c.id,
+				CASE WHEN c.group_id = 1 THEN c.section_name
+					ELSE c.name	END AS name,
+				IF (c.type = 'cup',1,0) AS is_cup, cc.where_clause
+			FROM slc_competition as cc, sl_competition AS c
+			WHERE c.id = cc.comp_id
+			AND (c.type = 'cup' OR c.type LIKE 'league%')
+			ORDER BY c.seq");
 		if ($wpdb->last_error) return false;
 		$comps = [];
 		foreach ( $rows as $row ) {
@@ -188,11 +180,11 @@ class Fixtures_Results_Gateway {
 				break;
 			case 'comp':
 				list ($is_cup, $where) = $this->options['comp'][$arg];
-				if ($where[0] !== '=') {
+				if (!$is_cup && $where[0] !== '=') {
 					$has_ladders = true;
 					$where = ' ' . $where;
 				}
-				$query =  "$sql WHERE {$yr_and}f.comp_id$where$order_by";
+				$query =  "$sql WHERE {$yr_and}f.comp_id $where$order_by";
 				break;
 			case 'all':
 				if (!$year) {

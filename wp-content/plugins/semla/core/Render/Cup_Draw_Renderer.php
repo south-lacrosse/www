@@ -9,7 +9,24 @@ class Cup_Draw_Renderer {
 	const ROUNDS_LONG = ['Last 64', 'Last 32', 'Last 16', 'Quarter Final','Semi Final','Final'];
 	const ROUNDS_SHORT = ['R64', 'R32', 'R16', 'QF','SF'];
 
-	public static function cup_draw($year,$display,$years,$rows,$remarks,$slug='') {
+	public static function cup_draw($year,$display,$years,$rows,$group_rows,$remarks,$slug='') {
+		// split group stage "divisions" by their flags comp_id
+		$groups = [];
+		$start = $row_no = $related_comp_id = 0;
+		foreach ($group_rows as $row) {
+			if ($row->related_comp_id !== $related_comp_id) {
+				if ($related_comp_id) {
+					$groups[$related_comp_id] = array_slice($group_rows, $start, $row_no - $start);
+				}
+				$start = $row_no;
+				$related_comp_id = $row->related_comp_id;
+			}
+			$row_no++;
+		}
+		if ($row_no) {
+			$groups[$related_comp_id] = array_slice($group_rows, $start, $row_no - $start);
+		}
+
 		if ($years && ($years->next || $years->prev)) {
 			$slug .= '-';
 			$query = $display ? '-rounds' : '';
@@ -55,16 +72,15 @@ class Cup_Draw_Renderer {
 		}
 
 		if ($display) {
-			echo self::get_draw_tables($rows, 'after-nav',$remarks);
+			echo self::get_draw_tables($year, $rows, $groups, 'after-nav', $remarks);
 		} else {
 			$comp_id = 0;
 			$h2_class = 'after-nav';
 			foreach ( $rows as $row ) {
 				if ($row->comp_id <> $comp_id) {
 					if ($comp_id) {
-						echo self::get_draw($matches, $h2_class,
-							isset($remarks[$comp_id]) ? $remarks[$comp_id]->remarks : null);
-						$h2_class = '';
+						echo self::get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks);
+						$h2_class = 'mt-large';
 					}
 					$comp_id = $row->comp_id;
 					$matches = [];
@@ -72,13 +88,12 @@ class Cup_Draw_Renderer {
 				$matches[] = $row;
 			}
 			if ($comp_id) {
-				echo self::get_draw($matches, $h2_class,
-					isset($remarks[$comp_id]) ? $remarks[$comp_id]->remarks : null);
+				echo self::get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks);
 			}
 		}
 	}
 
-	private static function get_draw_tables($matches, $h2_class='', $remarks=[]) {
+	private static function get_draw_tables($year, $matches, $groups, $h2_class, $remarks) {
 		$prev_comp = 0;
 
 		$rounds_long_count = count(self::ROUNDS_LONG);
@@ -104,7 +119,10 @@ class Cup_Draw_Renderer {
 						. '>' . $match->section_name
 						. "</h2>\n";
 				}
-				$h2_class = 'flags-rounds';
+				if (!empty($groups[$comp_id])) {
+					Table_Renderer::tables($groups[$comp_id], 'cup', $year, $remarks);
+				}
+				$h2_class = 'mt-large';
 				$prev_comp = $comp_id;
 				$final_round = $comp_final_round[$comp_id];
 				$offset = $rounds_long_count - $final_round - 1;
@@ -167,7 +185,7 @@ class Cup_Draw_Renderer {
 		return 'Winner ' . self::ROUNDS_SHORT[$round + $offset - 1] . ' match ' . $win_match;
 	}
 
-	private static function get_draw($matches, $h2_class='', $remarks=null) {
+	private static function get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks) {
 		$match_count = count($matches);
 		if ($match_count == 1) {
 			$shrink_round1 = false;
@@ -195,16 +213,18 @@ class Cup_Draw_Renderer {
 
 		$match0 = $matches[0];
 		$section = !empty($match0->section_name);
-		// note: flags MUST be first class as history update checks for 'ul class="flags'
-		// to add css
 		if ($section) {
 			echo '<section class="alignwide" id="' . Util::make_id($match0->section_name) . '">'
 				. '<h2' . ($h2_class ? ' class="' . $h2_class . '"' : '') . '>'
-				. $match0->section_name . "</h2>\n"
-				. '<ul class="flags">' . "\n";
-		} else {
-			echo '<ul class="flags alignwide">' . "\n";
+				. $match0->section_name . "</h2>\n";
 		}
+		if (!empty($groups[$comp_id])) {
+			Table_Renderer::tables($groups[$comp_id], 'cup', $year, $remarks);
+			echo "<h3>Knockout Stages</h3>\n";
+		}
+		// note: flags MUST be first class as history update checks for 'ul class="flags'
+		// to add css
+		echo '<ul class="flags' . ($section ? '' : ' alignwide') . "\">\n";
 		$prev_round = 0;
 		$last_match = 0;
 		// if the top match in round 1 doesn't exist then lose the whitespace that would create
@@ -294,8 +314,8 @@ class Cup_Draw_Renderer {
 			. '</div></div>' . $after . '</li>';
 		}
 		echo "</ul></li></ul>\n";
-		if ($remarks)
-			echo '<p>' . $remarks . "</p>\n";
+		if (isset($remarks[$comp_id]))
+			echo '<p>' . $remarks[$comp_id]->remarks . "</p>\n";
 		if ($section) echo "</section>\n";
 	}
 }

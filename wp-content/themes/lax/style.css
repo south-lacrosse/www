@@ -681,10 +681,6 @@ h6 {
 .after-nav {
 	margin-top: 0.5em;
 }
-/* h2 */
-.flags-rounds {
-	margin-top: 2em;
-}
 #data-area > h2 {
 	margin-top: 0;
 }
@@ -929,6 +925,9 @@ a.btn {
 }
 .font-semibold {
 	font-weight: 600;
+}
+.mt-large {
+	margin-top: 3rem;
 }
 
 /*--------------- Table of contents ----------------*/

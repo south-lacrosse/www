@@ -59,17 +59,17 @@ class Competition_Gateway {
 
 		// add ladders to divisions
 		if ($year) {
-			$query = $wpdb->prepare(
-				'SELECT c.id, c.seq, c.section_name, c.related_comp_id, c.related_comp_id2
-				FROM slh_competition hc, sl_competition c
-				WHERE hc.year = %d AND c.id = hc.comp_id AND c.group_id = %d
-				AND c.type = "ladder"', $year, $league_id);
+			$table = 'slh_competition';
+			$where_year = $wpdb->prepare(' cc.year = %d AND', $year,);
 		} else {
-			$query = $wpdb->prepare(
-				'SELECT c.id, c.seq, c.section_name, c.related_comp_id, c.related_comp_id2
-				FROM slc_ladder l, sl_competition c
-				WHERE c.id = l.comp_id AND c.group_id = %d', $league_id);
+			$table = 'slc_competition';
+			$where_year = '';
 		}
+		$query = $wpdb->prepare(
+			"SELECT c.id, c.seq, c.section_name, c.related_comp_id, c.related_comp_id2
+			FROM $table cc, sl_competition c
+			WHERE$where_year c.id = cc.comp_id AND c.group_id = %d AND c.type = 'ladder'",
+			$league_id);
 		$ladders = $wpdb->get_results($query);
 		if ($wpdb->last_error) return false;
 
@@ -98,10 +98,11 @@ class Competition_Gateway {
 	public static function get_all_divisions() {
 		global $wpdb;
 		return $wpdb->get_results(
-			'SELECT d.comp_id, g.name AS league, g.page, c.section_name
-				FROM slc_division d, sl_competition c,
+			'SELECT cc.comp_id, g.name AS league, g.page, c.section_name
+				FROM slc_competition cc, sl_competition c,
 					sl_competition_group g
-				WHERE d.comp_id = c.id
+				WHERE cc.comp_id = c.id
+				AND c.type LIKE "league%"
 				AND g.id = c.group_id
 				ORDER BY g.id, c.seq');
 	}
@@ -114,7 +115,7 @@ class Competition_Gateway {
 		// Use ARRAY_N so we match if divisions are loaded from the fixtures sheet
 		$result = $wpdb->get_results(
 			'SELECT comp_id, sort_order, promoted, relegated_after, where_clause
-			FROM slc_division ORDER by comp_id', ARRAY_N);
+			FROM slc_competition WHERE sort_order <> "" ORDER by comp_id', ARRAY_N);
 		if ($wpdb->last_error) return false;
 		return $result;
 	}
@@ -122,22 +123,14 @@ class Competition_Gateway {
 	public static function get_remarks() {
 		global $wpdb;
 		return $wpdb->get_results(
-			'SELECT id, name, remarks
-			FROM (
-				SELECT c.id, CASE WHEN c.group_id = 1 THEN c.section_name
-					ELSE c.name END AS name, c.seq
-				FROM sl_competition AS c, slc_division AS d
-				WHERE c.id = d.comp_id
-				UNION ALL
-				SELECT c.id, CASE WHEN c.group_id = 1 THEN c.section_name
-					ELSE c.name END AS name, c.seq
-				FROM sl_competition AS c, slc_cup_draw AS cd
-				WHERE cd.round = 1 AND cd.match_num = 1
-				AND c.id = cd.comp_id
-				) comps
+			'SELECT id, CASE WHEN c.group_id = 1 THEN c.section_name
+					ELSE c.name END AS name, remarks
+			FROM slc_competition AS cc
+			INNER JOIN sl_competition AS c
+			ON c.id = cc.comp_id
 			LEFT JOIN slc_remarks AS r
-			ON r.comp_id = comps.id
-			ORDER BY seq');
+			ON r.comp_id = cc.comp_id
+			ORDER BY c.seq');
 	}
 
 	/**
@@ -162,15 +155,12 @@ class Competition_Gateway {
 		return $wpdb->query(
 			'DELETE r FROM slc_remarks AS r
 			WHERE NOT EXISTS
-				(SELECT * FROM slc_division AS d WHERE d.comp_id = r.comp_id)
-			AND NOT EXISTS
-				(SELECT * FROM slc_cup_draw AS cd
-				WHERE cd.round = 1 AND cd.match_num = 1	AND cd.comp_id = r.comp_id)');
+				(SELECT * FROM slc_competition AS c WHERE c.comp_id = r.comp_id)');
 	}
 
-	public static function save_divisions_ladders($divisions, $ladders) {
+	public static function save_competitions($competitions) {
 		global $wpdb;
-		$result = DB_Util::create_table('new_division',
+		$result = DB_Util::create_table('new_competition',
 			'`comp_id` SMALLINT UNSIGNED NOT NULL,
 			`sort_order` CHAR(1) NOT NULL,
 			`promoted` TINYINT NOT NULL,
@@ -178,30 +168,14 @@ class Competition_Gateway {
 			`where_clause` VARCHAR(50) NOT NULL,
 			PRIMARY KEY (`comp_id`)');
 		if ($result === false) return false;
-		foreach ( $divisions as $row ) {
+		foreach ( $competitions as $row ) {
 			$values[] = $wpdb->prepare( "(%d,%s,%d,%d,%s)", $row );
 		}
-		$query = 'INSERT INTO new_division (comp_id, sort_order, promoted, relegated_after, where_clause) VALUES ';
+		$query = 'INSERT INTO new_competition (comp_id, sort_order, promoted, relegated_after, where_clause) VALUES ';
 		$query .= implode( ",\n", $values );
 		$result = $wpdb->query($query);
 		if ($result === false) return false;
-		DB_Util::add_table_to_rename('division');
-
-		$result = DB_Util::create_table('new_ladder',
-			'`comp_id` SMALLINT UNSIGNED NOT NULL,
-			PRIMARY KEY (`comp_id`)');
-		if ($result === false) return false;
-		if ($ladders) {
-			$values = [];
-			foreach ( $ladders as $comp ) {
-				$values[] = "($comp->id)";
-			}
-			$query = 'INSERT INTO new_ladder (comp_id) VALUES ';
-			$query .= implode( ',', $values );
-			$result = $wpdb->query($query);
-			if ($result === false) return false;
-		}
-		DB_Util::add_table_to_rename('ladder');
+		DB_Util::add_table_to_rename('competition');
 		return true;
 	}
 }

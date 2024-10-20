@@ -80,7 +80,7 @@ class Fixtures_Renderer {
 			if ($this->show_competition) {
 				echo '<td class="comp">' . $row->competition . '</td>';
 			} else if ($this->show_round) {
-				// round should be the last word
+				// round/group should be the last word
 				$pos = strrpos($row->competition, ' ');
 				$round = $pos === false ? $row->competition : substr($row->competition, $pos + 1);
 				echo '<td class="comp">' . str_replace('Final', 'F', $round) . '</td>';
@@ -186,7 +186,7 @@ class Fixtures_Renderer {
 		if ($this->show_competition) {
 			echo '<th class="comp"><abbr title="Competition">Comp</abbr></th>';
 		} else if ($this->show_round) {
-			echo '<th class="comp"><abbr title="Round">Rnd</abbr></th>';
+			echo '<th class="comp"><abbr title="Round/Group">Rnd</abbr></th>';
 		}
 		echo "</tr></thead>\n<tbody>\n";
 	}

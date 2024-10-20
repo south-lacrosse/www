@@ -33,7 +33,15 @@ class Table_Renderer {
 		echo "</nav>\n";
 	}
 
-	public static function tables($rows, $for_rest, $year = 0, $remarks = null) {
+	/**
+	 * Render tables
+	 * @param array  $rows rows of all tables to generate
+	 * @param string $format format to generate (only minor differences), can be
+	 *               league, cup, or rest
+	 * @param int    $year
+	 * @param array  $remarks array of strings keyed by competition id
+	 */
+	public static function tables($rows, $format, $year = 0, $remarks = null) {
 		if (count($rows) === 0) {
 			echo '<p>No League data</p>';
 			return;
@@ -44,7 +52,7 @@ class Table_Renderer {
 		foreach ( $rows as $row ) {
 			if ($row->comp_id <> $comp_id) {
 				if ($comp_id) {
-					echo self::table($teams[0]->name, $teams, $year, $for_rest);
+					echo self::table($teams[0]->name, $teams, $year, $format);
 				}
 				if (isset($remarks[$comp_id])) {
 					echo '<p>' . htmlspecialchars($remarks[$comp_id]->remarks, ENT_NOQUOTES) . '</p>';
@@ -58,7 +66,7 @@ class Table_Renderer {
 			}
 		}
 		if ($comp_id) {
-			echo self::table($teams[0]->name, $teams, $year, $for_rest);
+			echo self::table($teams[0]->name, $teams, $year, $format);
 			if (isset($remarks[$comp_id])) {
 				echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
 			}
@@ -71,14 +79,14 @@ class Table_Renderer {
 	/**
 	 * Render a single league table
 	 */
-	private static function table($division_name, $teams, $year, $for_rest) {
+	private static function table($division_name, $teams, $year, $format) {
 		$team0 = $teams[0];
 		$wdl_cols = $team0->won > 0 || !$year;
 		$fa_cols = $team0->goals_for > 0;
 		$points_col = $team0->points > 0 || !$year;
 		$points_avg_col = isset($team0->points_avg);
 		$goal_avg_col = $team0->goal_avg > 0;
-		$form_col = !empty($team0->form);
+		$form_col = $format !== 'cup' && !empty($team0->form);
 		$deducted_col = false;
 		foreach ( $teams as $team ) {
 			if ($team->points_deducted > 0) {
@@ -86,16 +94,16 @@ class Table_Renderer {
 				break;
 			}
 		}
-		if ($for_rest) {
+		if ($format === 'rest') {
 			$class = '';
+		} elseif ($format === 'cup') {
+			$class = ' league-table';
+		} elseif ($year === 0) {
+			$class = ' league-table-current';
+		} elseif (!$wdl_cols && !$fa_cols) {
+			$class = ' league-table-thin';
 		} else {
-			if ($year === 0) {
-				$class = ' league-table-current';
-			} elseif (!$wdl_cols && !$fa_cols) {
-				$class = ' league-table-thin';
-			} else {
-				$class = ' league-table';
-			}
+			$class = ' league-table';
 		}
 
 		// Note: id is not put on table as we can't style the table to cater for the position="sticky"
@@ -104,7 +112,7 @@ class Table_Renderer {
 		// Also we can't put scrollable on that div as the style for scrollable also makes the
 		// offset for the sticky menu not work.
 		echo '<div id="' . Util::make_id($division_name) . '"'
-			. ($for_rest ? '' : ' class="alignwide"')
+			. ($format === 'rest' ? '' : ' class="alignwide"')
 			. '><div class="scrollable"><table class="table-data' . $class
 			. '"><caption><span class="caption-text">'
 			. "$division_name</span></caption>\n<thead><tr>"
@@ -131,7 +139,7 @@ class Table_Renderer {
 			echo '<tr' . (!empty($team->divider) ? ' class="divider"' : '')
 				.  '><td>' . $team->position . '</td><td class="left">';
 			$esc_team = htmlspecialchars($team->team, ENT_NOQUOTES);
-			if ($for_rest) {
+			if ($format === 'rest') {
 				echo $esc_team;
 			} elseif ($year == 0) {
 				echo '<a class="no-ul font-semibold" href="/fixtures?team='
@@ -163,7 +171,7 @@ class Table_Renderer {
 			if ($deducted_col)
 				echo '<td>' . ($team->points_deducted > 0 ? floatval($team->points_deducted) : '') . '</td>';
 			if ($points_col)
-				echo '<td class="' . ($for_rest ? 'sl-' : '') . 'points">' . floatval($team->points) . '</td>';
+				echo '<td class="' . ($format === 'rest' ? 'sl-' : '') . 'points">' . floatval($team->points) . '</td>';
 			if ($points_avg_col)
 				echo '<td class="hide-sml">' . number_format($team->points_avg, 2) . '</td>';
 			if ($form_col) {

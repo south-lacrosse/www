@@ -32,14 +32,23 @@ class Cup_Draw_Gateway {
 				WHERE c.group_id = %d
 				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num', $group_id ));
 			if ($wpdb->last_error) return DB_Util::db_error();
+			// group stages
+			$group_rows = $wpdb->get_results( $wpdb->prepare(
+				'SELECT c.related_comp_id, c.section_name as name, t.comp_id, t.position, t.team,
+					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
+					t.points_deducted, t.points, t.divider, t.form, t.tiebreaker
+				FROM slc_table AS t, sl_competition AS c
+				WHERE c.id = t.comp_id AND c.group_id = %d
+				ORDER BY c.related_comp_id, c.seq, c.id, t.position', $group_id));
+			if ($wpdb->last_error) return DB_Util::db_error();
 			// TODO: optimize?? not that many rows, so do we need to join?
 			$remarks = $wpdb->get_results(
 				'SELECT comp_id, remarks FROM slc_remarks', OBJECT_K);
-			if ($wpdb->last_error) return DB_Util::db_error();
-			$years = false;
-		} else {
-			$years = $wpdb->get_row( $wpdb->prepare(
-				'SELECT year,
+				if ($wpdb->last_error) return DB_Util::db_error();
+				$years = false;
+			} else {
+				$years = $wpdb->get_row( $wpdb->prepare(
+					'SELECT year,
 				(SELECT max(year) FROM slh_cup_year y1
 					WHERE y1.group_id = y.group_id and y1.year < y.year) as prev,
 				(SELECT min(year) FROM slh_cup_year y2
@@ -47,6 +56,16 @@ class Cup_Draw_Gateway {
 				FROM slh_cup_year y
 				WHERE y.group_id = %d AND y.year = %d', $group_id, $year));
 			if ($wpdb->last_error) return false;
+			// group stages
+			$group_rows = $wpdb->get_results( $wpdb->prepare(
+				'SELECT c.related_comp_id, c.section_name as name, t.comp_id, t.position, t.team,
+					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
+					t.points_deducted, t.points, t.points_avg, t.divider, t.tiebreaker
+				FROM slh_table AS t, sl_competition AS c
+				WHERE c.id = t.comp_id AND t.year = %d AND c.group_id = %d
+				ORDER BY c.related_comp_id, c.seq, c.id, t.position', $year, $group_id));
+			if ($wpdb->last_error) return false;
+
 			// TODO: optimize?? not that many rows, so do we need to join?
 			$remarks = $wpdb->get_results( $wpdb->prepare(
 				'SELECT comp_id, remarks
@@ -70,7 +89,7 @@ class Cup_Draw_Gateway {
 		}
 		if (count($rows) === 0) return '';
 		ob_start();
-		Cup_Draw_Renderer::cup_draw($year,$display,$years,$rows,$remarks,$slug);
+		Cup_Draw_Renderer::cup_draw($year,$display,$years,$rows,$group_rows,$remarks,$slug);
 		return ob_get_clean();
 	}
 

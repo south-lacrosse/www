@@ -62,7 +62,8 @@ foreach ($rows as $row) {
 	echo '</th><td>' . htmlspecialchars($row->winner, ENT_NOQUOTES) . '</td>';
 	if ($rup) {
 		echo ($row->result ? '<td class="center">' : '<td>'), $row->result, '</td><td>'
-			. htmlspecialchars($row->runner_up, ENT_NOQUOTES) . '</td>';
+			. ($row->runner_up ? htmlspecialchars($row->runner_up, ENT_NOQUOTES) : '')
+			. '</td>';
 	}
 	echo "</tr>\n";
 }

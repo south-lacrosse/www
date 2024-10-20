@@ -36,7 +36,10 @@ SELECT @end_year, `match_date`, `comp_id`,
 	`competition`, `home`, `away`, `home_goals`, `away_goals`,
 	CASE WHEN `result` = '' THEN '?' ELSE `result` END,
 	`home_points`, `away_points`, `points_multi`
-FROM `slc_fixture` ORDER BY `id`;
+FROM `slc_fixture`
+WHERE `home` NOT REGEXP '^(Winner|Runner|Loser)'
+AND `away` NOT REGEXP '^(Winner|Runner|Loser)'
+ORDER BY `id`;
 
 SELECT 'Inserting league tables' as '';
 INSERT INTO `slh_table`
@@ -53,11 +56,7 @@ FROM `slc_deduction`;
 
 -- Clean up remarks just in case
 DELETE r FROM slc_remarks AS r
-WHERE NOT EXISTS
-	(SELECT * FROM slc_division AS d WHERE d.comp_id = r.comp_id)
-AND NOT EXISTS
-	(SELECT * FROM slc_cup_draw AS cd
-	WHERE cd.round = 1 AND cd.match_num = 1	AND cd.comp_id = r.comp_id);
+WHERE NOT EXISTS (SELECT * FROM slc_competition AS c WHERE c.comp_id = r.comp_id);
 
 SELECT 'Inserting remarks' as '';
 INSERT INTO `slh_remarks`
@@ -68,11 +67,7 @@ FROM `slc_remarks`;
 SELECT 'Inserting competitions' as '';
 INSERT INTO `slh_competition`
 (`year`, `comp_id`, `where_clause`)
-SELECT @end_year, comp_id, CONCAT('=',comp_id) FROM slc_ladder
-UNION
-SELECT @end_year, comp_id, where_clause FROM slc_division
-UNION
-SELECT @end_year, comp_id, CONCAT('=',comp_id) FROM slc_cup_draw WHERE round = 1 AND match_num = 1
+SELECT @end_year, comp_id, where_clause FROM slc_competition
 ORDER BY comp_id;
 
 -- League winners
