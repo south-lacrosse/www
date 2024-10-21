@@ -699,6 +699,9 @@ h4 {
 .club-title-content > :last-child {
 	margin-bottom: 0;
 }
+.club-icon-img {
+	border-radius: 0.25rem;
+}
 @media (min-width: 500px) {
 	.wp-block-semla-club-title {
 		display: flex;
@@ -707,9 +710,6 @@ h4 {
 	.club-icon {
 		flex: 0 0 150px;
 		margin-right: 2em;
-	}
-	.club-icon-img {
-		border-radius: 0.25rem;
 	}
 	.club-title-content {
 		flex: 1;
