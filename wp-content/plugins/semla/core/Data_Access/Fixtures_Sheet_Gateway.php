@@ -168,7 +168,8 @@ class Fixtures_Sheet_Gateway {
 				for ($i = self::TEAMS; !empty($row[$i]); $i++) {
 					$team = new \stdClass();
 					$team->team = $row[$i];
-					if (!array_key_exists($team->team, $this->teams)) {
+					if (!array_key_exists($team->team, $this->teams)
+					&& !str_starts_with($team->team, 'TBD')) {
 						$this->error->add('fixtures', "Team $team->team in division $competition is not on Teams sheet");
 						continue;
 					}
@@ -937,7 +938,7 @@ class Fixtures_Sheet_Gateway {
 		if (!$team || $team === 'Bye') return;
 		if (!array_key_exists($team, $this->teams)
 		// slots for teams currently unknown may denote who the team will be
-		&& !preg_match('/^(Winner|Runner|Loser)/',$team)) {
+		&& !preg_match('/^(TBD|Winner|Runner|Loser)/',$team)) {
 			$this->error->add('fixtures', "Team $team in competition $comp is not on Teams sheet");
 		}
 	}
