@@ -109,12 +109,12 @@ INSERT IGNORE INTO `slh_winner`
 SELECT comp_id, @end_year,
 	CASE
 		WHEN home_goals = away_goals THEN 'Drawn'
-		WHEN home_goals > away_goals THEN home
-		ELSE away END,
+		WHEN home_goals > away_goals THEN REGEXP_REPLACE(home,' Uni$','')
+		ELSE REGEXP_REPLACE(away,' Uni$','') END,
 	CASE
 		WHEN home_goals = away_goals THEN NULL
-		WHEN home_goals > away_goals THEN away
-		 ELSE home END,
+		WHEN home_goals > away_goals THEN REGEXP_REPLACE(away,' Uni$','')
+		ELSE REGEXP_REPLACE(home,' Uni$','') END,
 	CASE
 		WHEN home_goals > away_goals THEN CONCAT(home_goals, ' - ', away_goals)
 		ELSE CONCAT(away_goals, ' - ', home_goals) END,
