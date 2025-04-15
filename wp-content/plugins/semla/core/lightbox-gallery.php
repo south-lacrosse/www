@@ -4,7 +4,7 @@
  * GLightbox script, which is enqueued here. We also need to add data-sizes so
  * that we can display images at their optimum size in the lightbox.
  */
-$ver = '3.2.0';
+$ver = '3.3.1';
 $base_url = plugins_url('/', __DIR__);
 wp_enqueue_style( 'glightbox', $base_url .'css/glightbox.min.css',
 	[], $ver);

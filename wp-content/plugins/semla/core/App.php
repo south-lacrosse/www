@@ -96,7 +96,7 @@ class App {
 		// wp_register_block_metadata_collection is added in WP 6.7
 		// remove this test if we don't ever need to go back to 6.6 or below
 		if (function_exists('wp_register_block_metadata_collection')) {
-			wp_register_block_metadata_collection($block_dir,  __DIR__ . '/blocks-manifest.php');
+			wp_register_block_metadata_collection($block_dir, "$block_dir/blocks-manifest.php");
 		}
 		register_block_type_from_metadata( $block_dir . '/attr-value' );
 		register_block_type_from_metadata( $block_dir . '/calendar', [
