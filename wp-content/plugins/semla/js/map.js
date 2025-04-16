@@ -13,34 +13,31 @@
 		mapKeyDiv,
 		clubsList,
 		footer,
-		searchBox,
 		map,
 		mapContainerDiv = null,
 		clubsBounds,
 		infoWindow,
-		geocoder = null,
 		clubsInAlphaOrder = true,
 		searchNearMarker = null;
 
 	// Larger zoom values correspond to a higher resolution.
 	const minZoomForClub = 9; // min zoom when we select a club from the key
 	const maxZoomForSearch = 8; // max zoom for search
-	const componentRestrictions = { country: 'gb' }; // autocomplete/geocode restriction
-	const GEOCODER_STATUS_DESCRIPTION = {
-		UNKNOWN_ERROR:
-			'The request could not be successfully processed, yet the exact reason is unknown',
-		OVER_QUERY_LIMIT: 'The webpage has gone over the requests limit in too short a time',
-		REQUEST_DENIED: 'The webpage is not allowed to use the geocoder',
-		INVALID_REQUEST: 'This request was invalid',
-		ZERO_RESULTS: 'The address is unknown, please try another',
-		ERROR: 'There was a problem contacting the Google servers',
-	};
+	const includedRegionCodes = ['gb'];
 
 	async function initMap() {
-		const { Map, InfoWindow } = await google.maps.importLibrary('maps');
-		const { ControlPosition, LatLng, LatLngBounds } = await google.maps.importLibrary('core');
-		const { Autocomplete } = await google.maps.importLibrary('places');
-		const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
+		// Request needed libraries.
+		const [
+			{ Map, InfoWindow },
+			{ ControlPosition, LatLng, LatLngBounds },
+			{ PlaceAutocompleteElement },
+			{ AdvancedMarkerElement },
+		] = await Promise.all([
+			google.maps.importLibrary('maps'),
+			google.maps.importLibrary('core'),
+			google.maps.importLibrary('places'),
+			google.maps.importLibrary('marker'),
+		]);
 
 		mapDiv = document.getElementById('map');
 		mapKeyDiv = document.getElementById('map-key');
@@ -156,77 +153,28 @@
 		const searchControl = document.createElement('div');
 		searchControl.className = 'search-wrapper';
 		searchControl.innerHTML =
-			'<input id="search-box" type="text" placeholder="Search for clubs near..." size="30">' +
-			'<span class="search-reset" title="Reset search for nearest clubs">&times;</span>';
-		searchBox = searchControl.firstElementChild;
-		const autocomplete = new Autocomplete(searchBox, {
-			fields: ['name', 'geometry.location', 'formatted_address'],
-			componentRestrictions,
+			'<p style="margin-bottom:0.5em">Search for clubs near:</p><button class="search-reset" title="Reset search for nearest clubs">Reset</button>';
+		const placeAutocomplete = new PlaceAutocompleteElement({
+			includedRegionCodes,
 		});
-		autocomplete.addListener('place_changed', function () {
-			const place = this.getPlace();
-			if (!place.geometry) {
-				if (place.name.trim() === '') {
-					reorderClubsAlpha();
-					return;
-				}
-				if (!geocoder) {
-					geocoder = new google.maps.Geocoder();
-				}
-				geocoder.geocode(
-					{ address: place.name.trim(), componentRestrictions },
-					geocoderResponse
-				);
-				return;
-			}
+		placeAutocomplete.id = 'search-box';
+		searchControl.firstElementChild.after(placeAutocomplete);
+
+		placeAutocomplete.addEventListener('gmp-select', async ({ placePrediction }) => {
+			const place = placePrediction.toPlace();
+			await place.fetchFields({ fields: ['formattedAddress', 'location'] });
 			showNearestClubs(place);
 		});
-		// X to reset search
+		// reset search button
 		searchControl.lastElementChild.addEventListener('click', function () {
-			searchBox.value = '';
 			reorderClubsAlpha();
 		});
 		map.controls[ControlPosition.TOP_RIGHT].push(searchControl);
-
-		// fix for autocomplete not displaying dropdown in fullscreen
-		// https://issuetracker.google.com/issues/191279746
-		[
-			'fullscreenchange',
-			'webkitfullscreenchange',
-			'mozfullscreenchange',
-			'MSFullscreenChange',
-		].forEach((event) => {
-			document.addEventListener(event, function () {
-				const pacContainer = document.querySelector('.pac-container');
-				if (!pacContainer) return;
-
-				const fullscreenElement =
-					document.fullscreenElement ||
-					document.webkitFullscreenElement ||
-					document.mozFullScreenElement ||
-					document.msFullscreenElement;
-
-				if (fullscreenElement) {
-					fullscreenElement.appendChild(pacContainer);
-				} else {
-					document.body.appendChild(pacContainer);
-				}
-			});
-		});
 	}
 
 	// event listener for markers
 	function markerClick() {
 		showClubInfoWindow(this.semlaClub);
-	}
-
-	// callback from geocoder
-	function geocoderResponse(results, status) {
-		if (status === google.maps.GeocoderStatus.OK) {
-			showNearestClubs(results[0]);
-		} else {
-			alert(GEOCODER_STATUS_DESCRIPTION[status]);
-		}
 	}
 
 	function showClubInfoWindow(club) {
@@ -273,7 +221,7 @@
 	}
 
 	function showNearestClubs(place) {
-		const position = place.geometry.location;
+		const position = place.location;
 		// center on search, and zoom out so user can see clubs
 		if (map.getZoom() > maxZoomForSearch) {
 			map.setZoom(maxZoomForSearch);
@@ -302,7 +250,7 @@
 			});
 		}
 		searchNearMarker.position = position;
-		searchNearMarker.title = place.formatted_address;
+		searchNearMarker.title = place.formattedAddress;
 		searchNearMarker.map = map;
 
 		// compute distance to all clubs from position
