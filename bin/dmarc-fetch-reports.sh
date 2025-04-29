@@ -1,3 +1,3 @@
 #!/bin/bash
 cd $(dirname "$0")/../sub/dmarc-srg || exit
-php utils/fetch_reports.php
+/opt/alt/php83/usr/bin/php utils/fetch_reports.php
