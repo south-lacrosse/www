@@ -70,4 +70,6 @@ PATTERN="db-*$1.sql.gz"
 # Only save production backups to Google Drive
 [[ -z $(grep "^define.*WP_SITEURL.*www\.southlac" ../wp-config.php) ]] && exit
 
+# Off site backups can be done with RClone or alternatively with a PHP script
 ./off-site-backup.sh $1
+# php off-site.php backup $1
