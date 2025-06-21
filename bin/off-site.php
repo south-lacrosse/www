@@ -8,12 +8,14 @@
  *   Weekly files on the remote server which aren't on the local one will be
  *   deleted. Will re-copy any files where the size doesn't match.
  *
- *   Additional argument for: weekly     - keep remote and local weekly backups
- *     in sync, deleting files on the remote that aren't on local monthly    -
- *     copy all monthly files to the remote both       - both weekly and monthly
- *     (default) history    - same as monthly, but for history backups list    -
- *     list all backups on the remote server recover - recover the specified
- *     file
+ *   Additional argument for:
+ *     weekly     - keep remote and local weekly backups in sync, deleting files
+ *                  on the remote that aren't on local
+ *     monthly    - copy all monthly files to the remote
+ *     both       - both weekly and monthly (default)
+ *     history    - same as monthly, but for history backups
+ * list    - list all backups on the remote server
+ * recover - recover the specified file
  *
  * Config must exists in file off-site.secret.php, and define the following
  * variables: HOSTNAME, USER, PASSWORD, LOCAL_DIR, REMOTE_DIR, and optionally
