@@ -25,7 +25,8 @@ class Remarks_List_Table extends Inline_Edit_List_Table {
 			'content' => '<p>Remarks appear under the competition on the respective '
 				. 'league table or cup competition in its SEMLA Data block. Examples '
 				. 'are when a team withdraws from the league, or a league table is '
-				. 'ordered in a non-standard way.</p>',
+				. 'ordered in a non-standard way. Note that the remarks are rendered '
+				. 'as a paragraph, but you can add line breaks if needed.</p>',
 		] );
 	}
 

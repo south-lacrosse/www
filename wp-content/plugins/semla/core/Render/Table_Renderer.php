@@ -55,7 +55,7 @@ class Table_Renderer {
 					echo self::table($teams[0]->name, $teams, $year, $format);
 				}
 				if (isset($remarks[$comp_id])) {
-					echo '<p>' . htmlspecialchars($remarks[$comp_id]->remarks, ENT_NOQUOTES) . '</p>';
+					echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
 				}
 				$comp_id = $row->comp_id;
 				$teams = [];

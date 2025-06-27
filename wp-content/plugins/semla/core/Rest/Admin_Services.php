@@ -24,7 +24,8 @@ class Admin_Services {
 
 		$response = [];
 		if (isset($params['remarks'])) {
-			$remarks = trim($params['remarks']);
+			// we need to store valid html, so & to &amp;, and new lines to <br>
+			$remarks = str_replace(["\r\n", "\r", "\n"], "<br>", htmlentities(trim($params['remarks'])));
 			$affected = Competition_Gateway::update_remarks($comp_id, $remarks);
 			if ($affected === false) {
 				return Rest::db_error();

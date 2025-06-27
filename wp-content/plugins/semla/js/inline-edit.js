@@ -73,8 +73,11 @@
 
 		fields = new Map();
 		editRow.querySelectorAll('input, textarea').forEach((inputField) => {
-			// Save the inline edits when pressing Enter inside the inline editor.
-			inputField.addEventListener('keydown', saveOnEnter);
+			// Save the inline edits when pressing Enter inside the inline
+			// editor input fields only
+			if (inputField.nodeName === 'INPUT') {
+				inputField.addEventListener('keydown', saveOnEnter);
+			}
 			// save fields
 			if (!firstField) firstField = inputField;
 			fields.set(inputField.dataset.colname, inputField);
@@ -188,7 +191,7 @@
 			// the data using the server response
 			const json = await response.json();
 			for (const [key, value] of Object.entries(semlaEdit.wpMeta ? json.meta : json)) {
-				if (dataFields.has(key)) dataFields.get(key).textContent = value;
+				if (dataFields.has(key)) dataFields.get(key).innerHTML = value;
 			}
 			// fade in the edited row, assumes CSS transitions set
 			dataRow.style.opacity = 0;
