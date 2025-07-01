@@ -3,6 +3,10 @@
  * Handle galleries with "Lightbox" style. Currently this is done by using the
  * GLightbox script, which is enqueued here. We also need to add data-sizes so
  * that we can display images at their optimum size in the lightbox.
+ *
+ * Note: this functionality should be removed once the native WordPress lightbox
+ * has navigation added, as in 6.8.1 you have to close one image and open the
+ * next
  */
 $ver = '3.3.1';
 $base_url = plugins_url('/', __DIR__);
