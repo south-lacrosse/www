@@ -138,6 +138,18 @@ class App_Public {
 				do_action( 'litespeed_tag_add', $tag );
 			});
 		}
+		// Stop WP adding srcset on thumbnail images, as they should never be a different size
+		// We short circuit wp_calculate_image_srcset when the image is a thumbnail
+		// Note: can also do this in wp_calculate_image_srcset, but that runs later in
+		// wp_calculate_image_srcset
+		add_filter( 'wp_calculate_image_srcset_meta', function($image_meta, $size_array, $image_src, $attachment_id ) {
+			if (isset($image_meta['sizes']['thumbnail'])
+			&& $image_meta['sizes']['thumbnail']['width'] === $size_array[0]
+			&& $image_meta['sizes']['thumbnail']['height'] === $size_array[1]) {
+				unset($image_meta['sizes']);
+			}
+			return $image_meta;
+		}, 10, 4);
 		if (preg_match('/<!-- wp:gallery {[^}]*"className":"[^"]*is-style-lightbox/',
 				$post->post_content, $m)) {
 			require __DIR__ . '/lightbox-gallery.php';

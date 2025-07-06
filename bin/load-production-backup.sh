@@ -35,7 +35,7 @@ if [[ -z "$URL" ]]; then
 fi
 WWW='www.southlacrosse.org.uk'
 if [[ "$URL" == "$WWW" ]]; then
-	echo 'Exiting as this IS the prodction website.'
+	echo 'Exiting as this IS the production website.'
 	exit 1
 fi
 if [[ ${#URL} != ${#WWW} ]]; then
