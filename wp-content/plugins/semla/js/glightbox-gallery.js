@@ -8,7 +8,7 @@
 	var lightboxes = [];
 
 	/**
-	 * Create separate Glightbox for each gallery, otherwise you can navigate
+	 * Create separate GLightbox for each gallery, otherwise you can navigate
 	 * from an image in one gallery to another
 	 */
 	for (var i = galleries.length; i--; ) {
@@ -27,20 +27,16 @@
 	}
 
 	/**
-	 *  Srcset and title are stored on the img, and not the a tag as GLightbox
-	 *  requires, so add in the slide_before_load event
+	 *  The title (if there is one) is stored on the img tag, and not the a tag
+	 *  as GLightbox requires, so add in the slide_before_load event
 	 */
 	function onSlideBeforeLoad(data) {
 		var slideConfig = data.slideConfig;
+		if (slideConfig.title) return;
 		var img = document.querySelector(
 			'.wp-block-gallery.is-style-lightbox a[href="' + slideConfig.href + '"] > img'
 		);
 		if (!img) return;
-		if (!slideConfig.srcset) {
-			slideConfig.srcset = img.getAttribute('srcset') || '';
-		}
-		if (!slideConfig.title) {
-			slideConfig.title = img.getAttribute('title') || '';
-		}
+		slideConfig.title = img.getAttribute('title') || '';
 	}
 })();

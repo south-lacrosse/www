@@ -838,9 +838,13 @@ img {
 	max-width: 100%;
 	height: auto;
 }
+/* By default WP sets width to 100%, but that will stretch the image to the full width */
 .wp-block-image.alignwide img {
 	width: unset;
 }
+/* For our lightbox gallery we want to have all the images squeezed up together, so
+   we reset the width of the figure as WP sets that based on the number of columns,
+   and set the flex properties.  */
 .wp-block-gallery.has-nested-images.is-style-lightbox figure.wp-block-image {
 	width: unset !important;
 	flex: 0 0 auto;
