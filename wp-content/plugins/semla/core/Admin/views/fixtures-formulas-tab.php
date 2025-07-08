@@ -41,7 +41,7 @@ while ($comp_start < $row_count) {
 		$team2 = $col_letter . '$' . $row_no;
 		$team2_goals = $goal_col_letter. '$' . $row_no;
 		$result = $row->name . ' ' . $rounds_short[$row->round + $round_offset]
-			. "\t$date[2]/$date[1]/$date[0]\t";
+			. "\t\t$date[2]/$date[1]/$date[0]\t";
 		if ($row->home_team = 1) {
 			$result .= "\t=Flags!$$team1\t=Flags!$$team1_goals\tv\t=Flags!$$team2_goals\t=Flags!$$team2";
 		} else {
