@@ -235,4 +235,61 @@ class Media_Command {
 			}
 		}
 	}
+
+
+
+	/**
+	 * Featured image information for posts
+	 *
+	 * [--fields=<fields>]
+	 * : Limit the output to specific object fields.
+	 *
+	 * [--format=<format>]
+	 * : Render output in a particular format.
+	 * ---
+	 * default: table
+	 * options:
+	 *   - table
+	 *   - csv
+	 *   - ids
+	 *   - json
+	 *   - count
+	 *   - yaml
+	 * ---
+	 */
+	public function featured($args, $assoc_args) {
+		global $wpdb;
+
+		$assoc_args = array_merge( [
+			'fields' => 'ID,post_name,file,width,height,sizes',
+			'format' => 'table',
+		], $assoc_args );
+
+		$rows = $wpdb->get_results(
+			"SELECT p.ID, p.post_name, pm2.meta_value
+			FROM wp_postmeta pm, wp_postmeta pm2, wp_posts p
+			WHERE pm.meta_key = '_thumbnail_id'
+			AND p.ID = pm.post_id
+			AND pm2.post_id = pm.meta_value
+			AND pm2.meta_key = '_wp_attachment_metadata';");
+		if ( 'ids' === $assoc_args['format'] ) {
+			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
+			return;
+		}
+		foreach ($rows as $row) {
+			$metadata = @unserialize( trim( $row->meta_value ) );
+			unset($row->meta_value);
+			$row->file = $metadata['file'] ?? '?';
+			$row->height = $metadata['height'] ?? '?';
+			$row->width = $metadata['width'] ?? '?';
+			$sizes = [];
+			if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
+				foreach ($metadata['sizes'] as $size_name => $size_meta) {
+					$sizes[] = "$size_name: {$size_meta['width']}x{$size_meta['height']}";
+				}
+			}
+			$row->sizes = implode(', ', $sizes);
+		}
+		WP_CLI\Utils\format_items( $assoc_args['format'], $rows, explode( ',', $assoc_args['fields'] ) );
+	}
 }
