@@ -3,6 +3,7 @@ namespace Semla;
 
 use Semla\Rest\Rest;
 use Semla\Utils\SMTP;
+use Semla\Utils\Image;
 
 /**
  * The core functionality of the plugin.
@@ -132,6 +133,9 @@ class App {
 		add_filter('allow_password_reset', [User::class, 'allow_password_reset'], 10, 2);
 		add_filter('retrieve_password_message', [User::class, 'retrieve_password_message'], 10, 4);
 		add_filter('wp_new_user_notification_email', [User::class, 'wp_new_user_notification_email'], 10, 3);
+
+		add_filter('wp_generate_attachment_metadata', [Image::class, 'generate_svg_attachment_metadata'], 10, 2 );
+		add_filter('wp_get_missing_image_subsizes', [Image::class, 'no_svg_missing_image_subsizes'], 10, 3);
 
 		if (is_admin()) {
 			App_Admin::init();

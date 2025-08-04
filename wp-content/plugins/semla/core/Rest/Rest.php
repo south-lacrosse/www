@@ -1,5 +1,6 @@
 <?php
 namespace Semla\Rest;
+use Semla\Utils\Image;
 /**
  * Handle REST requests
  *
@@ -45,10 +46,13 @@ class Rest {
 		// make sure even if WP_DEBUG/WP_DEBUG_DISPLAY are true we don't display errors as
 		// that will invalidate returned JSON
 		$wpdb->hide_errors();
+		// Next 2 filters are duplicated in App_Admin. If more are added consider
+		// moving to common file
 		// if clubs have changed then purge pages/rest routes which use club data
-		add_action( 'save_post_clubs', function() {
+		add_action('save_post_clubs', function() {
 			do_action( 'litespeed_purge', 'semla_clubs' );
 		});
+		add_filter('upload_mimes', [Image::class, 'allow_svg_mimes'], 10, 1);
 
 		// Remove the oembed/1.0/embed REST route.
 		add_filter( 'rest_endpoints', function( $endpoints ) {

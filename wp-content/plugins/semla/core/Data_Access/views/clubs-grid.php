@@ -2,13 +2,13 @@
 <?php
 global $post;
 $question_mark = '';
-add_filter('max_srcset_image_width', function() { return -1; });
 while ($query->have_posts()) {
 	$query->the_post();
 	echo '<li class="club-card"><a class="club-card-link" href="';
 	the_permalink();
 	echo '">';
 	if (has_post_thumbnail()) {
+		// Note: thumbnails don't get scrset as Image::no_thumbnail_srcset prevents that
 		the_post_thumbnail('thumbnail', ['class' => 'club-card-icon']);
 	} else {
 		if (!$question_mark) {

@@ -30,10 +30,9 @@ class Blocks {
 		if ( ! isset( $block->context['postId'] ) ) return '';
 		$post_ID = $block->context['postId'];
 
-		add_filter('max_srcset_image_width', [self::class, 'max_srcset_image_width']);
+		// Note: thumbnails don't get scrset as Image::no_thumbnail_srcset prevents that
 		$featured_image = get_the_post_thumbnail( $post_ID, 'thumbnail',
 			['class' => 'club-icon-img'] );
-		remove_filter('max_srcset_image_width', [self::class, 'max_srcset_image_width']);
 		if ( ! $featured_image ) {
 			return $content;
 		}
@@ -41,9 +40,6 @@ class Blocks {
 			. '<div class="club-icon">' . "\n$featured_image\n</div>\n"
 			. '<div class="club-title-content">' . "\n"
 			. "$content\n</div>\n</div>\n";
-	}
-	public static function max_srcset_image_width() {
-		return 1;
 	}
 
 	public static function location($attrs, $content, $block) {

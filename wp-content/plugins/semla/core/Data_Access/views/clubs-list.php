@@ -7,24 +7,25 @@ require_once ABSPATH . 'wp-admin/includes/image.php';
 
 // note: this size is just used on this page, and images will be regenerated if needed
 add_image_size( 'logo50', 50, 50 );
-// don't want srcset on all logos
-add_filter('max_srcset_image_width', function() { return 1; });
 $website_svg = '';
 global $post;
 while ($query->have_posts()) {
 	$query->the_post();
 	$thumbnail_id = get_post_thumbnail_id($post->ID);
 	if ($thumbnail_id) {
-		$meta = wp_get_attachment_metadata($thumbnail_id);
-		if ( !isset( $meta['sizes']['logo50'] )) {
-			wp_update_image_subsizes($thumbnail_id);
+		if ('image/svg+xml' !== get_post_mime_type( $thumbnail_id )) {
+			$meta = wp_get_attachment_metadata($thumbnail_id);
+			if ( !isset( $meta['sizes']['logo50'] )) {
+				wp_update_image_subsizes($thumbnail_id);
+			}
 		}
 	}
 	echo '<tr><td class="cl-club"><a class="cl-club-link" href="';
 	the_permalink();
 	echo '"><span class="cl-logo">';
 	if ($thumbnail_id) {
-		the_post_thumbnail([50,50], ['class' => 'cl-img']);
+		// Note:  and smaller (like logo50) don't get scrset as Image::no_thumbnail_srcset prevents that
+		the_post_thumbnail('logo50', ['class' => 'cl-img']);
 	}
 	echo '</span>';
 	the_title();

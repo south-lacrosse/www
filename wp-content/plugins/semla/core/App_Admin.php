@@ -1,7 +1,7 @@
 <?php
 namespace Semla;
-
 use Semla\Admin\Admin_Menu;
+use Semla\Utils\Image;
 /**
  * Handling initialisation for the admin pages
  */
@@ -17,10 +17,7 @@ class App_Admin {
 		add_action('save_post_clubs', function() {
 			do_action('litespeed_purge', 'semla_clubs');
 		});
-		add_filter('upload_mimes', function($mine_types){
-			$mine_types['svg'] = 'image/svg+xml';
-			return $mine_types;
-		});
+		add_filter('upload_mimes', [Image::class, 'allow_svg_mimes'], 10, 1);
 
 		if (defined('DOING_AJAX') && DOING_AJAX) {
 			if (!empty($_POST['action']) && $_POST['action'] ==='inline-save'
