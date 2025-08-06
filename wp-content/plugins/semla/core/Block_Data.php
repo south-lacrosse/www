@@ -66,7 +66,7 @@ class Block_Data {
 	private function clubs_list_args() {
 		wp_enqueue_style( 'semla-clubs-list',
 			plugins_url('css/clubs-list' . SEMLA_MIN . '.css', __DIR__),
-			[], '1.0');
+			[], '1.1');
 	}
 	private function clubs_list() {
 		return Club_Gateway::clubs_list('list');

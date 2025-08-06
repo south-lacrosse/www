@@ -181,7 +181,7 @@ class App_Admin {
 			wp_enqueue_style('semla-clubs-grid',
 				$base_url . 'css/clubs-grid' . SEMLA_MIN . '.css', [], '1.0');
 			wp_enqueue_style('semla-clubs-list',
-				$base_url . 'css/clubs-list' . SEMLA_MIN . '.css', [], '1.0');
+				$base_url . 'css/clubs-list' . SEMLA_MIN . '.css', [], '1.1');
 		}
 	}
 

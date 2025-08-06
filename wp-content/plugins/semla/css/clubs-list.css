@@ -42,22 +42,19 @@ table.clubs-list {
 	padding-left: 65px !important;
 }
 .cl-club {
-	font-size: 20px;
+	font-size: 1.25rem;
 }
-.cl-links-wrapper {
-	display: flex;
-	align-items: center;
-	flex-wrap: wrap;
+.cl-links > ul {
+	margin: 0;
 }
-.cl-links-wrapper > a + .wp-block-social-links {
-	margin-left: 0.5em;
+.cl-social-website {
+	background-color: #fff !important;
 }
-.cl-links-wrapper > .wp-block-social-links {
-	font-size: 24px !important;
-	margin-top: 0;
-	margin-bottom: 0;
+.cl-social-website > a {
+	padding: 0;
 }
 .cl-website {
+	display: inline-block;
 	transition: transform 0.1s ease;
 }
 .cl-website:hover {
@@ -66,11 +63,13 @@ table.clubs-list {
 .cl-website-img {
 	vertical-align: bottom;
 }
-@media (max-width: 400px) {
-	.cl-club {
-		font-size: 1rem;
-	}
+@media (max-width: 29rem) {
 	.cl-links {
 		display: none;
+	}
+}
+@media (max-width: 22rem) {
+	.cl-club {
+		font-size: 1rem;
 	}
 }
