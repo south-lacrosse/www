@@ -117,6 +117,10 @@ return array(
 			'sameLine' => array(
 				'type' => 'boolean',
 				'default' => true
+			),
+			'exclude' => array(
+				'type' => 'boolean',
+				'default' => false
 			)
 		),
 		'example' => array(

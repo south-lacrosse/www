@@ -50,16 +50,12 @@ class Club_Gateway {
 	}
 
 	/**
-	 * Extract all emails from club pages
+	 * Extract all contact's emails from club pages
 	 * @return array key email, value array with club,role,name
 	 */
 	public static function get_club_emails($one_per_club, $officers) {
 		$emails = [];
 		foreach (self::get_clubs() as $club) {
-			// social links
-			if (preg_match('/{"url":"mailto:([^"]+)"/', $club->post_content, $matches)) {
-				$emails[$matches[1]] = ['club' => $club->post_title, 'role' => 'General Contact', 'name'=> ''];
-			}
 			self::extract_emails($club->post_title, $club->post_content, $emails);
 		}
 		if ($one_per_club && $emails) {
@@ -110,11 +106,18 @@ class Club_Gateway {
 		return $emails;
 	}
 
+	/**
+	 * Extract emails from all contact blocks within the content. Blocks with
+	 * the exclude attribute set are excluded.
+	 */
 	private static function extract_emails($club, $content, &$emails) {
 		if ($count = preg_match_all('#<!-- wp:semla\/contact ({.*?"email".*?}) /-->#',
 		$content, $matches)) {
 			for ($i = 0; $i < $count; $i++) {
 				$attrs = json_decode($matches[1][$i]);
+				if (!empty($attrs->exclude)) {
+					continue;
+				}
 				$email = $attrs->email;
 				if (!isset($emails[$email])) {
 					$emails[$email] = [
