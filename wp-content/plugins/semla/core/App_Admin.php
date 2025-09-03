@@ -286,9 +286,9 @@ class App_Admin {
 		$action_type = $screen->post_type === 'page' ? 'page' : 'post';
 		add_filter("{$action_type}_row_actions", function($actions, $post) {
 			if (current_user_can( 'edit_post', $post->ID )) {
-				$actions['semla_duplicate'] = '<a href="post-new.php'
-					. ('post' === $post->post_type ? '' : "?post_type=$post->post_type")
-					. '&amp;duplicate=' . $post->ID
+				$actions['semla_duplicate'] = '<a href="post-new.php?'
+					. ('post' === $post->post_type ? '' : "post_type=$post->post_type&amp;")
+					. 'duplicate=' . $post->ID
 					. '" aria-label="Duplicate &#8220;' . esc_attr($post->post_title) . '&#8221;">Duplicate</a>';
 			}
 			return $actions;
