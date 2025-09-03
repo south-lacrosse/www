@@ -9,6 +9,7 @@ require __DIR__ . '/template-parts/header.php'; ?>
 <main id="content">
 <h1>Search</h1>
 <?php
+$autofocus = true;
 require __DIR__ . '/template-parts/searchform.php';
 while (have_posts()) {
 	the_post();

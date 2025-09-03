@@ -2,7 +2,6 @@
 /**
  * The template for displaying search results pages
  */
-
 require __DIR__ . '/template-parts/header.php'; ?>
 <main id="content">
 <?php
@@ -14,6 +13,7 @@ if (have_posts()) :
 	}
 	lax_posts_navigation();
 else :
+	$autofocus = true;
 	require __DIR__ . '/template-parts/nothing-found.php';
 endif; ?>
 </main>
