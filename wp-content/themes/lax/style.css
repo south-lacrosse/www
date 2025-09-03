@@ -940,9 +940,6 @@ a.btn {
 	background: #fff;
 	display: inline-block;
 }
-#semla_toc:not(:first-child) {
-	margin-top: 1em;
-}
 #semla_toc-nav {
 	background: #fafafa;
 	border: 1px solid #ccc;
@@ -970,6 +967,14 @@ a.btn {
 }
 #semla_toc-list li {
 	margin-bottom: 0.5em;
+}
+@media (max-width: 719px) {
+	#semla_toc:not(:first-child) {
+		margin-top: 1em;
+	}
+	#semla_toc + p {
+		margin-top: 1em;
+	}
 }
 @media (min-width: 720px) {
 	#semla_toc {
