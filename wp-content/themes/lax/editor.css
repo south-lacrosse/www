@@ -81,7 +81,9 @@ than the CSS added by WP as that gets added right before the
 
 #semla_toc {
 	float: none !important;
+	padding: 0 !important;
 	margin-top: 1em;
+	margin-bottom: 1em;
 }
 
 /* Widgets have different styling on the front end, so make sure that's
