@@ -41,7 +41,8 @@ class Clubs_Emails_Page {
 		}
 ?>
 	<p>Download, copy, or display all club email addresses.</p>
-	<p>Note: this page will only extract emails if they are in a Contact or Social Icons block.</p>
+	<p>Note: this page will only extract emails if they are in a Contact block,
+		and on a Club page or the Contacts page.</p>
 	<form method="post" id="emails-form">
 		<table class="form-table" role="presentation"><tbody>
 		<tr>
