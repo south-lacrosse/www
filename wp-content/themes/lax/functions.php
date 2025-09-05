@@ -67,6 +67,8 @@ add_action('after_setup_theme', function() {
 	}
 
 	// Public facing init
+	add_action('wp_head', 'lax_favicons');
+	add_action('login_head', 'lax_favicons');
 	add_filter('excerpt_length', function ($length) {
 		return 35;
 	});
@@ -74,6 +76,18 @@ add_action('after_setup_theme', function() {
 		return '...';
 	});
 });
+
+function lax_favicons() {
+	// different favicons per environment to help stop accidentally changing the wrong site
+	$env = wp_get_environment_type();
+	if ($env === 'production'): ?>
+<link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png">
+<link rel="icon" type="image/svg+xml" sizes="any" href="/icon.svg">
+<link rel="icon" href="/favicon.ico">
+<?php else: ?>
+<link rel="icon" type="image/svg+xml" href="<?= get_theme_file_uri() ?>/img/favicon-<?= $env ?>.svg">
+<?php endif;
+}
 
 function lax_admin() {
 	add_theme_support('editor-styles');
@@ -86,9 +100,11 @@ function lax_admin() {
 	add_action('wp_update_nav_menu', 'lax_delete_menu_cache', 10, 0);
 	// customizer does not run wp_update_nav_menu, so to be on the safe side
 	// delete the menu cache whenever anything saved. Not performant, but the
-	// customizer is hardly not used anyway, otherwise this should be improved
+	// customizer is hardly (if ever) used anyway, otherwise this should be
+	// improved
 	add_action('customize_save_after', 'lax_delete_menu_cache', 10, 0);
 	add_action('semla_clear_menu_cache', 'lax_delete_menu_cache', 10, 0);
+	add_action('admin_head', 'lax_favicons');
 }
 
 add_action('init', function() {

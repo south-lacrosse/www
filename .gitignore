@@ -6,6 +6,7 @@
 !/.prettierignore
 !/.prettierrc
 !/*.png
+!/*.svg
 !/browserconfig.xml
 !/favicon.ico
 !/LICENSE

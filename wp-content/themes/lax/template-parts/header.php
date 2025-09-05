@@ -19,9 +19,6 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<?= SEMLA_ANALYTICS ?>');</script>
 <?php endif; ?>
 <script>var d=document.documentElement;"addEventListener"in window&&(d.className="js"),"undefined"!=typeof SVGRect&&(d.className+=" svg");</script>
-<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png">
-<link rel="shortcut icon" href="/favicon.ico">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body <?php body_class(); ?>>
