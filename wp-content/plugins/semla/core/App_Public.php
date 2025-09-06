@@ -47,11 +47,14 @@ class App_Public {
 		}
 		if (is_robots()) {
 			add_filter( 'robots_txt', function( $output, $public ) {
-				if ('0' === $public) return "User-agent: *\nDisallow: /\n";
+				if (! $public) return "User-agent: *\nDisallow: /\n";
 				$pos = strpos($output, 'User-agent: *');
-				if ($pos === false) return $output;
-				$pos =+ 13;
-				return substr($output,0,$pos) . "\nDisallow: /api/semla/" . substr($output, $pos);
+				if ($pos !== false) {
+					$pos =+ 13;
+					return substr($output,0,$pos) . "\nDisallow: /api/semla/" . substr($output, $pos);
+				}
+				$output .= ($output ? "\n\n" : '') . "User-agent: *\nDisallow: /api/semla/";
+				return $output;
 			}, 10, 2);
 			return;
 		}
