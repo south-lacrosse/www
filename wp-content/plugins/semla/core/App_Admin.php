@@ -101,6 +101,9 @@ class App_Admin {
 			// NB this needs to be here as the actions get added after the init
 			// hook, so this is as good a place as any
 			remove_action('admin_print_scripts', 'print_emoji_detection_script');
+			remove_action('admin_enqueue_scripts', 'wp_enqueue_emoji_styles');
+			// deprecated version of above, but still need to remove as it gets added
+			// for backwards compatibility
 			remove_action('admin_print_styles', 'print_emoji_styles');
 		});
 	}
