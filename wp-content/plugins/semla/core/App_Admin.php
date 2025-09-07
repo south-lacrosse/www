@@ -77,6 +77,10 @@ class App_Admin {
 						echo '<style>.option-site-visibility,#tab-link-site-visibility{display:none}</style>' . "\n";
 					});
 					break;
+				case 'options':
+				case 'options-writing':
+					add_filter('enable_post_by_email_configuration', '__return_false');
+					break;
 			}
 		});
 
