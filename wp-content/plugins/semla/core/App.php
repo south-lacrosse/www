@@ -125,10 +125,11 @@ class App {
 		add_filter('render_block_core/post-date', [Blocks::class, 'render_post_date'], 0, 3);
 
 		// we have all urls correctly set to https, so stop unnecessary logic running and a database lookup
-		remove_filter( 'the_content', 'wp_replace_insecure_home_url' );
-		remove_filter( 'the_excerpt', 'wp_replace_insecure_home_url' );
-		remove_filter( 'widget_text_content', 'wp_replace_insecure_home_url' );
-		remove_filter( 'wp_get_custom_css', 'wp_replace_insecure_home_url' );
+		remove_filter('the_content', 'wp_replace_insecure_home_url');
+		remove_filter('the_excerpt', 'wp_replace_insecure_home_url');
+		remove_filter('widget_text_content', 'wp_replace_insecure_home_url');
+		remove_filter('wp_get_custom_css', 'wp_replace_insecure_home_url');
+		remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 
 		add_filter('allow_password_reset', [User::class, 'allow_password_reset'], 10, 2);
 		add_filter('retrieve_password_message', [User::class, 'retrieve_password_message'], 10, 4);

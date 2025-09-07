@@ -82,7 +82,6 @@ class App_Public {
 		add_filter('emoji_svg_url', '__return_false'); // stops prefetch being added
 		remove_filter('the_content_feed', 'wp_staticize_emoji');
 		// remove_filter('comment_text_rss', 'wp_staticize_emoji');
-		remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 
 		// Add headers that are in .htaccess, but server doesn't send for PHP requests
 		send_frame_options_header();

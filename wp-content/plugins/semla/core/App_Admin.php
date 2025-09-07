@@ -34,7 +34,6 @@ class App_Admin {
 		remove_action('admin_print_scripts', 'print_emoji_detection_script');
 		remove_action('admin_print_styles', 'print_emoji_styles');
 		add_filter('emoji_svg_url', '__return_false'); // stops prefetch being added
-		remove_filter('wp_mail', 'wp_staticize_emoji_for_email');
 
 		// stop queries to count comments, which are called when menu is displayed
 		add_filter('wp_count_comments', function() {
