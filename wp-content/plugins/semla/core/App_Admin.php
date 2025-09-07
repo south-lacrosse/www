@@ -55,9 +55,13 @@ class App_Admin {
 				case 'edit': // post/page/cpt list screen
 					self::init_edit($screen);
 					break;
-				case 'post': // post/page editor
+				case 'post': // post/page/media editor
 					add_filter( 'default_content', [self::class, 'default_content'], 10, 2);
 					add_filter('litespeed_bypass_metabox', '__return_true');
+					// don't show View Media File in edit media
+					if ($attachment_post_type = get_post_type_object('attachment')) {
+						$attachment_post_type->show_in_admin_bar = false;
+					}
 					break;
 				case 'user':
 					User::init_user();
