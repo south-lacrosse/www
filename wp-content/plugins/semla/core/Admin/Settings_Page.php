@@ -37,7 +37,9 @@ class Settings_Page {
 		<tr>
 			<th scope="row"><label for="gapi_key">Google API key</label></th>
 			<td><input name="gapi_key" type="text" id="gapi_key" value="<?= $gapi_key ?>" class="regular-text" minlength="10">
-			<p>You should already have an API key, but if not <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">follow these instructions</a></p></td>
+			<p>You should already have an API key, but if not <a href="https://developers.google.com/maps/documentation/javascript/get-api-key">follow these instructions</a></p>
+			<p>And don't forget to <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/webmaster-tasks.md#rotate-google-api-key">rotate the API key</a> periodically.</p>
+			</td>
 		</tr>
 		</tbody></table>
 		<p class="submit">
