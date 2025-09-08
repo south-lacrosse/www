@@ -14,21 +14,17 @@ defined('WPINC') || die;
 
 ! defined('SEMLA_MIN') && define('SEMLA_MIN', '.min');
 ! defined('SEMLA_FEEDS') && define('SEMLA_FEEDS', false);
-// Make sure the production blog is discoverable by search engines, and,
-// equally important, everything else isn't. IMPORTANT: if you remove this code
-// also change App_Admin as that removes the blog_public option from the admin Reading screen
+// Make sure the production blog is discoverable by search engines, and, equally
+// important, everything else isn't. IMPORTANT: if you remove this code also
+// change App_Admin as that removes the blog_public option from the admin
+// Reading screen
 ! defined('SEMLA_PUBLIC')
 	&& define('SEMLA_PUBLIC', wp_get_environment_type() === 'production' ? '1' : '0');
 add_filter('pre_option_blog_public', function() { return SEMLA_PUBLIC; });
 
-// Uncomment to test sitemaps in a non-production environment
-// add_filter('wp_sitemaps_enabled', '__return_true');
 add_filter('wp_sitemaps_add_provider', function($provider, $name) {
 	return ('users' === $name) ? false :  $provider;
 }, 10, 2);
-
-// stop pointless query to wp_options table. Needs to go here to catch all calls
-add_filter('pre_option_can_compress_scripts', function() { return 1; });
 
 // include our class loader
 require_once __DIR__.'/core/autoload.php';
