@@ -241,16 +241,5 @@ class App {
 			];
 		}
 		register_post_type($post_type, $args);
-
-		if (is_admin()) {
-			// change "Enter Post name here" placeholder
-			$placeholder = $args['placeholder'] ?? "Enter $single_name name here";
-			add_filter('enter_title_here', function(string $title) use ($post_type, $placeholder) {
-				if  (get_current_screen()->post_type === $post_type) {
-					return $placeholder;
-				}
-				return $title;
-			});
-		}
 	}
 }
