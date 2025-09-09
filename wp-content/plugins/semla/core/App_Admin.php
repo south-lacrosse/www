@@ -74,12 +74,7 @@ class App_Admin {
 					wp_redirect(admin_url());
 					exit;
 				case 'options-reading':
-					// Remove the blog_public option from the Reading screen, as we
-					// override it by WP_ENVIRONMENT_TYPE. We can't actually remove the option,
-					// so we do the next best thing and hide it!
-					add_action('admin_head', function() {
-						echo '<style>.option-site-visibility,#tab-link-site-visibility{display:none}</style>' . "\n";
-					});
+					add_action('admin_head', [self::class, 'remove_site_visibility_option']);
 					break;
 				case 'options':
 				case 'options-writing':
@@ -318,5 +313,35 @@ class App_Admin {
 				}
 			}
 		}, 10, 2);
+	}
+
+	// Remove the blog_public option from the Reading screen, as we override it
+	// by WP_ENVIRONMENT_TYPE.
+ 	public static function remove_site_visibility_option() {
+		// We can't actually remove the option, so we do the next best thing and
+		// hide it!
+		echo "<style>.option-site-visibility{display:none}</style>\n";
+		get_current_screen()->remove_help_tab('site-visibility');
+		// add our own option so the user knows what's going on
+		add_settings_field(
+			'semla-site-visibility',
+			'Search engine visibility',
+			[self::class, 'site_visibility_setting_callback'],
+			'reading',
+			'default'
+		);
+	}
+
+	public static function site_visibility_setting_callback() {
+		?>
+<?php if ('1' === get_option( 'blog_public' )): ?>
+<p>Search engines can index this site</p>
+<?php else: ?>
+<p>Search engines are discouraged from indexing this site</p>
+<p class="description">It is up to search engines to honour this request.</p>
+<?php endif; ?>
+<p><strong>Note:</strong> To make a site visible you must set WP_ENVIRONMENT_TYPE
+to "production" in wp-config.php (or not set it at all).</p>
+<?php
 	}
 }
