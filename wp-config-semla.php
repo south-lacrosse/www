@@ -56,17 +56,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Hardcoding WP_SITEURL and WP_HOME saves a couple of database lookups for every page.
+ * Hardcoding WP_SITEURL and WP_HOME as we don't want these options to be modifiable
+ * in WP admin. Also makes it easier for scripts to detect which environment they are in.
  *
  * Always set WP_ENVIRONMENT_TYPE. This is important as we filter the blog_public option
  * which restricts search engines etc. depending on this setting, to ensure the live site always
  * has it set to 1, and staging/development always have 0 (even if we copy over a production
- * database). Note: The Local development tool automatically sets this to 'local', which is
- * for usually development machines not reachable from the internet.
+ * database).
  */
 // Local Server ---------------------------------------------
 define('WP_SITEURL', 'https://dev.southlacrosse.org.uk');
-define('WP_ENVIRONMENT_TYPE','development'); // Comment out if using Local
+define('WP_ENVIRONMENT_TYPE','development');
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true); // true to write to wp-content/debug.log, or location of log file
 // Development mode causes certain low-level WordPress behavior to change, e.g.
@@ -134,9 +134,3 @@ define('AUTOSAVE_INTERVAL', 120); // seconds, default 60
 
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
-
-// If WordPress isn't yet compatible with a very recent version of PHP in
-// development, and WP_DEBUG is true, you might get deprecated errors. To
-// ignore those uncomment use the call below.
-// Make sure to comment it out again when WordPress catches up!
-// error_reporting( E_ALL ^ E_DEPRECATED );
