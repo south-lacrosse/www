@@ -69,6 +69,7 @@ add_action('after_setup_theme', function() {
 	// Public facing init
 	add_action('wp_head', 'lax_favicons');
 	add_action('login_head', 'lax_favicons');
+	add_action('semla_favicons', 'lax_favicons', 10, 0);
 	add_filter('excerpt_length', function ($length) {
 		return 35;
 	});
