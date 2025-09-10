@@ -12,13 +12,9 @@ class App {
 	/**
 	 * Initialise the plugin. Called from init hook.
 	 *
-	 * IMPORTANT: if you add new custom post types or rewrite rules, then they
-	 * must be flushed before they will be effective. Go into Settings->Permalinks
-	 * and Save Changes, or use WP-CLI 'wp rewrite flush'. This should also be done
-	 * when the plugin is activated for the first time.
-	 *
-	 * Also rules need to go in init so they are loaded on both admin and public
-	 * pages, otherwise they will not be saved.
+	 * IMPORTANT: if you add new custom post types or change the rewrite rules,
+	 * then they must be flushed before they will be effective. Go into
+	 * Settings->Permalinks and Save Changes, or use WP-CLI 'wp rewrite flush'.
 	 */
 	public static function init() {
 		// Remove comments/trackbacks
@@ -56,16 +52,20 @@ class App {
 
 		// Remove rewrite rules we don't need or don't want, namely comment
 		// pages and feeds, author pages, trackbacks, attachment pages, embeds,
-		// post formats
+		// post formats. This reduces the number of rewrite rules from ~129 to
+		// ~28.
 
 		// favicon is already handled outside WP
 		// wp-app and wp-register are deprecated and we don't need to handle them
+
+		// The filter must always be added as rewrite rules may be flushed
+		// (regenerated) on both admin and public pages.
 		add_filter( 'rewrite_rules_array', function($rules) {
 			// remove all feeds or just legacy feeds
 			$query_remove_regex = '/attachment|embed=true|post_format=|feed=' .
 				(SEMLA_FEEDS ? 'old' : '') . '/';
 			foreach ( $rules as $regex => $query ) {
-				if ( preg_match( '/attachment|trackback|comment|author\/|favicon|wp-app\\\.php|wp-register\.php/', $regex )
+				if ( preg_match( '/attachment|trackback|comment|author\/|favicon|wp-app\\\.php|wp-register\.php|index\.php\/api/', $regex )
 				|| preg_match( $query_remove_regex, $query ) ) {
 					unset( $rules[ $regex ] );
 				}
