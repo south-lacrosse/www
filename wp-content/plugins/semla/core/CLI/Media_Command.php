@@ -80,19 +80,19 @@ class Media_Command {
 	}
 
 	/**
-	 * Find unused media.
+	 * Find unused images.
 	 *
-	 * [--revisions]
-	 * : List media even though they appear in revisions. Defaults to true;
-	 * pass `--no-revisions` to disable.
+	 * [--check-revisions]
+	 * : Check revisions for images. Defaults to true; pass
+	 * `--no-check-revisions` to disable.
 	 *
-	 * Note if the media is on a revision and the media is deleted, then if the
-	 * post is reverted to that revision then the media will be missing.
+	 * Note if the image is on a revision and the image is deleted, then if the
+	 * post is reverted to that revision then the image will be missing.
 	 *
-	 * [--attached]
-	 * : List media even if they are attached to a parent post. Defaults to
-	 * true; pass `--no-attached` to disable, which you should do if the theme
-	 * displays attachments without them being in the content.
+	 * [--include-attached]
+	 * : List images even if they are attached to a parent post. Defaults to
+	 * true; pass `--no-include-attached` to disable, which you should do if the
+	 * theme displays attachments without them being in the content.
 	 *
 	 * [--fields=<fields>]
 	 * : Limit the output to specific object fields.
@@ -109,8 +109,10 @@ class Media_Command {
 	 *   - count
 	 *   - yaml
 	 * ---
+	 *
+	 * @subcommand unused-images
 	 */
-	public function unused($args, $assoc_args) {
+	public function unused_images($args, $assoc_args) {
 		global $wpdb;
 
 		$assoc_args = array_merge( [
@@ -118,29 +120,48 @@ class Media_Command {
 			'format' => 'table',
 		], $assoc_args );
 
-		$revisions_sql = WP_CLI\Utils\get_flag_value( $assoc_args, 'revisions', true )
-			? "AND p.post_type <> 'revision'" : '';
-		$parent_sql = WP_CLI\Utils\get_flag_value( $assoc_args, 'attached', true )
+		$post_types = "'clubs','post','page','wp_block'";
+		if (WP_CLI\Utils\get_flag_value( $assoc_args, 'check-revisions', true )) {
+			$post_types .= ",'revision'";
+		}
+		$parent_sql = WP_CLI\Utils\get_flag_value( $assoc_args, 'include-attached', true )
 			? '' : 'AND i.post_parent = 0';
 
-		/**
-		 * Regexp for "wp:image" checks the image block, and "mediaId" checks
-		 * Media & Text block (and others??)
-		 */
+		// extract all image ids from designated post types
+		$image_ids = [];
+		$rows = $wpdb->get_results("SELECT post_content FROM $wpdb->posts
+				WHERE post_type IN ($post_types)
+				AND post_content LIKE '%class=\"wp-image-%';");
+		if ($rows) {
+			foreach ($rows as $row) {
+				if (preg_match_all('/class="wp-image-(\d+)/', $row->post_content, $matches)) {
+					foreach ($matches[1] as $image_id) {
+						$image_ids[$image_id] = 1;
+					}
+				}
+			}
+
+			// We generate a NOT IN clause to exclude the images we found, with the
+			// alternative being to to select all rows and test against the image
+			// ids later.
+
+			// On the downside this might create a very large list to send to the
+			// DB, but on the upside the DB doesn't have to transfer data for all
+			// those images we aren't interested in.
+			$image_ids = array_keys($image_ids);
+			sort($image_ids);
+			$not_in = 'AND i.ID NOT IN (' . implode(',', $image_ids) . ')';
+		} else {
+			$not_in = '';
+		}
+
 		$rows = $wpdb->get_results(
 			"SELECT i.ID, i.post_parent, i.post_title, i.guid
 			FROM $wpdb->posts i
 			WHERE i.post_type = 'attachment' $parent_sql
+			$not_in
 			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pm
-				WHERE pm.meta_key = '_thumbnail_id' AND pm.meta_value = i.ID)
-			AND NOT EXISTS (SELECT * FROM $wpdb->posts p
-				WHERE p.post_type <> 'attachment' $revisions_sql
-				AND (p.post_content LIKE CONCAT('%',i.guid,'%')
-					OR p.post_content REGEXP CONCAT('wp:image {[^}]*\"id\":',i.ID,'[,}]')
-					OR p.post_content REGEXP CONCAT('\"mediaId\":',i.ID,'[,}]')
-					) )
-			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pm
-				WHERE pm.meta_value LIKE CONCAT('%',i.guid,'%'));");
+				WHERE pm.meta_key = '_thumbnail_id' AND pm.meta_value = i.ID);");
 		if ( 'ids' === $assoc_args['format'] ) {
 			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
 			return;
