@@ -22,9 +22,7 @@ class Media_Command {
 	public function sizes() {
 		global $wpdb;
 
-		$updated_meta = 0;
-		$updated_sizes = 0;
-		$updated_sub_sizes = 0;
+		$updated_meta = $updated_sizes = $updated_sub_sizes = 0;
 
 		$attachment_ids = $wpdb->get_col(
 			"SELECT ID FROM $wpdb->posts
@@ -80,6 +78,53 @@ class Media_Command {
 	}
 
 	/**
+	 * List image information.
+	 *
+	 * [--fields=<fields>]
+	 * : Limit the output to specific object fields.
+	 *
+	 * [--format=<format>]
+	 * : Render output in a particular format.
+	 * ---
+	 * default: table
+	 * options:
+	 *   - table
+	 *   - csv
+	 *   - ids
+	 *   - json
+	 *   - count
+	 *   - yaml
+	 * ---
+	 */
+	public function images($args, $assoc_args) {
+		global $wpdb;
+
+		$assoc_args = array_merge( [
+			'fields' => 'ID,post_title,post_name,file,post_mime_type,width,height,sizes',
+			'format' => 'table',
+		], $assoc_args );
+
+		$rows = $wpdb->get_results(
+			"SELECT i.ID, i.post_parent, i.post_title, i.post_name, post_mime_type,
+				pmm.meta_value AS metadata
+			FROM $wpdb->posts i
+			LEFT JOIN $wpdb->postmeta AS pmm
+			ON pmm.post_id = i.ID
+			AND pmm.meta_key = '_wp_attachment_metadata'
+			WHERE i.post_type = 'attachment'
+			AND i.post_mime_type LIKE 'image/%'");
+		Util::db_check();
+		foreach ($rows as $row) {
+			self::extract_metadata($row);
+		}
+
+		if ( 'ids' === $assoc_args['format'] ) {
+			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
+			return;
+		}
+		WP_CLI\Utils\format_items( $assoc_args['format'], $rows, explode( ',', $assoc_args['fields'] ) );
+	}
+	/**
 	 * Find unused images.
 	 *
 	 * [--check-revisions]
@@ -131,7 +176,8 @@ class Media_Command {
 		$image_ids = [];
 		$rows = $wpdb->get_results("SELECT post_content FROM $wpdb->posts
 				WHERE post_type IN ($post_types)
-				AND post_content LIKE '%class=\"wp-image-%';");
+				AND post_content LIKE '%class=\"wp-image-%'");
+		Util::db_check();
 		if ($rows) {
 			foreach ($rows as $row) {
 				if (preg_match_all('/class="wp-image-(\d+)/', $row->post_content, $matches)) {
@@ -165,7 +211,8 @@ class Media_Command {
 			AND i.post_mime_type LIKE 'image/%' $parent_sql
 			$not_in
 			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pmt
-				WHERE pmt.meta_key = '_thumbnail_id' AND pmt.meta_value = i.ID);");
+				WHERE pmt.meta_key = '_thumbnail_id' AND pmt.meta_value = i.ID)");
+		Util::db_check();
 
 		if ( 'ids' === $assoc_args['format'] ) {
 			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
@@ -265,7 +312,7 @@ class Media_Command {
 
 
 	/**
-	 * Featured image information for posts
+	 * Featured image information for posts.
 	 *
 	 * [--fields=<fields>]
 	 * : Limit the output to specific object fields.
@@ -287,35 +334,42 @@ class Media_Command {
 		global $wpdb;
 
 		$assoc_args = array_merge( [
-			'fields' => 'ID,post_name,file,width,height,sizes',
+			'fields' => 'ID,post_title,post_name,file,width,height,sizes',
 			'format' => 'table',
 		], $assoc_args );
 
 		$rows = $wpdb->get_results(
-			"SELECT p.ID, p.post_name, pm2.meta_value
+			"SELECT p.ID, p.post_name, p.post_title, pm2.meta_value AS metadata
 			FROM wp_postmeta pm, wp_postmeta pm2, wp_posts p
 			WHERE pm.meta_key = '_thumbnail_id'
 			AND p.ID = pm.post_id
 			AND pm2.post_id = pm.meta_value
-			AND pm2.meta_key = '_wp_attachment_metadata';");
+			AND pm2.meta_key = '_wp_attachment_metadata'");
 		if ( 'ids' === $assoc_args['format'] ) {
 			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
 			return;
 		}
 		foreach ($rows as $row) {
-			$metadata = @unserialize( trim( $row->meta_value ) );
-			unset($row->meta_value);
-			$row->file = $metadata['file'] ?? '?';
-			$row->height = $metadata['height'] ?? '?';
-			$row->width = $metadata['width'] ?? '?';
-			$sizes = [];
-			if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
-				foreach ($metadata['sizes'] as $size_name => $size_meta) {
-					$sizes[] = "$size_name: {$size_meta['width']}x{$size_meta['height']}";
-				}
-			}
-			$row->sizes = implode(', ', $sizes);
+			self::extract_metadata($row);
 		}
 		WP_CLI\Utils\format_items( $assoc_args['format'], $rows, explode( ',', $assoc_args['fields'] ) );
+	}
+
+	/**
+	 * Extract image sizes and names from the meta data
+	 */
+	private function extract_metadata($row) {
+		$metadata = @unserialize( trim( $row->metadata ) );
+		unset($row->metadata);
+		$row->file = $metadata['file'] ?? '?';
+		$row->height = $metadata['height'] ?? '?';
+		$row->width = $metadata['width'] ?? '?';
+		$sizes = [];
+		if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
+			foreach ($metadata['sizes'] as $size_name => $size_meta) {
+				$sizes[] = "$size_name: {$size_meta['width']}x{$size_meta['height']}";
+			}
+		}
+		$row->sizes = implode(', ', $sizes);
 	}
 }
