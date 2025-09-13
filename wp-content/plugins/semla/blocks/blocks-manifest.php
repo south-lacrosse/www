@@ -77,7 +77,7 @@ return array(
 		'name' => 'semla/club-title',
 		'version' => '1.0.0',
 		'title' => 'Club Title',
-		'category' => 'text',
+		'category' => 'theme',
 		'description' => 'Club title, including logo (featured image)',
 		'usesContext' => array(
 			'postId',
@@ -218,7 +218,7 @@ return array(
 		'name' => 'semla/toc',
 		'version' => '1.0.0',
 		'title' => 'Table of Contents',
-		'category' => 'widgets',
+		'category' => 'theme',
 		'icon' => 'list-view',
 		'description' => 'Create a table of contents from any headings.',
 		'attributes' => array(
@@ -257,7 +257,7 @@ return array(
 		'name' => 'semla/website',
 		'version' => '1.0.0',
 		'title' => 'Website Link',
-		'category' => 'text',
+		'category' => 'theme',
 		'description' => 'Website link',
 		'attributes' => array(
 			'url' => array(
