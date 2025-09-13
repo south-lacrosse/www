@@ -116,7 +116,7 @@ class Media_Command {
 		global $wpdb;
 
 		$assoc_args = array_merge( [
-			'fields' => 'ID,post_parent,post_title,guid',
+			'fields' => 'ID,post_parent,post_title,post_name,file',
 			'format' => 'table',
 		], $assoc_args );
 
@@ -156,12 +156,17 @@ class Media_Command {
 		}
 
 		$rows = $wpdb->get_results(
-			"SELECT i.ID, i.post_parent, i.post_title, i.guid
+			"SELECT i.ID, i.post_parent, i.post_title, i.post_name, pm.meta_value AS file
 			FROM $wpdb->posts i
-			WHERE i.post_type = 'attachment' $parent_sql
+			LEFT JOIN $wpdb->postmeta AS pm
+			ON pm.post_id = i.ID
+			AND pm.meta_key = '_wp_attached_file'
+			WHERE i.post_type = 'attachment'
+			AND i.post_mime_type LIKE 'image/%' $parent_sql
 			$not_in
-			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pm
-				WHERE pm.meta_key = '_thumbnail_id' AND pm.meta_value = i.ID);");
+			AND NOT EXISTS (SELECT * FROM $wpdb->postmeta pmt
+				WHERE pmt.meta_key = '_thumbnail_id' AND pmt.meta_value = i.ID);");
+
 		if ( 'ids' === $assoc_args['format'] ) {
 			echo implode( ' ', wp_list_pluck( $rows, 'ID' ) );
 			return;
