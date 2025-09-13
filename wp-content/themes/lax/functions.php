@@ -148,6 +148,6 @@ function lax_delete_menu_cache() {
 	@unlink(__DIR__.'/template-parts/menu-social.html');
 }
 
-if (!is_admin() && !defined('WP_CLI')) {
+if (!is_admin()) {
 	require __DIR__.'/inc/template-functions.php';
 }
