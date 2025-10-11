@@ -60,9 +60,6 @@ table.clubs-list {
 .cl-website:hover {
 	transform: scale(1.1);
 }
-.cl-website-img {
-	vertical-align: bottom;
-}
 @media (max-width: 29rem) {
 	.cl-links {
 		display: none;
