@@ -54,9 +54,11 @@ class Rest {
 		});
 		add_filter('upload_mimes', [Image::class, 'allow_svg_mimes'], 10, 1);
 
-		// Remove the oembed/1.0/embed REST route.
+		// Remove unwanted REST routes
 		add_filter( 'rest_endpoints', function( $endpoints ) {
 			unset( $endpoints['/oembed/1.0/embed'] );
+			unset( $endpoints['/wp/v2/comments'] );
+			unset( $endpoints['/wp/v2/comments/(?P<id>[\d]+)'] );
 			return $endpoints;
 		});
 		// Disable handling of internal embeds in oembed/1.0/proxy REST route.
