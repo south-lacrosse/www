@@ -89,11 +89,13 @@ class Fixtures_Gateway {
 
 		// add a table of all the dates
 		$result = DB_Util::create_table('new_fixture_date',
-			'`match_date` DATE NOT NULL,
+			'match_date DATE NOT NULL,
+			only_void BOOLEAN NOT NULL,
 			PRIMARY KEY (match_date)');
 		if ($result === false) return false;
-		$result = $wpdb->query('INSERT INTO `new_fixture_date` (`match_date`)
-			SELECT DISTINCT match_date FROM new_fixture');
+		$result = $wpdb->query('INSERT INTO `new_fixture_date` (match_date, only_void)
+			SELECT DISTINCT match_date, COUNT(*) = SUM(CASE WHEN result="Void" THEN 1 ELSE 0 END)
+			FROM new_fixture GROUP BY match_date');
 		if ($result === false) return false;
 		DB_Util::add_table_to_rename('fixture_date');
 		return true;

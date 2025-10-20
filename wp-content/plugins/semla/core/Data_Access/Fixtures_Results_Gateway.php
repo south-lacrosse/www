@@ -219,11 +219,13 @@ class Fixtures_Results_Gateway {
 			'SELECT match_date FROM (
 				(SELECT match_date FROM slc_fixture_date
 					WHERE match_date < CURDATE()
+					AND NOT only_void
 					ORDER BY match_date DESC
 					LIMIT 2)
 				UNION ALL
 				(SELECT match_date FROM slc_fixture_date
 					WHERE match_date >= CURDATE()
+					AND NOT only_void
 					ORDER BY match_date ASC
 					LIMIT 2) ) AS a
 					ORDER BY match_date');
@@ -235,7 +237,7 @@ class Fixtures_Results_Gateway {
 		}
 		$rows = $wpdb->get_results(
 			'SELECT match_date, match_time, competition, home, away, result, venue
-			FROM slc_fixture ' . self::get_where_dates($dates) . ' ORDER BY id');
+			FROM slc_fixture ' . self::get_where_dates($dates) . ' AND result <> "Void" ORDER BY id');
 		if ($wpdb->last_error) return DB_Util::db_error();
 		ob_start();
 		require __DIR__ . '/views/recent-results.php';
