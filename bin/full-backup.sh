@@ -32,7 +32,7 @@ fi
 cd $(dirname "$0")
 source ./db-creds.sh
 PFX=$(grep table_prefix ../wp-config.php | awk -F "'" '{print $2}')
-SL_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like 'sl%'")
+SL_TABLES=$($MYSQL --defaults-extra-file=.my.cnf -Bse "show tables like 'sl%'")
 [[ $? -ne 0 ]] && exit 1
 if [[ $OSTYPE == *win* ]]; then
 	SL_TABLES=$(echo $SL_TABLES | tr -d '\r')
@@ -42,7 +42,7 @@ BACKUP_TABLES="$SL_TABLES ${PFX}commentmeta ${PFX}comments ${PFX}links ${PFX}opt
 echo "Backing up $DBNAME to $(realpath $BACKUP_FILE)$GZ"
 echo Dumping tables $BACKUP_TABLES
 
-if ! mysqldump --defaults-extra-file=.my.cnf $DBNAME $BACKUP_TABLES > $BACKUP_FILE ; then
+if ! $MYSQLDUMP --defaults-extra-file=.my.cnf $DBNAME $BACKUP_TABLES > $BACKUP_FILE ; then
 	rm $BACKUP_FILE
 	exit 1
 fi

@@ -6,7 +6,7 @@
 
 # If there are args then they must be (any order):
 #    either:
-#       an SQL file to run, which will be unziped if needed
+#       an SQL file to run, which will be unzipped if needed
 #       -e "query"
 #
 #    -y to stop the default confirmation prompt
@@ -60,7 +60,7 @@ source ./db-creds.sh
 echo -e "Running SQL on \e[93m$(grep "^define.*'WP_SITEURL" ../wp-config.php | sed "s/.*https:\/\/\([^']*\).*/\1/")\e[0m"
 
 if [ "$has_args" != true ]; then
-	mysql --defaults-extra-file=.my.cnf
+	$MYSQL --defaults-extra-file=.my.cnf
 	exit
 fi
 
@@ -77,9 +77,9 @@ if [ "$no_confirm" != true ]; then
 fi
 
 if [[ -n "$query" ]]; then
-	mysql --defaults-extra-file=.my.cnf -e "$query" "${flags[@]}"
+	$MYSQL --defaults-extra-file=.my.cnf -e "$query" "${flags[@]}"
 elif [[ "$file" =~ \.gz$ ]]; then
-	gunzip < "$file" | mysql --defaults-extra-file=.my.cnf "${flags[@]}"
+	gunzip < "$file" | $MYSQL --defaults-extra-file=.my.cnf "${flags[@]}"
 else
-	mysql --defaults-extra-file=.my.cnf "${flags[@]}" < "$file"
+	$MYSQL --defaults-extra-file=.my.cnf "${flags[@]}" < "$file"
 fi

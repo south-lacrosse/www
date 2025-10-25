@@ -1,8 +1,16 @@
 # Called by other scripts to get DB credentials from the WordPress config.
 
-# We store as much info as possible in a MySQL options file, that way sensitive 
+# We store as much info as possible in a MySQL options file, that way sensitive
 # args are not passed in the command line which can be insecure on multi-user
 # systems
+
+if command -v mariadb >/dev/null 2>&1; then
+	MYSQL=mariadb
+	MYSQLDUMP=mariadb-dump
+else
+	MYSQL=mysql
+	MYSQLDUMP=mysqldump
+fi
 
 BIN=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 WP_DIR="$(dirname "$BIN")"

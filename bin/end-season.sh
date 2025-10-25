@@ -7,7 +7,7 @@ if [[ "" != $(grep "^define.*WP_SITEURL.*www\.southlac" ../wp-config.php) ]]; th
 	exit 1
 fi
 source ./db-creds.sh
-NO_RESULT=$(mysql --defaults-extra-file=.my.cnf -Nse 'SELECT COUNT(*) FROM slc_fixture WHERE result = ""')
+NO_RESULT=$($MYSQL --defaults-extra-file=.my.cnf -Nse 'SELECT COUNT(*) FROM slc_fixture WHERE result = ""')
 if [[ $? -ne 0 ]]; then
 	echo 'Database access failed - check output'
 	exit 1
@@ -17,7 +17,7 @@ if [[ $NO_RESULT != "0" ]] ; then
 	echo -e "\e[91mThere are $NO_RESULT fixtures without results.\e[0m"
 	echo 'All fixtures should have results. You can mark fixtures as V-V for void, or C-C for cancelled.'
 	echo 'Breakdown is:'
-	mysql --defaults-extra-file=.my.cnf -Nse 'SELECT c.type, COUNT(*) FROM slc_fixture f, sl_competition c
+	$MYSQL --defaults-extra-file=.my.cnf -Nse 'SELECT c.type, COUNT(*) FROM slc_fixture f, sl_competition c
 		WHERE f.result = "" AND c.id = f.comp_id GROUP BY c.type
 		UNION ALL
 		SELECT "other", COUNT(*) FROM slc_fixture f
@@ -44,7 +44,7 @@ echo ---------- Stats before history update -----------------
 wp history stats
 echo --------------------------------------------------------
 # Run with --verbose to see statements (after --defaults-extra-file)
-mysql --defaults-extra-file=.my.cnf < end-season.sql
+$MYSQL --defaults-extra-file=.my.cnf < end-season.sql
 if [[ $? -ne 0 ]]; then
 	echo 'Database update failed - check output'
 	exit 1

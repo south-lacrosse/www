@@ -44,7 +44,7 @@ BACKUP_FILE="backups/db-$(date +%F-%H%M%S)-$1.sql.gz"
 cd $(dirname "$0")
 source ./db-creds.sh
 PFX=$(grep table_prefix ../wp-config.php | awk -F "'" '{print $2}')
-SL_TABLES=$(mysql --defaults-extra-file=.my.cnf -Bse "show tables like 'sl\_%'")
+SL_TABLES=$($MYSQL --defaults-extra-file=.my.cnf -Bse "show tables like 'sl\_%'")
 [[ $? -ne 0 ]] && exit 1
 
 if [[ $OSTYPE == *win* ]]; then
@@ -56,7 +56,7 @@ echo "Backing up $DBNAME to $(realpath $BACKUP_FILE)"
 echo Dumping tables $BACKUP_TABLES
 
 set -o pipefail # return any non-zero return code in the pipe
-if ! mysqldump --defaults-extra-file=.my.cnf $DBNAME $BACKUP_TABLES | gzip > $BACKUP_FILE ; then
+if ! $MYSQLDUMP --defaults-extra-file=.my.cnf $DBNAME $BACKUP_TABLES | gzip > $BACKUP_FILE ; then
 	rm -f $BACKUP_FILE
 	exit 1
 fi
