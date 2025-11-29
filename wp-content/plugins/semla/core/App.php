@@ -152,6 +152,8 @@ class App {
 	/**
 	 * Called from the init hook, but with a low priority so it runs before the
 	 * actions we want to remove have run.
+	 *
+	 * You can see the core blocks in wp-includes\blocks\require-dynamic-blocks.php
 	 */
 	public static function init_early() {
 		remove_action( 'init', 'register_block_core_comment_author_name' );

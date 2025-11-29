@@ -51,7 +51,7 @@ echo "Backing up $DBNAME to $(realpath $BACKUP_FILE)"
 echo Dumping tables $BACKUP_TABLES
 
 set -o pipefail # return any non-zero return code in the pipe
-if !  $MYSQLDUMP --defaults-extra-file=.my.cnf $DBNAME $BACKUP_TABLES | gzip > $BACKUP_FILE ; then
+if ! $MYSQLDUMP --defaults-extra-file=.my.cnf $DBNAME $BACKUP_TABLES | gzip > $BACKUP_FILE ; then
 	rm -f $BACKUP_FILE
 	exit 1
 fi
