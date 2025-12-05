@@ -105,6 +105,9 @@ class SimpleXLSXEx
     public $borders;
     public $cellStyles;
     public $css;
+    public $comments;
+    public $hyperlinks;
+    public $worksheetIndex;
 
     public function __construct(SimpleXLSX $xlsx)
     {
@@ -114,6 +117,8 @@ class SimpleXLSXEx
         $this->readFills();
         $this->readBorders();
         $this->readXfs();
+        $this->readHyperlinks();
+        $this->readComments();
     }
     public function readThemeColors()
     {
@@ -123,9 +128,9 @@ class SimpleXLSXEx
                 'accent6','hlink','folHlink'];
             foreach ($colors12 as $c) {
                 $v = $this->xlsx->theme->themeElements->clrScheme->{$c};
-                if (isset($v->sysClr)) {
+                if (isset($v->sysClr) && preg_match('/^[A-F0-9]{6}$/', (string) $v->sysClr['lastClr'])) {
                     $this->themeColors[] = (string) $v->sysClr['lastClr'];
-                } elseif (isset($v->srgbClr)) {
+                } elseif (isset($v->srgbClr) && preg_match('/^[A-F0-9]{6}$/', (string) $v->srgbClr['val'])) {
                     $this->themeColors[] = (string) $v->srgbClr['val'];
                 } else {
                     $this->themeColors[] = null;
@@ -143,20 +148,23 @@ class SimpleXLSXEx
             foreach ($this->xlsx->styles->fonts->font as $v) {
                 $u = '';
                 if (isset($v->u)) {
-                    $u = isset($v->u['val']) ? (string) $v->u['val'] : 'single';
+                    $u = isset($v->u['val']) ? htmlspecialchars((string) $v->u['val'], ENT_QUOTES) : 'single';
                 }
-                $this->fonts[] = [
+                $f = [
                     'b' => isset($v->b) && ($v->b['val'] === null || $v->b['val']),
                     'i' => isset($v->i) && ($v->i['val'] === null || $v->i['val']),
                     'u' => $u,
                     'strike' => isset($v->strike) && ($v->strike['val'] === null || $v->strike['val']),
                     'sz' => isset($v->sz['val']) ? (int) $v->sz['val'] : 11,
                     'color' => $this->getColorValue($v->color),
-                    'name' => isset($v->name['val']) ? (string) $v->name['val'] : 'Calibri',
+                    'name' => isset($v->name['val']) ?
+                        htmlspecialchars((string) $v->name['val'], ENT_QUOTES) : 'Calibri',
                     'family' => isset($v->family['val']) ? (int) $v->family['val'] : 2,
                     'charset' => isset($v->charset['val']) ? (int) $v->charset['val'] : 1,
-                    'scheme' => isset($v->scheme['val']) ? (string) $v->scheme['val'] : 'minor'
+                    'scheme' => isset($v->scheme['val']) ?
+                        htmlspecialchars((string) $v->scheme['val'], ENT_QUOTES) : 'minor'
                 ];
+                $this->fonts[] = $f;
             }
         }
     }
@@ -168,7 +176,8 @@ class SimpleXLSXEx
             foreach ($this->xlsx->styles->fills->fill as $v) {
                 if (isset($v->patternFill)) {
                     $this->fills[] = [
-                        'pattern' => isset($v->patternFill['patternType']) ? (string) $v->patternFill['patternType'] : 'none',
+                        'pattern' => isset($v->patternFill['patternType']) ?
+                            htmlspecialchars((string) $v->patternFill['patternType'], ENT_QUOTES) : 'none',
                         'fgcolor' => $this->getColorValue($v->patternFill->fgColor),
                         'bgcolor' => $this->getColorValue($v->patternFill->bgColor)
                     ];
@@ -179,39 +188,46 @@ class SimpleXLSXEx
     public function readBorders()
     {
         $this->borders = [];
+        $styles = ['none', 'thin', 'medium', 'dashed', 'dotted', 'thick', 'double', 'hair', 'mediumDashed', 'dashDot',
+            'mediumDashDot', 'dashDotDot', 'mediumDashDotDot', 'slantDashDot'];
         if (isset($this->xlsx->styles->borders->border)) {
             foreach ($this->xlsx->styles->borders->border as $v) {
                 $this->borders[] = [
                     'left' => [
-                        'style' => (string) $v->left['style'],
+                        'style' => in_array((string) $v->left['style'], $styles) ? (string) $v->left['style'] : 'none',
                         'color' => $this->getColorValue($v->left->color)
                     ],
                     'right' => [
-                        'style' => (string) $v->right['style'],
+                        'style' => in_array((string) $v->right['style'], $styles) ?
+                            (string) $v->right['style'] : 'none',
                         'color' => $this->getColorValue($v->right->color)
                     ],
                     'top' => [
-                        'style' => (string) $v->top['style'],
+                        'style' => in_array((string) $v->top['style'], $styles) ? (string) $v->top['style'] : 'none',
                         'color' => $this->getColorValue($v->top->color)
                     ],
                     'bottom' => [
-                        'style' => (string) $v->bottom['style'],
+                        'style' => in_array((string) $v->bottom['style'], $styles) ?
+                            (string) $v->bottom['style'] : 'none',
                         'color' => $this->getColorValue($v->bottom->color)
                     ],
                     'diagonal' => [
-                        'style' => (string) $v->diagonal['style'],
+                        'style' => in_array((string) $v->diagonal['style'], $styles) ?
+                            (string) $v->diagonal['style'] : 'none',
                         'color' => $this->getColorValue($v->diagonal->color)
                     ],
                     'horizontal' => [
-                        'style' => (string) $v->horizontal['style'],
+                        'style' => in_array((string) $v->horizontal['style'], $styles) ?
+                            (string) $v->horizontal['style'] : 'none',
                         'color' => $this->getColorValue($v->horizontal->color)
                     ],
                     'vertical' => [
-                        'style' => (string) $v->vertical['style'],
+                        'style' => in_array((string) $v->vertical['style'], $styles) ?
+                            (string) $v->vertical['style'] : 'none',
                         'color' => $this->getColorValue($v->vertical->color)
                     ],
-                    'diagonalUp' => (bool) $v['diagonalUp'],
-                    'diagonalDown' => (bool) $v['diagonalDown'],
+                    'diagonalUp' => SimpleXLSX::boolean((string) $v['diagonalUp']),
+                    'diagonalDown' => SimpleXLSX::boolean((string) $v['diagonalDown']),
                     'outline' => !(isset($v['outline'])) || $v['outline']
                 ];
             }
@@ -263,7 +279,7 @@ class SimpleXLSXEx
                     if (!empty($s['applyBorder'])) {
                         $cf['borderId'] = $s['borderId'];
                     }
-                    if (!empty($s['applyAlignment']) && isset($s['alignment'])) {
+                    if (!empty($s['applyAlignment']) && !empty($s['alignment'])) {
                         $alignment = $s['alignment'];
                     }
                 }
@@ -294,19 +310,29 @@ class SimpleXLSXEx
                 $cf['valign'] = $valign;
 
                 // font
-                $cf['font'] = $this->fonts[ $cf['fontId'] ]['name'];
-                $cf['color'] = $this->fonts[ $cf['fontId'] ]['color'];
-                $cf['f-size'] = $this->fonts[ $cf['fontId'] ]['sz'];
-                $cf['f-b'] = $this->fonts[ $cf['fontId'] ]['b'];
-                $cf['f-i'] = $this->fonts[ $cf['fontId'] ]['i'];
-                $cf['f-u'] = $this->fonts[ $cf['fontId'] ]['u'];
-                $cf['f-strike'] = $this->fonts[ $cf['fontId'] ]['strike'];
+                if (isset($cf['fontId'])) {
+                    $cf['font'] = $this->fonts[$cf['fontId']]['name'];
+                    $cf['color'] = $this->fonts[$cf['fontId']]['color'];
+                    $cf['f-size'] = $this->fonts[$cf['fontId']]['sz'];
+                    $cf['f-b'] = $this->fonts[$cf['fontId']]['b'];
+                    $cf['f-i'] = $this->fonts[$cf['fontId']]['i'];
+                    $cf['f-u'] = $this->fonts[$cf['fontId']]['u'];
+                    $cf['f-strike'] = $this->fonts[$cf['fontId']]['strike'];
+                } else {
+                    $cf['font'] = null;
+                    $cf['color'] = null;
+                    $cf['f-size'] = null;
+                    $cf['f-b'] = null;
+                    $cf['f-i'] = null;
+                    $cf['f-u'] = null;
+                    $cf['f-strike'] = null;
+                }
 
                 // fill
-                $cf['bgcolor'] = $this->fills[ $cf['fillId'] ]['fgcolor'];
+                $cf['bgcolor'] = isset($cf['fillId']) ? $this->fills[ $cf['fillId'] ]['fgcolor'] : null;
 
                 // borders
-                if (isset($this->borders[ $cf['borderId'] ])) {
+                if (isset($cf['borderId'], $this->borders[ $cf['borderId'] ])) {
                     $border = $this->borders[ $cf['borderId'] ];
 
                     $borders = ['left', 'right', 'top', 'bottom'];
@@ -324,6 +350,11 @@ class SimpleXLSXEx
                             $cf['b-' . $b.'-style'] = 'solid';
                         }
                     }
+                } else {
+                    $cf['b-top-style'] = null;
+                    $cf['b-right-style'] = null;
+                    $cf['b-bottom-style'] = null;
+                    $cf['b-left-style'] = null;
                 }
 
                 $css = '';
@@ -385,12 +416,32 @@ class SimpleXLSXEx
             }
         }
     }
+    public function readComments()
+    {
+        $this->comments = [];
+        foreach ($this->xlsx->sheetRels as $index => $xml) {
+            foreach ($xml->Relationship as $rel) {
+                $rel_type = basename(trim((string) $rel['Type']));
+                $rel_target = (string) $rel['Target'];
+                if ($rel_type === 'comments') {
+                    $d = dirname($this->xlsx->sheetFiles[$index]);
+                    $com_file = SimpleXLSX::getTarget($d, $rel_target);
+                    if ($com_xml = $this->xlsx->getEntryXML($com_file)) {
+                        foreach ($com_xml->commentList->comment as $com) {
+                            $this->comments[$index][(string)$com['ref']] = SimpleXLSX::parseRichText($com->text);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     public function readRowsEx($worksheetIndex = 0, $limit = 0)
     {
         if (($ws = $this->xlsx->worksheet($worksheetIndex)) === false) {
             return;
         }
+        $this->worksheetIndex = $worksheetIndex;
 
         $dim = $this->xlsx->dimension($worksheetIndex);
         $numCols = $dim[0];
@@ -411,13 +462,14 @@ class SimpleXLSXEx
             foreach ($ws->cols->col as $col) {
                 $min = (int)$col['min'];
                 $max = (int)$col['max'];
+
                 if (($max-$min) > 100) {
                     $max = $min;
                 }
                 for ($i = $min; $i <= $max; $i++) {
                     $cols[$i-1] = [
                         's' => (int)$col['style'],
-                        'hidden' => (bool)$col['hidden'],
+                        'hidden' => SimpleXLSX::boolean((string) $col['hidden']),
                         'width' => $col['customWidth'] ? (float) $col['width'] : 0
                     ];
                 }
@@ -431,7 +483,7 @@ class SimpleXLSXEx
             $curC = 0;
 
             $r_idx = (int)$row['r'];
-            $r_style = ['s' => 0, 'hidden' => (bool)$row['hidden'], 'height' => 0];
+            $r_style = ['s' => 0, 'hidden' => SimpleXLSX::boolean((string) $row['hidden']), 'height' => 0];
             if ($row['customFormat']) {
                 $r_style['s'] = (int)$row['s'];
             }
@@ -472,11 +524,11 @@ class SimpleXLSXEx
                         }
                     }
                 }
+
                 $data = [
                     'type' => $t,
                     'name' => $r,
                     'value' => $this->xlsx->value($c),
-                    'href' => $this->xlsx->href($worksheetIndex, $c),
                     'f' => (string)$c->f,
                     'r' => $r_idx,
                     's' => ($s > 0) ? $s : $cols[$curC]['s'],
@@ -541,7 +593,7 @@ class SimpleXLSXEx
             'r' => '',
             'hidden' => false,
             'width' => 0,
-            'height' => 0
+            'height' => 0,
         ];
         foreach ($data as $k => $v) {
             if (isset($r[$k])) {
@@ -563,16 +615,21 @@ class SimpleXLSXEx
             $r['name'] = $c . ($y + 1);
             $r['r'] = $y+1;
         }
+        $r['href'] = isset($this->hyperlinks[$this->worksheetIndex][$r['name']]) ?
+            $this->hyperlinks[$this->worksheetIndex][$r['name']] : '';
+        $r['comment'] = isset($this->comments[$this->worksheetIndex][$r['name']]) ?
+            $this->comments[$this->worksheetIndex][$r['name']] : '';
+
         return $r;
     }
-    public function getColorValue(SimpleXMLElement $a = null, $default = '')
+    public function getColorValue($a)
     {
-        if ($a === null) {
-            return $default;
+        if (!($a instanceof SimpleXMLElement)) {
+            return '';
         }
-        $c = $default; // auto
-        if ($a['rgb'] !== null) {
-            $c = substr((string) $a['rgb'], 2); // FFCCBBAA -> CCBBAA
+        $c = '';
+        if ($a['rgb'] !== null && preg_match('/^[A-F0-9]{8}$/', (string) $a['rgb'])) {
+            $c = substr((string) $a['rgb'], 2, 6); // FFCCBBAA -> CCBBAA
         } elseif ($a['indexed'] !== null && isset(static::$IC[ (int) $a['indexed'] ])) {
             $c = static::$IC[ (int) $a['indexed'] ];
         } elseif ($a['theme'] !== null && isset($this->themeColors[ (int) $a['theme'] ])) {
@@ -597,5 +654,41 @@ class SimpleXLSXEx
             );
         }
         return $c;
+    }
+
+    public function readHyperlinks()
+    {
+        $this->hyperlinks = [];
+        foreach ($this->xlsx->sheetRels as $index => $xml) {
+            $sheet = $this->xlsx->sheets[$index];
+            $link_ids = [];
+            // hyperlink
+            foreach ($xml->Relationship as $rel) {
+                $rel_type = basename(trim((string)$rel['Type']));
+                $rel_target = (string)$rel['Target'];
+                if ($rel_type === 'hyperlink') {
+                    $rel_id = (string)$rel['Id'];
+                    $link_ids[$rel_id] = $rel_target;
+                }
+            }
+
+            if (isset($sheet->hyperlinks)) {
+                foreach ($sheet->hyperlinks->hyperlink as $hyperlink) {
+                    $ref = (string)$hyperlink['ref'];
+                    if (SimpleXLSX::strpos($ref, ':') > 0) { // A1:A8 -> A1
+                        $ref = explode(':', $ref);
+                        $ref = $ref[0];
+                    }
+                    $loc = (string)$hyperlink['location'];
+                    $id = (string)$hyperlink['id'];
+                    if ($id) {
+                        $href = $link_ids[$id] . ($loc ? '#' . $loc : '');
+                    } else {
+                        $href = $loc;
+                    }
+                    $this->hyperlinks[$index][$ref] = $href;
+                }
+            }
+        }
     }
 }
