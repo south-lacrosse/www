@@ -413,12 +413,12 @@ class Media_Command {
 		$row->file = $metadata['file'] ?? '?';
 		$row->height = $metadata['height'] ?? '?';
 		$row->width = $metadata['width'] ?? '?';
-		$row->filesize = $metadata['filesize'] ? $metadata['filesize'] : '?';
+		$row->filesize = $metadata['filesize'] ?? '?';
 		$sizes = [];
 		if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
 			foreach ($metadata['sizes'] as $size_name => $size_meta) {
 				$sizes[] = "$size_name: {$size_meta['width']}x{$size_meta['height']}" .
-					($size_meta['filesize'] ? '(' . $size_meta['filesize'] . ')': '') ;
+					(isset($size_meta['filesize']) ? '(' . $size_meta['filesize'] . ')': '') ;
 			}
 		}
 		$row->sizes = implode(', ', $sizes);
