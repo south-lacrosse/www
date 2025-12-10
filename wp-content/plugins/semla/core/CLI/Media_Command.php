@@ -334,29 +334,29 @@ class Media_Command {
 			}
 		}
 		if (count($not_in_filesystem) > 0) {
-			echo "Attachment without file in filesystem\n";
-			echo "-------------------------------------\n";
-			echo implode("\n", $not_in_filesystem);
-			echo "\n";
+			WP_CLI::log('Attachment without file in filesystem');
+			WP_CLI::log('-------------------------------------');
+			foreach ($not_in_filesystem as $missing) {
+				WP_CLI::log($missing);
+			}
 		}
 
 		if (count($no_metadata) > 0) {
 			if (count($not_in_filesystem) > 0) {
-				echo "\n";
+				WP_CLI::log('');
 			}
-			echo "Files with no attachment";
-			if ($delete) echo ' (files deleted)';
-			echo "\n------------------------\n";
+			WP_CLI::log('Files with no attachment' . ($delete ? ' (files deleted)' : ''));
+			WP_CLI::log('------------------------');;
 			foreach ($no_metadata as $file => $value) {
 				if ($delete) {
 					@unlink("$media_dir/$file");
 				}
-				echo "$file\n";
+				WP_CLI::log($file);
 			}
 		}
 
 		if (count($not_in_filesystem) === 0 && count($no_metadata) === 0) {
-			echo "All attachments are valid";
+			WP_CLI::success('All attachments are valid');
 		}
 	}
 
