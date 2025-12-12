@@ -6,16 +6,16 @@ namespace Semla\CLI;
 use \WP_CLI;
 class Media_Command {
 	/**
-	 * Refresh attachment filesize meta data.
+	 * Refresh media filesize meta data.
 	 *
-	 * If you have optimized images, or images generated for other attachments,
+	 * If you have optimized images, or images generated for other media files,
 	 * outside of WordPress without changing their dimensions, then this command
 	 * will update the filesize metadata for the new file sizes, including any
 	 * image sizes like thumbnail. Filesize metadata may not exist for
-	 * attachments loaded prior to WP 6.0.
+	 * media files loaded prior to WP 6.0.
 	 *
 	 * [<attachment-id>...]
-	 * : One or more IDs of the attachments to refresh.
+	 * : One or more IDs of the media files to refresh.
 	 *
 	 * [--dry-run]
 	 * : Check images needing filesize updates without performing the operation.
@@ -28,7 +28,7 @@ class Media_Command {
 		global $wpdb;
 
 		if ( empty( $args ) ) {
-			WP_CLI::confirm( 'Do you really want to refresh all attachment file sizes?', $assoc_args );
+			WP_CLI::confirm( 'Do you really want to refresh all media file sizes?', $assoc_args );
 		}
 
 		$dry_run = WP_CLI\Utils\get_flag_value( $assoc_args, 'dry-run' );
@@ -56,10 +56,10 @@ class Media_Command {
 		$count  = count($attachment_ids);
 
 		if ( ! $count ) {
-			WP_CLI::warning( 'No attachments found.' );
+			WP_CLI::warning( 'No media files found.' );
 			return;
 		}
-		WP_CLI::log("Found $count attachment(s) to refresh filesizes");
+		WP_CLI::log("Found $count media file(s) to refresh filesizes");
 
 		// Load and cache all metadata so we don't do individual selects
 		update_postmeta_cache($attachment_ids);
@@ -78,7 +78,7 @@ class Media_Command {
 
 			$filesize = wp_filesize($file);
 			if (!$filesize) {
-				WP_CLI::warning("Attachment file $file does not exist (ID $attachment_id).");
+				WP_CLI::warning("Media file $file does not exist (ID $attachment_id).");
 			} elseif (!isset($metadata['filesize']) || $metadata['filesize'] !== $filesize) {
 				$message .= "\n  filesize $attached_file from "
 					. ($metadata['filesize'] ?? 'unset') . " to $filesize";
@@ -92,7 +92,7 @@ class Media_Command {
 						$file = $dir . $size_meta['file'];
 						$filesize = wp_filesize($file);
 						if (!$filesize) {
-							WP_CLI::warning("Attachment for size $size_name file $file does not exist (ID $attachment_id).");
+							WP_CLI::warning("Media file for size $size_name file $file does not exist (ID $attachment_id).");
 						} elseif (!isset($size_meta['filesize']) || $size_meta['filesize'] !== $filesize) {
 							$message .= "\n    $size_name filesize {$size_meta['file']} from "
 								. ($size_meta['filesize'] ?? 'unset') . " to $filesize";
@@ -111,11 +111,11 @@ class Media_Command {
 				WP_CLI::log("$progress Refreshed filesizes for $attached_file (ID $attachment_id).$message");
 			}
 		}
-		WP_CLI::success( "$successes of $count attachments$will_be updated.");
+		WP_CLI::success( "$successes of $count media files$will_be updated.");
 	}
 
 	/**
-	 * List image meta data.
+	 * List media file meta data.
 	 *
 	 * [--fields=<fields>]
 	 * : Limit the output to specific object fields.
@@ -133,7 +133,7 @@ class Media_Command {
 	 *   - yaml
 	 * ---
 	 */
-	public function images($args, $assoc_args) {
+	public function meta($args, $assoc_args) {
 		global $wpdb;
 
 		$assoc_args = array_merge( [
@@ -142,15 +142,17 @@ class Media_Command {
 		], $assoc_args );
 
 		$rows = $wpdb->get_results(
-			"SELECT i.ID, i.post_parent, i.post_title, i.post_name, post_mime_type,
-				pmm.meta_value AS metadata
-			FROM $wpdb->posts i
-			LEFT JOIN $wpdb->postmeta AS pmm
-			ON pmm.post_id = i.ID
-			AND pmm.meta_key = '_wp_attachment_metadata'
-			WHERE i.post_type = 'attachment'
-			AND i.post_mime_type LIKE 'image/%'
-			ORDER BY i.ID");
+			"SELECT p.ID, p.post_parent, p.post_title, p.post_name, p.post_mime_type,
+				pm.meta_value AS attached_file, pm2.meta_value AS metadata
+			FROM $wpdb->posts p
+			LEFT JOIN $wpdb->postmeta pm
+			ON pm.post_id = p.ID
+			LEFT JOIN $wpdb->postmeta pm2
+			ON pm2.post_id = p.ID
+			WHERE p.post_type = 'attachment'
+			AND pm.meta_key = '_wp_attached_file'
+			AND pm2.meta_key = '_wp_attachment_metadata'
+			ORDER BY p.ID");
 		Util::db_check();
 		foreach ($rows as $row) {
 			self::extract_metadata($row);
@@ -261,7 +263,10 @@ class Media_Command {
 	}
 
 	/**
-	 * Validate attachments and their metadata against the filesystem.
+	 * Validate media files and their metadata against the filesystem.
+	 *
+	 * Note that this command assumes all files are local, so don't run if media
+	 * is stored off-site.
 	 *
 	 * Lists media where there is an attachment or image size metadata but no
 	 * corresponding file, and files in the filesystem without an attachment or
@@ -356,7 +361,7 @@ class Media_Command {
 		}
 
 		if (count($not_in_filesystem) === 0 && count($no_metadata) === 0) {
-			WP_CLI::success('All attachments are valid');
+			WP_CLI::success('All media files are valid');
 		}
 	}
 
@@ -410,9 +415,9 @@ class Media_Command {
 	private function extract_metadata($row) {
 		$metadata = @unserialize( trim( $row->metadata ) );
 		unset($row->metadata);
-		$row->file = $metadata['file'] ?? '?';
-		$row->height = $metadata['height'] ?? '?';
-		$row->width = $metadata['width'] ?? '?';
+		$row->file = $row->attached_file ?? $metadata['file'] ?? '?';
+		$row->height = $metadata['height'] ?? '';
+		$row->width = $metadata['width'] ?? '';
 		$row->filesize = $metadata['filesize'] ?? '?';
 		$sizes = [];
 		if (isset($metadata['sizes']) && is_array($metadata['sizes'])) {
