@@ -220,7 +220,7 @@ return array(
 		'title' => 'Table of Contents',
 		'category' => 'theme',
 		'icon' => 'list-view',
-		'description' => 'Create a table of contents from any headings.',
+		'description' => 'Create a table of contents from headings.',
 		'attributes' => array(
 			'title' => array(
 				'type' => 'string',
