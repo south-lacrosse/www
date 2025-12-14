@@ -388,12 +388,12 @@ class Media_Command {
 		global $wpdb;
 
 		$assoc_args = array_merge( [
-			'fields' => 'ID,post_title,post_name,file,filesize,width,height,sizes',
+			'fields' => 'ID,post_title,post_name,featured_id,file,filesize,width,height,sizes',
 			'format' => 'table',
 		], $assoc_args );
 
 		$rows = $wpdb->get_results(
-			"SELECT p.ID, p.post_name, p.post_title, pm2.meta_value AS metadata
+			"SELECT p.ID, p.post_name, p.post_title, pm.meta_value AS featured_id, pm2.meta_value AS metadata
 			FROM $wpdb->postmeta pm, $wpdb->postmeta pm2, $wpdb->posts p
 			WHERE pm.meta_key = '_thumbnail_id'
 			AND p.ID = pm.post_id
