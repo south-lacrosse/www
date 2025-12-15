@@ -26,7 +26,7 @@ add_action('after_setup_theme', function() {
 	// Let WordPress manage the document title in <head>
 	add_theme_support('title-tag');
 	add_theme_support('responsive-embeds');
-	if (SEMLA_FEEDS) {
+	if (defined('SEMLA_FEEDS') && SEMLA_FEEDS) {
 		add_theme_support('automatic-feed-links');
 		add_filter('feed_links_show_comments_feed','__return_false');
 	}
