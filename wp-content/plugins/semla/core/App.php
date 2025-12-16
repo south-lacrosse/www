@@ -162,14 +162,16 @@ class App {
 		remove_action( 'init', 'register_block_core_comment_edit_link' );
 		remove_action( 'init', 'register_block_core_comment_reply_link' );
 		remove_action( 'init', 'register_block_core_comment_template' );
+		remove_action( 'init', 'register_block_core_comments' );
+		remove_action( 'init', 'register_block_core_comments_pagination' );
 		remove_action( 'init', 'register_block_core_comments_pagination_next' );
 		remove_action( 'init', 'register_block_core_comments_pagination_numbers' );
 		remove_action( 'init', 'register_block_core_comments_pagination_previous' );
-		remove_action( 'init', 'register_block_core_comments_pagination' );
 		remove_action( 'init', 'register_block_core_comments_title' );
-		remove_action( 'init', 'register_block_core_comments' );
 		remove_action( 'init', 'register_block_core_latest_comments' );
+		remove_action( 'init', 'register_block_core_post_comments_count' );
 		remove_action( 'init', 'register_block_core_post_comments_form' );
+		remove_action( 'init', 'register_block_core_post_comments_link' );
 		remove_action( 'init', 'register_legacy_post_comments_block', 21 );
 	}
 
