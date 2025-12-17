@@ -106,14 +106,18 @@ class Table_Renderer {
 			$class = ' league-table';
 		}
 
-		// Note: id is not put on table as we can't style the table to cater for the position="sticky"
-		// menu (by default the target will be at the top of the viewport, but this is underneath the
-		// sticky menu), so we add a div as the target.
-		// Also we can't put scrollable on that div as the style for scrollable also makes the
-		// offset for the sticky menu not work.
-		echo '<div id="' . Util::make_id($division_name) . '"'
-			. ($format === 'rest' ? '' : ' class="alignwide"')
-			. '><div class="scrollable"><table class="table-data' . $class
+		// Don't need outer div wrapper for cups as we don't want the id (it will be on the main
+		// competition, and not on the group table), and the enclosing section is already alignwide
+		if ($format !== 'cup') {
+			// Note: id is not put on table as we can't style the table to cater for the position="sticky"
+			// menu (by default the target will be at the top of the viewport, but this is underneath the
+			// sticky menu), so we add a div as the target.
+			// Also we can't put scrollable on that div as the style for scrollable also makes the
+			// offset for the sticky menu not work.
+			echo '<div id="', Util::make_id($division_name), '"',
+				$format === 'rest' ? '' : ' class="alignwide"', '>';
+		}
+		echo '<div class="scrollable"><table class="table-data' . $class
 			. '"><caption><span class="caption-text">'
 			. "$division_name</span></caption>\n<thead><tr>"
 			. '<th></th><th class="left">Team</th><th><abbr title="Matches played">P</abbr></th>';
@@ -179,6 +183,6 @@ class Table_Renderer {
 			}
 			echo "</tr>\n";
 		}
-		echo "</tbody></table></div></div>\n";
+		echo '</tbody></table></div>', $format !== 'cup' ? '</div>' : '', "\n";
 	}
 }
