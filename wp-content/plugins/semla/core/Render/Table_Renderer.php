@@ -7,11 +7,10 @@ use Semla\Utils\Util;
 class Table_Renderer {
 	public static function year_navigation($page,$grid_page,$year,$years) {
 		if (!$years->next && !$years->prev) return;
-		echo '<nav class="hist-nav" role="navigation">'
-			. '<h2 class="screen-reader-text">Tables navigation</h2>'
-			. "\n";
+		echo '<nav class="hist-nav"><h2 class="screen-reader-text">Tables navigation</h2>',
+			"\n";
 		if ($years->prev || $grid_page) {
-			echo  '<div class="left-nav">';
+			echo '<div class="left-nav">';
 			if ($years->prev) {
 				echo '<a href="' . $page
 					. '-' . $years->prev . '">« ' . $years->prev . ' </a>';

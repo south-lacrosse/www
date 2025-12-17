@@ -30,9 +30,8 @@ class Cup_Draw_Renderer {
 		if ($years && ($years->next || $years->prev)) {
 			$slug .= '-';
 			$query = $display ? '-rounds' : '';
-			echo '<nav class="hist-nav" role="navigation">'
-				. '<h2 class="screen-reader-text">Draws navigation</h2>';
-			echo '<div class="left-nav">';
+			echo '<nav class="hist-nav"><h2 class="screen-reader-text">Draws navigation</h2>',
+				'<div class="left-nav">';
 			if ($years->prev) {
 				echo '<a href="' . $slug
 					. $years->prev . $query .'">« ' . $years->prev
