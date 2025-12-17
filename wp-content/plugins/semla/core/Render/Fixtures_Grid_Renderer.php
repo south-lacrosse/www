@@ -19,27 +19,29 @@ class Fixtures_Grid_Renderer {
 			}
 			// Don't put scrollable on the root div as the style for scrollable also makes the
 			// offset for the sticky menu not work as a link target.
-			echo '<div id="' . esc_attr(str_replace(' ','-',$division->section_name))
-				. '" class="alignwide"><div class="scrollable">'
-				. '<table class="table-data grid col-hover'
-				. ($ladder ? ' ladder': '').  '"';
+			echo '<div id="', esc_attr(str_replace(' ','-',$division->section_name)),
+				'" class="alignwide"><div class="scrollable">',
+				'<table class="table-data grid col-hover',
+				$ladder ? ' ladder': '', '"';
 			if ($column_count < 8) { //
-				echo ' style="max-width:' . ($column_count * 6 + 12) . 'em"';
+				echo ' style="max-width:', ($column_count * 6 + 12), 'em"';
 			}
-			echo  '><caption><span class="caption-text">'
-				. $division->section_name . "</span></caption>\n"
-				. '<thead><tr><th rowspan="2">';
+			echo  '><caption><span class="caption-text">',
+				$division->section_name, "</span></caption>\n",
+				'<thead><tr><th rowspan="2">';
 			if (! $ladder) {
-				echo 'Home</th><th colspan="' . $column_count . '">Away</th></tr><tr>';
+				echo 'Home</th><th colspan="', $column_count, '">Away</th></tr><tr>';
 				foreach (explode('|', $division->minimals) as $key => $minimal) {
-					echo '<th><abbr title="' . htmlentities($teams[$key]) . '">' . htmlspecialchars($minimal, ENT_NOQUOTES) . '</abbr></th>';
+					echo '<th><abbr title="', htmlentities($teams[$key]), '">',
+						htmlspecialchars($minimal, ENT_NOQUOTES), '</abbr></th>';
 				}
 			} else {
-				echo $divisions[$division->related_comp_id]->section_name . '</th><th colspan="'
-					. $column_count . '">' . $divisions[$division->related_comp_id2]->section_name
-					. '</th></tr><tr>';
+				echo $divisions[$division->related_comp_id]->section_name, '</th><th colspan="',
+					$column_count, '">', $divisions[$division->related_comp_id2]->section_name,
+					'</th></tr><tr>';
 				foreach (explode('|', $division->minimals2) as $key => $minimal) {
-					echo '<th><abbr title="' . htmlentities($teams2[$key]) . '">' . htmlspecialchars($minimal, ENT_NOQUOTES) . '</abbr></th>';
+					echo '<th><abbr title="', htmlentities($teams2[$key]), '">',
+						htmlspecialchars($minimal, ENT_NOQUOTES), '</abbr></th>';
 				}
 			}
 			echo "</tr></thead>\n<tbody>\n";
@@ -47,8 +49,8 @@ class Fixtures_Grid_Renderer {
 				$esc_home = htmlspecialchars($home, ENT_NOQUOTES);
 				echo '<tr><th>';
 				if (! $ladder) {
-					echo '<a class="no-ul" href="' . $fixtures_page . '?team='
-						. urlencode($home) . '">' . $esc_home . '</a>';
+					echo '<a class="no-ul" href="', $fixtures_page, '?team=',
+						urlencode($home), '">', $esc_home, '</a>';
 				} else {
 					echo $esc_home;
 				}
@@ -95,7 +97,7 @@ class Fixtures_Grid_Renderer {
 		}
 		if (self::$keys) {
 			ksort(self::$keys);
-			echo '<p><b>Key:</b> ' . implode(', ', self::$keys) . "</p>\n";
+			echo '<p><b>Key:</b> ', implode(', ', self::$keys), "</p>\n";
 		}
 	}
 
@@ -118,7 +120,7 @@ class Fixtures_Grid_Renderer {
 				echo date('d M', strtotime($row->match_date));
 			}
 			if ($row->points_multi > 1) {
-				echo ' <sup>*' . $row->points_multi . '</sup>';
+				echo ' <sup>*', $row->points_multi, '</sup>';
 				self::$keys['*'] = '<i>*2</i> = multiple points';
 			}
 			if (!empty($row->extra)) echo $row->extra;

@@ -12,22 +12,20 @@ class Table_Renderer {
 		if ($years->prev || $grid_page) {
 			echo '<div class="left-nav">';
 			if ($years->prev) {
-				echo '<a href="' . $page
-					. '-' . $years->prev . '">« ' . $years->prev . ' </a>';
+				echo '<a href="', $page, '-', $years->prev, '">« ', $years->prev, ' </a>';
 			} else {
 				echo '&nbsp;';
 			}
-			echo  '</div>' . "\n";
+			echo "</div>\n";
 		}
 		if ($grid_page) {
-			echo '<div class="center-nav"><a href="'
-				. str_replace('fixtures','results',$grid_page)
-				. '-' . $year . '">Results Grid</a></div>' . "\n";
+			echo '<div class="center-nav"><a href="',
+				str_replace('fixtures','results',$grid_page),
+				'-', $year, '">Results Grid</a></div>', "\n";
 		}
 		if ($years->next) {
-			echo '<div class="right-nav"><a href="' . $page
-				. '-' . $years->next .'">' . $years->next
-				. ' »</a></div>';
+			echo '<div class="right-nav"><a href="', $page, '-', $years->next,
+				'">', $years->next, ' »</a></div>';
 		}
 		echo "</nav>\n";
 	}
@@ -54,7 +52,7 @@ class Table_Renderer {
 					echo self::table($teams[0]->name, $teams, $year, $format);
 				}
 				if (isset($remarks[$comp_id])) {
-					echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
+					echo '<p>', $remarks[$comp_id]->remarks, '</p>';
 				}
 				$comp_id = $row->comp_id;
 				$teams = [];
@@ -67,7 +65,7 @@ class Table_Renderer {
 		if ($comp_id) {
 			echo self::table($teams[0]->name, $teams, $year, $format);
 			if (isset($remarks[$comp_id])) {
-				echo '<p>' . $remarks[$comp_id]->remarks . '</p>';
+				echo '<p>', $remarks[$comp_id]->remarks, '</p>';
 			}
 		}
 		if ($has_tiebreaker) {
@@ -116,17 +114,17 @@ class Table_Renderer {
 			echo '<div id="', Util::make_id($division_name), '"',
 				$format === 'rest' ? '' : ' class="alignwide"', '>';
 		}
-		echo '<div class="scrollable"><table class="table-data' . $class
-			. '"><caption><span class="caption-text">'
-			. "$division_name</span></caption>\n<thead><tr>"
-			. '<th></th><th class="left">Team</th><th><abbr title="Matches played">P</abbr></th>';
+		echo '<div class="scrollable"><table class="table-data', $class,
+			'"><caption><span class="caption-text">',
+			"$division_name</span></caption>\n<thead><tr>",
+			'<th></th><th class="left">Team</th><th><abbr title="Matches played">P</abbr></th>';
 		if ($wdl_cols)
-			echo '<th><abbr title="Matches won">W</abbr></th><th><abbr title="Matches drawn">D</abbr></th>'
-				. '<th><abbr title="Matches lost">L</abbr></th>';
+			echo '<th><abbr title="Matches won">W</abbr></th><th><abbr title="Matches drawn">D</abbr></th>',
+				'<th><abbr title="Matches lost">L</abbr></th>';
 		if ($fa_cols)
-			echo '<th class="hide-sml"><abbr title="Goals for">F</abbr></th>'
-				. '<th class="hide-sml"><abbr title="Goals against">A</abbr></th>'
-				. '<th class="hide-sml"><abbr title="Goal difference">GD</abbr></th>';
+			echo '<th class="hide-sml"><abbr title="Goals for">F</abbr></th>',
+				'<th class="hide-sml"><abbr title="Goals against">A</abbr></th>',
+				'<th class="hide-sml"><abbr title="Goal difference">GD</abbr></th>';
 		if ($goal_avg_col)
 			echo '<th class="hide-sml"><abbr title="Goal average">GAvg</abbr></th>';
 		if ($deducted_col)
@@ -139,46 +137,46 @@ class Table_Renderer {
 			echo '<th class="hide-sml">Form</th>';
 		echo "</tr></thead>\n<tbody>\n";
 		foreach ($teams as $team) {
-			echo '<tr' . (!empty($team->divider) ? ' class="divider"' : '')
-				.  '><td>' . $team->position . '</td><td class="left">';
+			echo '<tr', !empty($team->divider) ? ' class="divider"' : '',
+				'><td>', $team->position, '</td><td class="left">';
 			$esc_team = htmlspecialchars($team->team, ENT_NOQUOTES);
 			if ($format === 'rest') {
 				echo $esc_team;
 			} elseif ($year == 0) {
-				echo '<a class="no-ul font-semibold" href="/fixtures?team='
-					. urlencode($team->team) . '">' . $esc_team . '</a>';
+				echo '<a class="no-ul font-semibold" href="/fixtures?team=',
+					urlencode($team->team), '">', $esc_team, '</a>';
 			} elseif ($year >= 2003) {
-				echo '<a class="no-ul font-semibold" href="results-' . $year . '?team='
-					. urlencode($team->team) . '">' . $esc_team . '</a>';
+				echo '<a class="no-ul font-semibold" href="results-', $year, '?team=',
+					urlencode($team->team), '">', $esc_team, '</a>';
 			} else {
 				echo $esc_team;
 			}
 			if ($team->tiebreaker) echo '<sup>*</sup>';
-			echo '</td><td>' . $team->played . '</td>';
+			echo '</td><td>', $team->played, '</td>';
 			if ($wdl_cols)
-				echo '<td>' . $team->won . '</td><td>' . $team->drawn . '</td><td>'
-					. $team->lost . '</td>';
+				echo '<td>', $team->won, '</td><td>', $team->drawn, '</td><td>',
+					$team->lost, '</td>';
 			if ($fa_cols)
-				echo '<td class="hide-sml">' . $team->goals_for
-					. '</td><td class="hide-sml">' . $team->goals_against
-					. '</td><td class="hide-sml">' . ($team->goals_for - $team->goals_against)
-					. '</td>';
+				echo '<td class="hide-sml">', $team->goals_for,
+					'</td><td class="hide-sml">', $team->goals_against,
+					'</td><td class="hide-sml">', ($team->goals_for - $team->goals_against),
+					'</td>';
 			if ($goal_avg_col) {
 				if (isset($team->goal_avg)) {
 					$val = number_format($team->goal_avg,2);
 				} else {
 					$val = '';
 				}
-				echo '<td class="hide-sml">' . $val . '</td>';
+				echo '<td class="hide-sml">', $val, '</td>';
 			}
 			if ($deducted_col)
-				echo '<td>' . ($team->points_deducted > 0 ? floatval($team->points_deducted) : '') . '</td>';
+				echo '<td>', $team->points_deducted > 0 ? floatval($team->points_deducted) : '', '</td>';
 			if ($points_col)
-				echo '<td class="' . ($format === 'rest' ? 'sl-' : '') . 'points">' . floatval($team->points) . '</td>';
+				echo '<td class="', $format === 'rest' ? 'sl-' : '', 'points">', floatval($team->points), '</td>';
 			if ($points_avg_col)
-				echo '<td class="hide-sml">' . number_format($team->points_avg, 2) . '</td>';
+				echo '<td class="hide-sml">', number_format($team->points_avg, 2), '</td>';
 			if ($form_col) {
-				echo '<td class="hide-sml">' . (isset($team->form) ? substr($team->form,-5) : '') . '</td>';
+				echo '<td class="hide-sml">', isset($team->form) ? substr($team->form,-5) : '', '</td>';
 			}
 			echo "</tr>\n";
 		}

@@ -33,20 +33,16 @@ class Cup_Draw_Renderer {
 			echo '<nav class="hist-nav"><h2 class="screen-reader-text">Draws navigation</h2>',
 				'<div class="left-nav">';
 			if ($years->prev) {
-				echo '<a href="' . $slug
-					. $years->prev . $query .'">« ' . $years->prev
-					. '</a>';
+				echo '<a href="', $slug, $years->prev, $query, '">« ', $years->prev, '</a>';
 			} else {
 				echo '&nbsp;';
 			}
-			echo '</div><div class="center-nav"><a href="' . $slug
-				. $year . ( $display ? '' : '-rounds')
-				.'">View ' . ( $display ? 'as Grid' : 'Rounds')
-				. '</a></div>';
+			echo '</div><div class="center-nav"><a href="', $slug, $year,
+				$display ? '' : '-rounds', '">View ', $display ? 'as Grid' : 'Rounds',
+				'</a></div>';
 			if ($years->next) {
-				echo '<div class="right-nav"><a href="' . $slug
-					. $years->next . $query .'">' . $years->next
-					. ' »</a></div>';
+				echo '<div class="right-nav"><a href="', $slug, $years->next, $query,
+					'">', $years->next, ' »</a></div>';
 			}
 			echo "</nav>\n";
 		} else {
@@ -61,12 +57,11 @@ class Cup_Draw_Renderer {
 					$url = substr($url, 0, -7);
 				}
 			}
-			echo '<p><a href="' . $url . '">View '
-				. ($display ? 'as Grid' : 'Rounds')	. "</a></p>\n";
+			echo '<p><a href="', $url, '">View ', $display ? 'as Grid' : 'Rounds', "</a></p>\n";
 			if (!$year) {
-				echo '<p><strong>Please note:</strong> dates given are those initially scheduled for the round, however the'
-					. ' actual fixtures may be rearranged or postponed. Please check the <a href="/fixtures">complete fixtures list</a>'
-					. " for the exact date, time, and location of matches.</p>\n";
+				echo '<p><strong>Please note:</strong> dates given are those initially scheduled for the round, however the',
+					' actual fixtures may be rearranged or postponed. Please check the <a href="/fixtures">complete fixtures list</a>',
+					" for the exact date, time, and location of matches.</p>\n";
 			}
 		}
 
@@ -108,15 +103,14 @@ class Cup_Draw_Renderer {
 				if ($prev_comp) {
 					echo '</tbody></table></div>';
 					if (isset($remarks[$prev_comp]))
-						echo '<p>' . $remarks[$prev_comp]->remarks . "</p>\n";
+						echo '<p>', $remarks[$prev_comp]->remarks, "</p>\n";
 					if ($section) echo "</section>\n";
 				}
 				$section = !empty($match->section_name);
 				if ($section) {
-					echo '<section id="' . Util::make_id($match->section_name) . '">'
-						. '<h2' .  ($h2_class ? ' class="' . $h2_class . '"' : '')
-						. '>' . $match->section_name
-						. "</h2>\n";
+					echo '<section id="', Util::make_id($match->section_name), '"><h2',
+						$h2_class ? ' class="' . $h2_class . '"' : '',
+						'>', $match->section_name, "</h2>\n";
 				}
 				if (!empty($groups[$comp_id])) {
 					Table_Renderer::tables($groups[$comp_id], 'cup', $year, $remarks);
@@ -130,11 +124,12 @@ class Cup_Draw_Renderer {
 			$round = $match->round;
 			if ($round <> $prev_round) {
 				if ($prev_round) {
-					echo '</tbody></table></div>' . "\n";
+					echo '</tbody></table></div>', "\n";
 				}
-				echo '<div class="scrollable"><table class="table-data cup-draw"><caption><span class="caption-text">' . self::ROUNDS_LONG[$round + $offset]
-					. (isset($match->match_date) ? ', ' . date('j M Y', strtotime($match->match_date)) : '')
-					. '</span></caption>';
+				echo '<div class="scrollable"><table class="table-data cup-draw"><caption><span class="caption-text">',
+					self::ROUNDS_LONG[$round + $offset],
+					isset($match->match_date) ? ', ' . date('j M Y', strtotime($match->match_date)) : '',
+					'</span></caption>';
 				if ($round === $final_round) {
 					echo '<colgroup><col class="min-width"><col class="home"><col class="min-width"><col class="away">';
 				} else {
@@ -160,17 +155,17 @@ class Cup_Draw_Renderer {
 				$score = 'v';
 			}
 			$match_num = $match->match_num;
-			echo '<tr><td>' . ($round <> $final_round ? $match_num : '&nbsp;')
-				. '</td><td class="home">'
-				. self::team_name($team1_first,$team1_first,$match,$round,$offset,$match_num)
-				. '</td><td class="result">' . $score . '</td><td class="away">'
-				. self::team_name(!$team1_first,$team1_first,$match,$round,$offset,$match_num)
-				. "</td></tr>\n";
+			echo '<tr><td>', ($round <> $final_round ? $match_num : '&nbsp;'),
+				'</td><td class="home">',
+				self::team_name($team1_first,$team1_first,$match,$round,$offset,$match_num),
+				'</td><td class="result">' . $score . '</td><td class="away">',
+				self::team_name(!$team1_first,$team1_first,$match,$round,$offset,$match_num),
+				"</td></tr>\n";
 		}
 		if ($prev_comp) {
 			echo "</tbody></table></div>\n";
 			if (isset($remarks[$prev_comp]))
-				echo '<p>' . $remarks[$prev_comp]->remarks . "</p>\n";
+				echo '<p>', $remarks[$prev_comp]->remarks, "</p>\n";
 			if ($section) echo "</section>\n";
 		}
 	}
@@ -213,9 +208,9 @@ class Cup_Draw_Renderer {
 		$match0 = $matches[0];
 		$section = !empty($match0->section_name);
 		if ($section) {
-			echo '<section class="alignwide" id="' . Util::make_id($match0->section_name) . '">'
-				. '<h2' . ($h2_class ? ' class="' . $h2_class . '"' : '') . '>'
-				. $match0->section_name . "</h2>\n";
+			echo '<section class="alignwide" id="', Util::make_id($match0->section_name), '"><h2',
+				$h2_class ? ' class="' . $h2_class . '"' : '', '>',
+				$match0->section_name, "</h2>\n";
 		}
 		if (!empty($groups[$comp_id])) {
 			Table_Renderer::tables($groups[$comp_id], 'cup', $year, $remarks);
@@ -223,7 +218,7 @@ class Cup_Draw_Renderer {
 		}
 		// note: flags MUST be first class as history update checks for 'ul class="flags'
 		// to add css
-		echo '<ul class="flags' . ($section ? '' : ' alignwide') . "\">\n";
+		echo '<ul class="flags', $section ? '' : ' alignwide', "\">\n";
 		$prev_round = 0;
 		$last_match = 0;
 		// if the top match in round 1 doesn't exist then lose the whitespace that would create
@@ -238,9 +233,9 @@ class Cup_Draw_Renderer {
 				if ($shrink_round1 && $match->round > 1) {
 					$rClass--;
 				}
-				echo "<li>\n" . '<div class="round-title"><h3>' . $rounds[$prev_round]
-				. '</h3>' . (isset($match->match_date) ? date('j M Y ', strtotime($match->match_date)) : '')
-				. '</div>'  . "\n" . '<ul class="r' . $rClass . $ulClass . '">';
+				echo "<li>\n", '<div class="round-title"><h3>', $rounds[$prev_round],
+					'</h3>', isset($match->match_date) ? date('j M Y ', strtotime($match->match_date)) : '',
+					'</div>', "\n" , '<ul class="r', $rClass, $ulClass, '">';
 				$prev_round = $round;
 				$last_match = 0;
 			}
@@ -300,21 +295,21 @@ class Cup_Draw_Renderer {
 					$ha2 = 'NH '; $ha1 = 'NA ';
 					break;
 			}
-			echo '<li><div class="match-panel"><div>' . $ha1;
+			echo '<li><div class="match-panel"><div>', $ha1;
 			if (!empty($match->team1)) {
 				echo htmlspecialchars(empty($match->alias1) ? $match->team1 : $match->alias1, ENT_NOQUOTES);
 			}
-			echo  (isset($match->team1_goals) && $match->team1_goals != null ? '<span class="score">' . $match->team1_goals . '</span>' : '')
-			. '</div><div>'	. $ha2;
+			echo  (isset($match->team1_goals) && $match->team1_goals != null ? '<span class="score">' . $match->team1_goals . '</span>' : ''),
+				'</div><div>', $ha2;
 			if (!empty($match->team2)) {
 				echo htmlspecialchars(empty($match->alias2) ? $match->team2 : $match->alias2, ENT_NOQUOTES);
 			}
-			echo (isset($match->team2_goals) && $match->team2_goals != null ? '<span class="score">' . $match->team2_goals . '</span>' : '')
-			. '</div></div>' . $after . '</li>';
+			echo (isset($match->team2_goals) && $match->team2_goals != null ? '<span class="score">' . $match->team2_goals . '</span>' : ''),
+				'</div></div>', $after, '</li>';
 		}
 		echo "</ul></li></ul>\n";
 		if (isset($remarks[$comp_id]))
-			echo '<p>' . $remarks[$comp_id]->remarks . "</p>\n";
+			echo '<p>', $remarks[$comp_id]->remarks, "</p>\n";
 		if ($section) echo "</section>\n";
 	}
 }

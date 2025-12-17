@@ -41,10 +41,10 @@ if ($comp->head_to_head && count($wins) > 0) {
 		if ($total !== 0) {
 			echo ', ';
 		}
-		echo htmlspecialchars($winner, ENT_NOQUOTES) . ' ' . $count;
+		echo htmlspecialchars($winner, ENT_NOQUOTES), ' ', $count;
 		$total += $count;
 	}
-	echo ' (Total: ' .$total  . ")</p>\n";
+	echo ' (Total: ', $total, ")</p>\n";
 }
 echo '<div class="scrollable"><table class="is-style-boxed-striped">', "\n",
 	'<thead><tr><th>Year</th><th>Winner</th>';
@@ -59,11 +59,11 @@ foreach ($rows as $row) {
 	} else {
 		echo $row->year;
 	}
-	echo '</th><td>' . htmlspecialchars($row->winner, ENT_NOQUOTES) . '</td>';
+	echo '</th><td>', htmlspecialchars($row->winner, ENT_NOQUOTES), '</td>';
 	if ($rup) {
-		echo ($row->result ? '<td class="center">' : '<td>'), $row->result, '</td><td>'
-			. ($row->runner_up ? htmlspecialchars($row->runner_up, ENT_NOQUOTES) : '')
-			. '</td>';
+		echo $row->result ? '<td class="center">' : '<td>', $row->result, '</td><td>',
+			$row->runner_up ? htmlspecialchars($row->runner_up, ENT_NOQUOTES) : '',
+			'</td>';
 	}
 	echo "</tr>\n";
 }

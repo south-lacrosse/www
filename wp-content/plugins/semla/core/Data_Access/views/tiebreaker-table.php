@@ -17,7 +17,7 @@ foreach ($rows as $row) {
 ?>
 <h2>Tiebreaker for <?= $comp ?>, <?= $orig_points ?> points</h2>
 <table class="widefat striped" role="presentation">
-<thead><tr><td><?php echo implode('</td><td>', $cols); ?></td></tr></thead>
+<thead><tr><td><?= implode('</td><td>', $cols); ?></td></tr></thead>
 <tbody>
 <?php
 	}

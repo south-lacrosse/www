@@ -6,8 +6,8 @@ foreach ( $rows as $row ) {
 	if ($row->match_date !== $last_date) {
 		$last_date = $row->match_date;
 		$first_fixture_in_date = true;
-		echo '<h2>' . date('jS F Y', strtotime($last_date)) // use full month here
-			. "</h2>\n";
+		echo '<h2>', date('jS F Y', strtotime($last_date)), // use full month here
+			"</h2>\n";
 	}
 	if ($first_fixture_in_date) {
 		$first_fixture_in_date = false;

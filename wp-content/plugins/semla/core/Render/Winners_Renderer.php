@@ -75,7 +75,7 @@ class Winners_Renderer {
 	private static function year_row_header($year, $full_page, $has_data) {
 		echo '<tr><th>';
 		if ($has_data) {
-			echo '<a href="' . $full_page . '-' . $year . '">' . $year . '</a>';
+			echo '<a href="', $full_page, '-', $year, '">', $year, '</a>';
 		} else {
 			echo $year;
 		}
@@ -126,8 +126,8 @@ class Winners_Renderer {
 			} else {
 				echo "</tbody></table></div>\n";
 			}
-			echo '<div class="alignwide scrollable"><table class="is-style-boxed-striped">'
-				. "\n<thead><tr><th>Year</th>";
+			echo '<div class="alignwide scrollable"><table class="is-style-boxed-striped">',
+				"\n<thead><tr><th>Year</th>";
 			foreach ($row_comps as $comp_id) {
 				self::column_heading($comps[$comp_id]);
 			}
@@ -135,6 +135,6 @@ class Winners_Renderer {
 			self::$prev_header = $header;
 		}
 		self::year_row_header($year,$full_page,$has_data);
-		echo '<td>' . implode('</td><td>',$cols) . "</td></tr>\n";
+		echo '<td>', implode('</td><td>', $cols), "</td></tr>\n";
 	}
 }

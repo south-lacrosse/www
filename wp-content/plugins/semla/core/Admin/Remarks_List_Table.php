@@ -69,7 +69,7 @@ class Remarks_List_Table extends Inline_Edit_List_Table {
 	}
 
 	public function single_row( $item ) {
-		echo '<tr id="comp-' . $item->id . '">';
+		echo '<tr id="comp-', $item->id, '">';
 		$this->single_row_columns( $item );
 		echo '</tr>';
 	}

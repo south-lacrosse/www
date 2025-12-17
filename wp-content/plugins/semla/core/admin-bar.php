@@ -55,6 +55,6 @@ add_action('wp_before_admin_bar_render', function() {
 
 // add question mark icon to help link
 add_action(is_admin() ? 'admin_head' : 'wp_head', function() {
-	echo '<style>#wp-admin-bar-semla-help>.ab-item::before{'
-		.'content:"\f223";top:2px;}</style>' . "\n";
+	echo '<style>#wp-admin-bar-semla-help>.ab-item::before{content:"\f223";top:2px;}</style>',
+		"\n";
 });

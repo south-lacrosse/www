@@ -75,15 +75,15 @@ class Fixtures_Renderer {
 				$result .= '<br>at ' . htmlspecialchars($venue, ENT_NOQUOTES);
 				$hl = ' hl';
 			}
-			echo '<td class="result' . $hl . '">' . $result . '</td>';
+			echo '<td class="result', $hl, '">', $result, '</td>';
 			$this->td_team($row->away,' class="away"', $team_link);
 			if ($this->show_competition) {
-				echo '<td class="comp">' . $row->competition . '</td>';
+				echo '<td class="comp">', $row->competition, '</td>';
 			} else if ($this->show_round) {
 				// round/group should be the last word
 				$pos = strrpos($row->competition, ' ');
 				$round = $pos === false ? $row->competition : substr($row->competition, $pos + 1);
-				echo '<td class="comp">' . str_replace('Final', 'F', $round) . '</td>';
+				echo '<td class="comp">', str_replace('Final', 'F', $round), '</td>';
 			}
 			echo "</tr>\n";
 		}
@@ -91,20 +91,21 @@ class Fixtures_Renderer {
 
 		if (!empty($keys)) {
 			ksort($keys);
-			echo '<p><b>Key:</b> ' . implode(', ', $keys) . "</p>\n";
+			echo '<p><b>Key:</b> ', implode(', ', $keys), "</p>\n";
 		}
 		if ($year == 0) {
 			if ($type === 'team') {
 				$cal_url = Rest::get_calendar_url($arg);
 				echo '<p class="no-print">';
 				if (!empty($options['team_club'][$arg])) {
-					echo 'Go to <a href="clubs/'.$options['team_club'][$arg].'">club page</a> or ';
+					echo 'Go to <a href="clubs/', $options['team_club'][$arg], '">club page</a> or ';
 				}
-				echo '<b>Subscribe:</b> <a href="' . $cal_url . '">iCalendar link</a>'
-					. ' | <a rel="nofollow" href="https://calendar.google.com/calendar/render?cid='
-					. str_replace('https://', 'webcal://', $cal_url) . '">add to Google Calendar</a></p>'."\n";
+				echo '<b>Subscribe:</b> <a href="', $cal_url, '">iCalendar link</a>',
+					' | <a rel="nofollow" href="https://calendar.google.com/calendar/render?cid=',
+					str_replace('https://', 'webcal://', $cal_url), '">add to Google Calendar</a></p>'."\n";
 			} elseif ($type === 'club' && !empty($options['club'][$arg]->club_page)) {
-				echo '<p class="no-print">Go to <a href="clubs/'.$options['club'][$arg]->club_page.'">club page</a></p>'."\n";
+				echo '<p class="no-print">Go to <a href="clubs/', $options['club'][$arg]->club_page,
+					'">club page</a></p>', "\n";
 			}
 		}
 	}
@@ -139,8 +140,7 @@ class Fixtures_Renderer {
 				$this->last_month = $month;
 				$this->last_day = $day;
 
-				echo '<td>' . self::MONTHS[$month -1]
-					. '</td><td>' .$day . '</td>';
+				echo '<td>', self::MONTHS[$month -1], '</td><td>', $day, '</td>';
 			} else {
 				echo '<td></td><td></td>';
 			}
@@ -148,13 +148,13 @@ class Fixtures_Renderer {
 			if ($month !== $this->last_month) {
 				$this->last_month = $month;
 				$this->last_day = null;
-				echo '<td>' . self::MONTHS[$month -1] . '</td>';
+				echo '<td>', self::MONTHS[$month -1], '</td>';
 			} else {
 				echo '<td></td>';
 			}
 			if ($day !== $this->last_day) {
 				$this->last_day = $day;
-				echo '<td>' .$day . '</td>';
+				echo '<td>', $day, '</td>';
 			} else {
 				echo '<td></td>';
 			}
@@ -169,14 +169,14 @@ class Fixtures_Renderer {
 		if ($this->query_type === 'date') {
 			echo '<hr>';
 		}
-		echo "\n" . '<div class="scrollable"><table class="table-data fixtures-'
-			. $this->query_type . '">';
+		echo "\n", '<div class="scrollable"><table class="table-data fixtures-',
+			$this->query_type, '">';
 		if ($this->query_type !== 'date') {
 			echo '<caption><span class="caption-text">';
 			if ($this->date_in_heading) {
 				echo date('jS F ', strtotime($fixture_date)); // use full month here
 			}
-			echo substr($fixture_date,0,4) . "</span></caption>\n";
+			echo substr($fixture_date,0,4), "</span></caption>\n";
 		}
 		echo '<thead><tr>';
 		if (!$this->date_in_heading) {

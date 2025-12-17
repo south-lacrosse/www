@@ -56,7 +56,7 @@ class Inline_Edit_List_Table extends \WP_List_Table {
 		<table style="display:none"><tbody id="inlineedit">
 
 		<tr id="inline-edit" class="inline-edit-row">
-			<td colspan="<?php echo $this->get_column_count(); ?>" class="colspanchange">
+			<td colspan="<?= $this->get_column_count() ?>" class="colspanchange">
 			<div class="inline-edit-wrapper">
 
 			<fieldset>

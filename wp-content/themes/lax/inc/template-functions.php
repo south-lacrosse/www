@@ -128,7 +128,7 @@ function lax_breadcrumbs() {
 
 		echo '<nav><ul class="breadcrumbs nav-list">';
 		foreach ( $anc as $ancestor ) {
-			echo '<li><a href="' . get_permalink($ancestor) . '">' . get_the_title($ancestor) . '</a></li>';
+			echo '<li><a href="', get_permalink($ancestor), '">', get_the_title($ancestor), '</a></li>';
 		}
 		echo '<li>';
 		add_filter('semla_change_the_title', '__return_false');
@@ -176,7 +176,7 @@ function lax_posts_navigation() {
 <?php
  	if ($current > 1) {
 		$prev = $current  - 1;
-		echo "\n" . '<a class="no-ul page-link" href="',
+		echo "\n", '<a class="no-ul page-link" href="',
 			$prev === 1 ? $page_1 : str_replace('%#%', $prev, $base),
 			"\">prev</a>\n";
 	}
@@ -201,7 +201,7 @@ function lax_posts_navigation() {
 			$label ? $label : $page, '</a>';
 	}
 	if ($current < $total) {
-		echo "\n" . '<a class="no-ul page-link" href="',
+		echo "\n", '<a class="no-ul page-link" href="',
 			str_replace('%#%', $current + 1, $base),
 			"\">next</a>\n";
 	} ?>

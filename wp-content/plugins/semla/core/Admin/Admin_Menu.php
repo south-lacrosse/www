@@ -57,8 +57,8 @@ class Admin_Menu {
 		?>
 	<h2 class="nav-tab-wrapper" style="margin-bottom:10px"><?php
 		foreach ($tabs as $tab_slug => $tab) {
-			echo '<a href="?page='. $page . '&tab=' . $tab_slug . '" class="nav-tab'
-				. ($active_tab === $tab_slug ? ' nav-tab-active' : '') . '">' . $tab . '</a>';
+			echo '<a href="?page=', $page, '&tab=', $tab_slug, '" class="nav-tab',
+				$active_tab === $tab_slug ? ' nav-tab-active' : '', '">', $tab, '</a>';
 		}?>
 	</h2>
 <?php

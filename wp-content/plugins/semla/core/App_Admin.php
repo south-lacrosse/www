@@ -235,9 +235,9 @@ class App_Admin {
 			echo '<style>';
 			/** Add styles to show the correct icons for our custom post types */
 			foreach( self::POST_TYPES as $post_type => $dashicon ) {
-				echo "#dashboard_right_now a.$post_type-count:before,"
-					. "#dashboard_right_now span.$post_type-count:before{content:"
-					. "\"\\$dashicon\";}";
+				echo "#dashboard_right_now a.$post_type-count:before,",
+					"#dashboard_right_now span.$post_type-count:before{content:",
+					"\"\\$dashicon\";}";
 			}
 			echo "</style>\n";
 		});
