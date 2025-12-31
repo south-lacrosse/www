@@ -60,7 +60,7 @@ class Purge_Command {
 	 */
 	public function current() {
 		Cache::clear_cache();
-		$this->done('Current');
+		$this->cache_cleared('Current');
 	}
 
 	/**
@@ -68,7 +68,7 @@ class Purge_Command {
 	 */
 	public function history() {
 		Cache::clear_cache('hist');
-		$this->done('History');
+		$this->cache_cleared('History');
 	}
 
 	/**
@@ -79,10 +79,10 @@ class Purge_Command {
 			WP_CLI::error( 'Current theme does not support the menu cache.' );
 		}
 		do_action('semla_clear_menu_cache');
-		$this->done('Menu');
+		$this->cache_cleared('Menu');
 	}
 
-	private function done($cache) {
+	private function cache_cleared($cache) {
 		WP_CLI::success( "$cache cache cleared." );
 		Util::clear_lscache();
 	}
