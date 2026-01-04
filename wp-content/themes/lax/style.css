@@ -973,6 +973,14 @@ a.btn {
 #semla_toc-list li {
 	margin-bottom: 0.5em;
 }
+#semla_toc.semla_toc-floatnone:not(:first-child) {
+	margin-top: 1em;
+}
+#semla_toc.semla_toc-floatnone {
+	padding: 0;
+	float: none;
+	margin-bottom: 1em;
+}
 @media (max-width: 719px) {
 	#semla_toc:not(:first-child) {
 		margin-top: 1em;

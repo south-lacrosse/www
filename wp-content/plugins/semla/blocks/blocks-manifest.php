@@ -233,6 +233,10 @@ return array(
 				'source' => 'html',
 				'selector' => 'nav>ul',
 				'default' => ''
+			),
+			'floatRight' => array(
+				'type' => 'boolean',
+				'default' => true
 			)
 		),
 		'example' => array(
