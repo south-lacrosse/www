@@ -56,12 +56,7 @@ class App_Admin {
 					self::init_edit($screen);
 					break;
 				case 'post': // post/page/media editor
-					add_filter( 'default_content', [self::class, 'default_content'], 10, 2);
-					add_filter('litespeed_bypass_metabox', '__return_true');
-					// don't show View Media File in edit media
-					if ($attachment_post_type = get_post_type_object('attachment')) {
-						$attachment_post_type->show_in_admin_bar = false;
-					}
+					self::init_post($screen);
 					break;
 				case 'user':
 					User::init_user();
@@ -109,25 +104,6 @@ class App_Admin {
 			// for backwards compatibility
 			remove_action('admin_print_styles', 'print_emoji_styles');
 		});
-	}
-
-	/**
-	 * Test if the user wants to duplicate an existing page/post/CPT, and if so
-	 * set the content of the new post. A 'Duplicate' link is added to each post in
-	 * the relevant list table, and links to the new-post page with the duplicate
-	 * query var set.
-	 */
-	public static function default_content($post_content, $post) {
-		if ( isset( $_GET['duplicate'] ) ) {
-			$duplicate = absint( $_GET['duplicate'] );
-			if ($duplicate && current_user_can( 'edit_post', $duplicate ))  {
-				$duplicated_post = get_post( $duplicate );
-				if ( $duplicated_post instanceof \WP_Post ) {
-					return $duplicated_post->post_content;
-				}
-			}
-		}
-		return $post_content;
 	}
 
 	public static function enqueue_block_editor_assets() {
@@ -293,8 +269,8 @@ class App_Admin {
 			if (current_user_can( 'edit_post', $post->ID )) {
 				$actions['semla_duplicate'] = '<a href="post-new.php?'
 					. ('post' === $post->post_type ? '' : "post_type=$post->post_type&amp;")
-					. 'duplicate=' . $post->ID
-					. '" aria-label="Duplicate &#8220;' . esc_attr($post->post_title) . '&#8221;">Duplicate</a>';
+					. 'duplicate=' . $post->ID . '" aria-label="Duplicate &#8220;'
+					. esc_attr($post->post_title) . '&#8221;">Duplicate</a>';
 			}
 			return $actions;
 		}, 10, 2);
@@ -313,6 +289,43 @@ class App_Admin {
 				}
 			}
 		}, 10, 2);
+	}
+
+	public static function init_post($screen) {
+		// A 'Duplicate' link is added to each post in the relevant list table,
+		// and links to the new-post page with the duplicate query var set. We
+		// duplicate on the new post screen so it saves as an auto-draft, so if
+		// the user abandons without saving then the post will be cleaned up
+		// automatically.
+		if ( isset( $_GET['duplicate'] ) && $screen->action === 'add') {
+			$duplicate = absint( $_GET['duplicate'] );
+			if ($duplicate && current_user_can( 'edit_post', $duplicate ))  {
+				// duplicate post content
+				add_filter('default_content', function($post_content, $post) {
+					$duplicated_post = get_post( absint( $_GET['duplicate'] ) );
+					if ( $duplicated_post instanceof \WP_Post ) {
+						return $duplicated_post->post_content;
+					}
+					return $post_content;
+				}, 10, 2);
+				// duplicate taxonomies
+				add_action('wp_insert_post', function($post_ID, $post) {
+					if ( 'auto-draft' !== $post->post_status) return;
+					$duplicated_post = absint( $_GET['duplicate'] );
+					foreach (get_object_taxonomies($post->post_type) as $taxonomy) {
+						$post_terms = wp_get_object_terms($duplicated_post, $taxonomy, ['fields' => 'ids']);
+						if ($post_terms) {
+							wp_set_object_terms($post_ID, $post_terms, $taxonomy, false);
+						}
+					}
+				}, 10, 4);
+			}
+		}
+		add_filter('litespeed_bypass_metabox', '__return_true');
+		// don't show View Media File in edit media
+		if ($attachment_post_type = get_post_type_object('attachment')) {
+			$attachment_post_type->show_in_admin_bar = false;
+		}
 	}
 
 	// Remove the blog_public option from the Reading screen, as we override it
