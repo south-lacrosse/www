@@ -22,7 +22,7 @@ class App_Admin {
 		if (defined('DOING_AJAX') && DOING_AJAX) {
 			if (!empty($_POST['action']) && $_POST['action'] ==='inline-save'
 			&& !empty($_POST['post_type'])) {
-				self::add_modified_column($_POST['post_type']);
+				self::modify_posts_list_table($_POST['post_type']);
 			}
 			// short circuit to avoid running anything not needed in AJAX
 			// IMPORTANT: make sure anything which can be called from AJAX is
@@ -254,7 +254,7 @@ class App_Admin {
 				];
 			});
 		}
-		self::add_modified_column($screen->post_type);
+		self::modify_posts_list_table($screen->post_type);
 		add_filter( "manage_{$screen->id}_sortable_columns", function ($columns) {
 			$columns['modified'] = ['modified', true, 'Modified Date', 'Table ordered by Modified Date.'];
 			return $columns;
@@ -263,8 +263,11 @@ class App_Admin {
 			echo '<style>.fixed .column-modified{width:14%}</style>';
 		});
 
+	}
+
+	private static function modify_posts_list_table($post_type) {
 		// add link to allow users to duplicate a post
-		$action_type = $screen->post_type === 'page' ? 'page' : 'post';
+		$action_type = is_post_type_hierarchical( $post_type ) ? 'page' : 'post';
 		add_filter("{$action_type}_row_actions", function($actions, $post) {
 			if (current_user_can( 'edit_post', $post->ID )) {
 				$actions['semla_duplicate'] = '<a href="post-new.php?'
@@ -274,9 +277,7 @@ class App_Admin {
 			}
 			return $actions;
 		}, 10, 2);
-	}
-
-	private static function add_modified_column($post_type) {
+		// add modified column
 		add_filter( "manage_{$post_type}_posts_columns", function($columns) {
 			$columns['modified'] = 'Modified';
 			return $columns;
