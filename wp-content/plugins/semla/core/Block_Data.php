@@ -176,7 +176,7 @@ class Block_Data {
 	}
 
 	public function fixtures_results() {
-		if (is_admin() || (defined('REST_REQUEST') && REST_REQUEST)) {
+		if (is_admin() || wp_is_serving_rest_request()) {
 			// For REST/editor requests we won't have parsed any params, so fake it here
 			$this->year = 0;
 			$this->type = 'default';
