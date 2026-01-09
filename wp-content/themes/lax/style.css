@@ -1439,21 +1439,23 @@ dd {
 .page-nav {
 	margin-top: 0;
 	margin-bottom: 0.5em;
-	overflow: hidden;
 }
 .hist-nav {
 	max-width: none;
 	margin-bottom: 0.5em;
 	overflow: hidden;
 }
-.nav-previous {
-	float: left;
-	width: 47%;
+.prev-next {
+	/* alternatively can use grid
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	grid-column-gap: 1em; */
+	display: flex;
+	justify-content: space-between;
+	column-gap: 1em;
 }
-.nav-next {
+a[rel='next'] {
 	text-align: right;
-	float: right;
-	width: 47%;
 }
 .left-nav {
 	width: 35%;

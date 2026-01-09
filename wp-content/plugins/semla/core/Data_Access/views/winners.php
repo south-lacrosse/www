@@ -17,18 +17,27 @@ foreach ($rows as $row) {
 	if ($row->has_data) $with_data = true;
 }
 if ($comp->group_id && $next_prevs) {
-	echo '<nav class="hist-nav"><h2 class="screen-reader-text">Competition navigation</h2>', "\n";
+	$prev = $next = '';
 	foreach ($next_prevs as $next_prev) {
 		if ($next_prev->class === 'p') {
-			$class = 'nav-previous';
-			$name = "« $next_prev->name";
+			$prev = "<a href=\"$next_prev->history_page\" rel=\"prev\">« $next_prev->name</a>";
 		} else {
-			$class = 'nav-next';
-			$name = "$next_prev->name »";
+			$next = "<a href=\"$next_prev->history_page\" rel=\"next\">$next_prev->name »</a>";
 		}
-		echo "<div class=\"$class\"><a href=\"$next_prev->history_page\">$name</a></div>\n";
 	}
-	echo "</nav>\n";
+	if ($next) {
+		if ($prev) {
+			$nav_class = ' prev-next';
+		} else {
+			// single next link, so make sure the text is right justified
+			$nav_class = ' right';
+		}
+	} else {
+		$nav_class = '';
+	}
+	echo '<nav class="hist-nav', $nav_class,
+		'" aria-label="Competitions"><h2 class="screen-reader-text">Competition navigation</h2>', "\n",
+		$prev, $next, "\n</nav>\n";
 }
 if ($with_data) {
 	echo "<p class=\"no-print\">Click the year for the complete draw.</p>\n";
