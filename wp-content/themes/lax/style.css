@@ -153,32 +153,25 @@ button {
 	word-wrap: break-word;
 }
 /* start non-editor */
-#sidebar-mini-tables {
-	display: none;
+.content-with-mini-tables {
+	display: flex;
+	flex-wrap: wrap;
+	column-gap: 0.75rem;
+	row-gap: 1.5rem;
 }
-@media screen and (min-width: 680px) {
+.with-mini-tables {
+	flex: 1;
+	min-width: 24rem;
+}
+#sidebar-mini-tables {
+	flex: none;
+	font-size: 0.875em;
+	width: 13.75rem;
+}
+@media screen and (min-width: 720px) {
 	.middle {
 		padding-left: 1.5em;
 		padding-right: 1.5em;
-	}
-	/* We float left here as recent posts block has clear:both, so if we float left & right then
-		the block will be below the sidebar! See https://alistapart.com/article/negativemargins/ */
-	/* #content */
-	.with-mini-tables {
-		margin-right: -14.5em;
-		float: left;
-		width: 100%;
-	}
-	.with-mini-tables-inner {
-		margin-right: 14.5em;
-		margin-bottom: 1em;
-	}
-	#sidebar-mini-tables {
-		padding-left: 0.75rem;
-		display: block;
-		font-size: 0.875em;
-		float: left; /* clear: right; needed if toggle-menu can be displayed at the same time as sidebar */
-		width: 14.5rem;
 	}
 }
 .entry-footer {
