@@ -14,7 +14,7 @@
 		scroll-padding-top: 0;
 	}
 }
-#sidebar-content {
+.sidebar-content {
 	top: var(--wp-admin--admin-bar--height);
 }
 
@@ -23,7 +23,7 @@
 	html {
 		scroll-padding-top: calc(var(--wp-admin--admin-bar--height) + 40px);
 	}
-	#sidebar-content {
+	.sidebar-content {
 		top: calc(var(--wp-admin--admin-bar--height) + 40px);
 	}
 	.menu-nav {

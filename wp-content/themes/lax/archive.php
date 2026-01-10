@@ -5,9 +5,9 @@
 
 require __DIR__ . '/template-parts/header.php';
 $sidebar_active = is_active_sidebar( 'sidebar-posts' );
-if ($sidebar_active) echo "<div id=\"content-area\">\n";
+if ($sidebar_active) echo "<div class=\"content-with-sidebar\">\n";
 ?>
-<main id="content">
+<main id="content" class="with-sidebar">
 <?php
 if (have_posts()) : ?>
 <header>
@@ -34,7 +34,7 @@ endif; ?>
 </main>
 <?php if ($sidebar_active) : ?>
 <aside id="sidebar">
-<div id="sidebar-content">
+<div class="sidebar-content">
 <?php dynamic_sidebar( 'sidebar-posts' ); ?>
 </div>
 </aside>
