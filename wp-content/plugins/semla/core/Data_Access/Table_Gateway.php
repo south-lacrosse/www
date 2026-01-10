@@ -10,8 +10,11 @@ class Table_Gateway {
 	/**
 	 * Return html for tables for a year
 	 * @param int $year year from history, or 0 for current
-	 * @param int $league_id
-	 * @param string $suffix suffix for links to previous/next year for history
+	 * @param int $league_id id of the competition group for the league
+	 * @param string $page tables page for league, used fot nest/prev page in
+	 *   history. Ignored if year is 0
+	 * @param string $grid_page page to link to for fixtures grid. Ignored if
+	 *   year is 0
 	 */
 	public static function get_tables($year, $league_id, $page='', $grid_page='') {
 		global $wpdb;

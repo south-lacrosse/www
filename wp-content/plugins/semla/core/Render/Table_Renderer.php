@@ -5,29 +5,51 @@ use Semla\Utils\Util;
  * Displaying league tables
  */
 class Table_Renderer {
+	/**
+	 * @param string $page base slug for page, next/prev links will be this + -year
+	 * @param string $grid_page fixtures grid page, if there are fixtures for the year
+	 * @param int $year
+	 * @param object $years previous and next years for navigation
+	 */
 	public static function year_navigation($page,$grid_page,$year,$years) {
-		if (!$years->next && !$years->prev) return;
-		echo '<nav class="hist-nav"><h2 class="screen-reader-text">Tables navigation</h2>',
-			"\n";
-		if ($years->prev || $grid_page) {
-			echo '<div class="left-nav">';
-			if ($years->prev) {
-				echo '<a href="', $page, '-', $years->prev, '">« ', $years->prev, ' </a>';
+		if (!$years->next && !$years->prev && !$grid_page) return;
+
+		if ($grid_page) {
+			if ($years->next || $years->prev) {
+				$nav_class = ' prev-center-next';
 			} else {
-				echo '&nbsp;';
+				$nav_class = '';
 			}
-			echo "</div>\n";
+		} else {
+			if ($years->next) {
+				if ($years->prev) {
+					$nav_class = ' prev-next';
+				} else {
+					// single next link, so make sure the text is right justified
+					$nav_class = ' right';
+				}
+			} else {
+				$nav_class = '';
+			}
+		}
+		echo '<nav class="hist-nav', $nav_class,
+			'"><h2 class="screen-reader-text">Tables navigation</h2>', "\n";
+		if ($years->prev) {
+			echo '<a href="', $page, '-', $years->prev, '" rel="prev">« ',
+				$years->prev, "</a>";
+		} elseif ($grid_page) {
+			echo "<div></div>";
 		}
 		if ($grid_page) {
-			echo '<div class="center-nav"><a href="',
+			echo '<a class="center" href="',
 				str_replace('fixtures','results',$grid_page),
-				'-', $year, '">Results Grid</a></div>', "\n";
+				'-', $year, '">Results Grid</a>';
 		}
 		if ($years->next) {
-			echo '<div class="right-nav"><a href="', $page, '-', $years->next,
-				'">', $years->next, ' »</a></div>';
+			echo '<a href="', $page, '-', $years->next, '" rel="next">',
+				$years->next, ' »</a>';
 		}
-		echo "</nav>\n";
+		echo "\n</nav>\n";
 	}
 
 	/**

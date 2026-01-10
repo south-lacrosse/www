@@ -7,8 +7,9 @@ use Semla\Render\Cup_Draw_Renderer;
 class Cup_Draw_Gateway {
 
 	/**
-	 * @param mixed $year year from history, or 0 for current
-	 * @param string display empty for default, or "rounds"
+	 * @param int $year year from history, or 0 for current
+	 * @param int $group_id id of the competition group to display, e.g. Flags
+	 * @param string $display empty for default, or "rounds"
 	 * @param string $slug slug for links to previous/next year for history
 	 */
 	public static function get_draws($year, $group_id, $display = '', $slug='') {

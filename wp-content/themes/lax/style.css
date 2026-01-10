@@ -1457,22 +1457,10 @@ dd {
 a[rel='next'] {
 	text-align: right;
 }
-.left-nav {
-	width: 35%;
-	float: left;
-	text-align: left;
-}
-.center-nav {
-	white-space: normal;
-	margin-left: 3%;
-	width: 27%;
-	float: left;
-	text-align: center;
-}
-.right-nav {
-	width: 35%;
-	float: right;
-	text-align: right;
+.prev-center-next {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	grid-column-gap: 1em;
 }
 .paging {
 	font-weight: 600;

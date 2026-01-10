@@ -9,6 +9,15 @@ class Cup_Draw_Renderer {
 	const ROUNDS_LONG = ['Last 64', 'Last 32', 'Last 16', 'Quarter Final','Semi Final','Final'];
 	const ROUNDS_SHORT = ['R64', 'R32', 'R16', 'QF','SF'];
 
+	/**
+	 * @param int $year year from history, or 0 for current
+	 * @param string $display empty for default, or "rounds"
+	 * @param object $years previous and next years for navigation
+	 * @param array $rows rows from database for draw
+	 * @param array $group_rows rows from database for group stages
+	 * @param array  $remarks array of strings keyed by competition id
+	 * @param string $slug slug for links to previous/next year for history
+	 */
 	public static function cup_draw($year,$display,$years,$rows,$group_rows,$remarks,$slug='') {
 		// split group stage "divisions" by their flags comp_id
 		$groups = [];
@@ -30,21 +39,21 @@ class Cup_Draw_Renderer {
 		if ($years && ($years->next || $years->prev)) {
 			$slug .= '-';
 			$query = $display ? '-rounds' : '';
-			echo '<nav class="hist-nav"><h2 class="screen-reader-text">Draws navigation</h2>',
-				'<div class="left-nav">';
+			echo '<nav class="hist-nav prev-center-next"><h2 class="screen-reader-text">Draws navigation</h2>',
+				"\n";
 			if ($years->prev) {
-				echo '<a href="', $slug, $years->prev, $query, '">« ', $years->prev, '</a>';
+				echo '<a href="', $slug, $years->prev, $query, '" rel="prev">« ', $years->prev, '</a>';
 			} else {
-				echo '&nbsp;';
+				echo '<div></div>';
 			}
-			echo '</div><div class="center-nav"><a href="', $slug, $year,
-				$display ? '' : '-rounds', '">View ', $display ? 'as Grid' : 'Rounds',
-				'</a></div>';
+			echo '<a class="center" href="', $slug, $year,
+				$display ? '' : '-rounds', '">View ', $display ? 'Bracket' : 'Rounds',
+				'</a>';
 			if ($years->next) {
-				echo '<div class="right-nav"><a href="', $slug, $years->next, $query,
-					'">', $years->next, ' »</a></div>';
+				echo '<a href="', $slug, $years->next, $query,
+					'" rel="next">', $years->next, ' »</a>';
 			}
-			echo "</nav>\n";
+			echo "\n</nav>\n";
 		} else {
 			if ($year) {
 				$url = "$slug-$year";
@@ -57,7 +66,7 @@ class Cup_Draw_Renderer {
 					$url = substr($url, 0, -7);
 				}
 			}
-			echo '<p><a href="', $url, '">View ', $display ? 'as Grid' : 'Rounds', "</a></p>\n";
+			echo '<p><a href="', $url, '">View ', $display ? 'Bracket' : 'Rounds', "</a></p>\n";
 			if (!$year) {
 				echo '<p><strong>Please note:</strong> dates given are those initially scheduled for the round, however the',
 					' actual fixtures may be rearranged or postponed. Please check the <a href="/fixtures">complete fixtures list</a>',
