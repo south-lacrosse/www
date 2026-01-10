@@ -1428,10 +1428,6 @@ dd {
 /* start non-editor */
 /*--------------- Paging and Next/previous navigation ----------------*/
 
-/* With overflow hidden on the parent element, the parent will expand to
-   contain the floats. This means margins are respected even if all
-   elements within are floated.
-   The alternate id to do :after with clear: both;, which isn't as good  */
 .page-nav {
 	margin-top: 0;
 	margin-bottom: 0.5em;
@@ -1439,7 +1435,6 @@ dd {
 .hist-nav {
 	max-width: none;
 	margin-bottom: 0.5em;
-	overflow: hidden;
 }
 .prev-next {
 	/* alternatively can use grid
