@@ -943,9 +943,12 @@ a.btn {
 	border: 1px solid #ccc;
 	padding: 0.5em 0.75em 0 1em;
 }
-#semla_toc-nav > h4 {
+#semla_toc-nav > h2 {
+	font-size: 1em;
 	margin-top: 0;
 	margin-bottom: 0.5em;
+	padding-bottom: 0;
+	border-bottom: none;
 	display: inline-block;
 }
 #semla_toc-list {
