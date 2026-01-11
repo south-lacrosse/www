@@ -170,7 +170,7 @@ class App_Public {
 				[], '2.0', true );
 		}
 		?>
-<nav><ul class="breadcrumbs nav-list">
+<nav aria-label="Breadcrumb"><ul class="breadcrumbs nav-list">
 <li><a href="/history">History</a></li>
 <?php
 		$breadcrumbs = get_post_meta($post->ID, '_semla_breadcrumbs', true);

@@ -33,7 +33,7 @@ class Table_Renderer {
 			}
 		}
 		echo '<nav class="hist-nav', $nav_class,
-			'"><h2 class="screen-reader-text">Tables navigation</h2>', "\n";
+			'" aria-label="Tables"><h2 class="screen-reader-text">Tables navigation</h2>', "\n";
 		if ($years->prev) {
 			echo '<a href="', $page, '-', $years->prev, '" rel="prev">« ',
 				$years->prev, "</a>";

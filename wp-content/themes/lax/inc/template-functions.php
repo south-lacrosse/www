@@ -60,13 +60,13 @@ function lax_entry_footer() {
  * wp_nav_menu executes 4 queries, which returns a load of data, so menus are
  * cached here.
  */
-function lax_menu($menu_name) {
+function lax_menu($location) {
 	$customizer = is_customize_preview();
-	$menu_file = dirname(__DIR__ ) . '/template-parts/menu-' . $menu_name . '.html';
+	$menu_file = dirname(__DIR__ ) . '/template-parts/menu-' . $location . '.html';
 	if ($customizer || !@readfile($menu_file)) {
 		add_filter('semla_change_the_title', '__return_false');
 		ob_start();
-		if ($menu_name === 'main') {
+		if ($location === 'main') {
 			require_once __DIR__.'/Walker_Main_Menu.php';
 			wp_nav_menu([
 				'theme_location' => 'main',
@@ -80,18 +80,21 @@ function lax_menu($menu_name) {
 		} else {
 			require_once(__DIR__ . '/Walker_Basic_Menu.php');
 			wp_nav_menu([
-				'theme_location' => $menu_name,
+				'theme_location' => $location,
 				'items_wrap' => '%3$s', // remove <ul>: wrapper
 				'container' => false,
-				'walker' => new \Lax\Walker_Basic_Menu($menu_name === 'social' ? 'soc-a' : 'pop-a'),
+				'walker' => new \Lax\Walker_Basic_Menu($location === 'social' ? 'soc-a' : 'pop-a'),
 				'fallback_cb' => false
 			]);
 			$menu = ob_get_clean();
 			if ($menu) {
-				if ($menu_name === 'social') {
-					$menu = "<nav>\n<h2 class=\"soc-h\">Find us here:</h2>$menu\n</nav>";
+				// Note: the menu name is the name assigned in Appearance->Menu (and can be changed
+				// there), and not the location description from register_nav_menus()
+				$menu_name = esc_attr(wp_get_nav_menu_name($location));
+				if ($location === 'social') {
+					$menu = "<nav aria-label=\"$menu_name\">\n<h2 class=\"soc-h\">Find us here:</h2>$menu\n</nav>";
 				} else {
-					$menu = "<nav class=\"nav-$menu_name\">$menu\n</nav>";
+					$menu = "<nav aria-label=\"$menu_name\" class=\"nav-$location\">$menu\n</nav>";
 				}
 			}
 		}
@@ -126,7 +129,7 @@ function lax_breadcrumbs() {
 		// Get parents in the right order
 		$anc = array_reverse($anc);
 
-		echo '<nav><ul class="breadcrumbs nav-list">';
+		echo '<nav aria-label="Breadcrumb"><ul class="breadcrumbs nav-list">';
 		foreach ( $anc as $ancestor ) {
 			echo '<li><a href="', get_permalink($ancestor), '">', get_the_title($ancestor), '</a></li>';
 		}

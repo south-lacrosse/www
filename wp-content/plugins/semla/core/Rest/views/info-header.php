@@ -15,6 +15,6 @@
 	$route = $request->get_route();
 	$parent_url = rest_url(substr($route, 0,strrpos($route, '/')));
 ?>
-<nav>><a href="<?= $parent_url ?>"><?= $parent ?></a></nav>
+<nav aria-label="Parent">><a href="<?= $parent_url ?>"><?= $parent ?></a></nav>
 <?php endif; ?>
 <h1><?= $esc_title ?></h1>
