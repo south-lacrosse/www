@@ -86,7 +86,6 @@ button /** [type='button'],[type='reset'],[type='submit'] not used */ {
 
 html {
 	/* shows at bottom of page if body is not long enough */
-	
 	/* System fonts see https://booking.design/implementing-system-fonts-on-booking-com-a-lesson-learned-bdc984df627f
 		plus added system-ui for browsers that support that */
 	font-family:
@@ -142,7 +141,6 @@ button {
 	overflow-wrap: break-word;
 	word-wrap: break-word;
 }
-
 
 /*--------------------- Headings -------------------*/
 
@@ -230,8 +228,6 @@ h4 {
 .meta {
 	color: #707070;
 }
-
-
 
 /*--------------------- Links -------------------*/
 
@@ -866,8 +862,6 @@ dd {
 	}
 }
 
-
-
 /*-------------- Miscellaneous -----*/
 
 abbr[title] {
@@ -1051,5 +1045,3 @@ a.icon[href^='tel']::before {
 	height: 32px;
 	background-image: url(img/citymapper.svg);
 }
-
-
