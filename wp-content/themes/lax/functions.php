@@ -138,7 +138,7 @@ add_action('wp_enqueue_scripts', function() {
 		, [], '1.5.6');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
-		, ['lax-style'], '1.0');
+		, ['lax-style'], '1.1');
 	}
 });
 
