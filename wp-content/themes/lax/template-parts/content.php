@@ -22,7 +22,7 @@ if ($is_post) :
 </header>
 <?php
 endif; ?>
-<div class="entry-content">
+<div class="entry-content is-layout-flow">
 <?php
 	the_content('Continue reading <span class="screen-reader-text">"'
 		. the_title('', '', false) . '"</span> &rarr;');

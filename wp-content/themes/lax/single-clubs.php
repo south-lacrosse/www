@@ -15,7 +15,7 @@ while (have_posts()) {
 	if (!str_contains($post->post_content,'<!-- wp:post-title'))
 		echo "<h1 class=\"entry-title\">$team</h1>\n";
 ?>
-<div class="entry-content">
+<div class="entry-content is-layout-flow">
 <?php
 	the_content();
 
