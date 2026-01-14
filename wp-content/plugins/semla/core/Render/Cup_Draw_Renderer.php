@@ -191,6 +191,17 @@ class Cup_Draw_Renderer {
 
 	private static function get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks) {
 		$match_count = count($matches);
+		// We can shrink round 1 to the same size as round 2 IF all matches in round 2
+		//  don't have 2 matches feeding into it, i.e. if we cannot have
+
+		// r1 match 1 \
+		//              r2 match 1
+		// r1 match 2 /
+
+		//  but we can shrink if we have
+
+		// r1 match 1 - r2 match 1
+		// r1 match 3 - r2 match 2
 		if ($match_count == 1) {
 			$shrink_round1 = false;
 		} else {
@@ -226,13 +237,14 @@ class Cup_Draw_Renderer {
 			Table_Renderer::tables($groups[$comp_id], 'cup', $year, $remarks);
 			echo "<h3>Knockout Stages</h3>\n";
 		}
-		// note: flags MUST be first class as history update checks for 'ul class="flags'
-		// to add css
+		// Note: flags MUST be the first class as the single-history template
+		// checks for 'ul class="flags' to enqueue flags.css
 		echo '<ul class="flags', $section ? '' : ' alignwide', "\">\n";
 		$prev_round = 0;
 		$last_match = 0;
-		// if the top match in round 1 doesn't exist then lose the whitespace that would create
-		$ulClass = (!$shrink_round1 && !$matches[0]->match_num == 1) ? ' empty-match1' : '';
+		// if there is no match 1 in round 1 AND round 1 isn't shrunk then lose
+		// the whitespace that would create
+		$ulClass = (!$shrink_round1 && $match0->match_num != 1) ? ' empty-match1' : '';
 		foreach ($matches as $match) {
 			$round = $match->round;
 			if ($prev_round <> $round) {
