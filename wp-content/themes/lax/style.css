@@ -165,8 +165,10 @@ button {
 }
 #sidebar-mini-tables {
 	flex: none;
-	font-size: 0.875em;
 	width: 13.75rem;
+}
+#sidebar-mini-tables > .tab-content {
+	font-size: 0.875rem;
 }
 @media screen and (min-width: 720px) {
 	.middle {
@@ -1052,8 +1054,8 @@ th {
 	margin-bottom: 0.5em;
 }
 .caption-text {
-	border-bottom: 0.25em solid #121212;
-	color: #121212;
+	border-bottom: 0.25em solid;
+	/* if inline will cause overflow of bottom border */
 	display: inline-block;
 }
 .table-data > caption > a {
@@ -1269,53 +1271,56 @@ li > ol {
 .no-js .acrd-content {
 	display: block;
 }
+/* start non-editor */
+/*
+ul.tabs
+	li.tab-item
+		a.tab active
+div.tab-content
+*/
 .tabs {
 	list-style: none;
 	margin: 0;
 	padding: 0;
+	border-bottom: 0.0625rem solid #e6e8ea;
+	text-align: center;
+	overflow-x: auto;
+	white-space: nowrap;
 }
 .tab-item {
+	/* make sure text-align centers items */
 	display: inline-block;
-	position: relative;
-	border-top: 1px solid #dbdbdb;
-	border-left: 1px solid #dbdbdb;
-	border-bottom: 1px solid #dbdbdb;
-}
-.tab-item:last-of-type {
-	border-right: 1px solid #dbdbdb;
 }
 .tab {
 	color: #333;
 	text-decoration: none;
-	cursor: pointer;
-	padding: 7px 10px;
+	padding: 0.5em 1em;
+	/* add space for red border for selected, grey for hover */
+	border-bottom: 0.1875rem solid transparent;
+	/* if inline will cause overflow of bottom border */
 	display: block;
+	/* overflow-x on parent will cut off outline, so make sure it's inside the
+	   element so it displays. Could also use margins to the outline could go
+	   there, but that will create a gap above the bottom border of the ul.tabs
+	   */
+	outline-offset: -1px;
+}
+.tab:visited {
+	color: #333;
 }
 .tab.active {
-	color: #fff;
-	background-color: #1c1c1c;
+	font-weight: 600;
+	cursor: default;
+	border-bottom-color: #a91717;
 }
-/* Down arrow. The idea is a box with zero width and height. The actual width
-and height of the arrow is determined by the width of the border. In an up
-arrow, for example, the bottom border is colored while the left and right are
-transparent, which forms the triangle. */
-.tab.active::after {
-	content: ' ';
-	position: absolute;
-	top: 100%;
-	left: 50%;
-	height: 0;
-	width: 0;
-	pointer-events: none;
-	border: solid transparent;
-	border-top-color: #1c1c1c;
-	border-width: 6px;
-	margin-left: -6px;
+.tab:not(.active):hover {
+	border-bottom-color: #8a8c8e;
 }
 .tab-pane {
 	display: none;
-	margin-top: 14px;
+	margin-top: 1em;
 }
+/* end non-editor */
 
 /*--------------- Definition list defaults ----------*/
 
@@ -1328,13 +1333,13 @@ dl {
 	margin-bottom: 1.5em;
 }
 .calendar > dd {
-	margin: 0.3em 0 0.7em 30px;
+	margin: 0.3em 0 0.7em 2em;
 }
 dt {
 	font-weight: 600;
 }
 dd {
-	margin: 0 0 0.5em 30px;
+	margin: 0 0 0.5em 2em;
 }
 
 /*--------------- Callouts -------------------*/

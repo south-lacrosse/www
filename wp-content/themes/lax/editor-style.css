@@ -489,8 +489,8 @@ th {
 	margin-bottom: 0.5em;
 }
 .caption-text {
-	border-bottom: 0.25em solid #121212;
-	color: #121212;
+	border-bottom: 0.25em solid;
+	/* if inline will cause overflow of bottom border */
 	display: inline-block;
 }
 .table-data > caption > a {
@@ -706,53 +706,6 @@ li > ol {
 .no-js .acrd-content {
 	display: block;
 }
-.tabs {
-	list-style: none;
-	margin: 0;
-	padding: 0;
-}
-.tab-item {
-	display: inline-block;
-	position: relative;
-	border-top: 1px solid #dbdbdb;
-	border-left: 1px solid #dbdbdb;
-	border-bottom: 1px solid #dbdbdb;
-}
-.tab-item:last-of-type {
-	border-right: 1px solid #dbdbdb;
-}
-.tab {
-	color: #333;
-	text-decoration: none;
-	cursor: pointer;
-	padding: 7px 10px;
-	display: block;
-}
-.tab.active {
-	color: #fff;
-	background-color: #1c1c1c;
-}
-/* Down arrow. The idea is a box with zero width and height. The actual width
-and height of the arrow is determined by the width of the border. In an up
-arrow, for example, the bottom border is colored while the left and right are
-transparent, which forms the triangle. */
-.tab.active::after {
-	content: ' ';
-	position: absolute;
-	top: 100%;
-	left: 50%;
-	height: 0;
-	width: 0;
-	pointer-events: none;
-	border: solid transparent;
-	border-top-color: #1c1c1c;
-	border-width: 6px;
-	margin-left: -6px;
-}
-.tab-pane {
-	display: none;
-	margin-top: 14px;
-}
 
 /*--------------- Definition list defaults ----------*/
 
@@ -765,13 +718,13 @@ dl {
 	margin-bottom: 1.5em;
 }
 .calendar > dd {
-	margin: 0.3em 0 0.7em 30px;
+	margin: 0.3em 0 0.7em 2em;
 }
 dt {
 	font-weight: 600;
 }
 dd {
-	margin: 0 0 0.5em 30px;
+	margin: 0 0 0.5em 2em;
 }
 
 /*--------------- Callouts -------------------*/
