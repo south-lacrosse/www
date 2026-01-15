@@ -192,16 +192,28 @@ class Cup_Draw_Renderer {
 	private static function get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks) {
 		$match_count = count($matches);
 		// We can shrink round 1 to the same size as round 2 IF all matches in round 2
-		//  don't have 2 matches feeding into it, i.e. if we cannot have
+		//  don't have 2 matches feeding into it, i.e. we cannot have
 
 		// r1 match 1 \
 		//              r2 match 1
 		// r1 match 2 /
 
-		//  but we can shrink if we have
+		//  as that won't fit if round 1 and round 2 are the same height, but we
+		//  can shrink if we have
 
 		// r1 match 1 - r2 match 1
 		// r1 match 3 - r2 match 2
+
+		// Note: If the 1st round cannot be shrunk and the 1st match in round 1
+		// is missing then we get whitespace at the top of all the rounds. We
+		// used to remove that by adding extra CSS classes, but as it only
+		// happened in 1 year we removed the extra CSS, and simply changed the
+		// history so there is always a match 1. The standard practice from now
+		// on is to put in Byes fort all round 1 matches, so there should always
+		// be a round 1 match 1 in the future.
+
+		// If you want to put this back it was removed in commit
+		//  "remove flags handling of empty first match"
 		if ($match_count == 1) {
 			$shrink_round1 = false;
 		} else {
@@ -242,9 +254,6 @@ class Cup_Draw_Renderer {
 		echo '<ul class="flags', $section ? '' : ' alignwide', "\">\n";
 		$prev_round = 0;
 		$last_match = 0;
-		// if there is no match 1 in round 1 AND round 1 isn't shrunk then lose
-		// the whitespace that would create
-		$ulClass = (!$shrink_round1 && $match0->match_num != 1) ? ' empty-match1' : '';
 		foreach ($matches as $match) {
 			$round = $match->round;
 			if ($prev_round <> $round) {
@@ -257,7 +266,7 @@ class Cup_Draw_Renderer {
 				}
 				echo "<li>\n", '<div class="round-title"><h3>', $rounds[$prev_round],
 					'</h3>', isset($match->match_date) ? date('j M Y ', strtotime($match->match_date)) : '',
-					'</div>', "\n" , '<ul class="r', $rClass, $ulClass, '">';
+					'</div>', "\n" , '<ul class="r', $rClass, '">';
 				$prev_round = $round;
 				$last_match = 0;
 			}

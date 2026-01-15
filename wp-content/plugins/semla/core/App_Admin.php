@@ -158,7 +158,7 @@ class App_Admin {
 		$screen_base = get_current_screen()->base;
 		if ($screen_base === 'post' || $screen_base === 'site-editor') {
 			wp_enqueue_style('semla-flags',
-				$base_url . 'css/flags' . SEMLA_MIN . '.css', [], '1.1');
+				$base_url . 'css/flags' . SEMLA_MIN . '.css', [], '1.2');
 			wp_enqueue_style('semla-clubs-grid',
 				$base_url . 'css/clubs-grid' . SEMLA_MIN . '.css', [], '1.0');
 			wp_enqueue_style('semla-clubs-list',

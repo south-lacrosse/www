@@ -151,7 +151,7 @@ class App_Public {
 
 	public static function enqueue_flags_css($rounds) {
 		wp_enqueue_style( 'semla-flags', plugins_url('css/flags' . SEMLA_MIN . '.css', __DIR__),
-			[], '1.1');
+			[], '1.2');
 		if ($rounds) {
 			add_filter( 'body_class', function( $classes ) use ($rounds) {
 				$classes[] = "rounds-$rounds";

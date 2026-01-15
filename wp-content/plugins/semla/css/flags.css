@@ -115,26 +115,6 @@ r6 (2176 - 48) / 2 = 1064
 	padding-top: 1054px;
 	/* only 1 r6, so no need to for bottom padding */
 }
-/* class empty-match1 is when round1 match1 is empty, so remove empty space at top
-   padding-top = normal padding - 44 (.r2 padding) */
-.empty-match1.r1 > li:first-child {
-	height: 24px;
-}
-.empty-match1.r2 > li:first-child {
-	padding-top: 0px;
-}
-.empty-match1.r3 > li:first-child {
-	padding-top: 68px;
-}
-.empty-match1.r4 > li:first-child {
-	padding-top: 204px;
-}
-.empty-match1.r5 > li:first-child {
-	padding-top: 476px;
-}
-.empty-match1.r6 > li {
-	padding-top: 1020px;
-}
 /* lines to join to next round */
 .line1 {
 	width: 10px;
