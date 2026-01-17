@@ -1639,30 +1639,25 @@ a.icon[href^='tel']::before {
 /* start non-editor */
 /*--------------- Accessibility ------------------------*/
 
-/* Text meant only for screen readers. */
+/* Text meant only for screen readers. See
+ https://make.wordpress.org/accessibility/handbook/markup/the-css-class-screen-reader-text/ */
 .screen-reader-text {
 	border: 0;
-	clip: rect(1px, 1px, 1px, 1px);
 	clip-path: inset(50%);
 	height: 1px;
 	margin: -1px;
 	overflow: hidden;
 	padding: 0;
-	position: absolute !important;
+	position: absolute;
 	width: 1px;
 	word-wrap: normal !important;
-	/* Many screen reader and browser combinations announce broken words as they would appear visually. */
 }
 .screen-reader-text:focus {
-	background-color: #f1f1f1;
-	border-radius: 3px;
-	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
-	clip: auto !important;
+	background-color: #eee;
 	clip-path: none;
-	color: #21759b;
+	color: #444;
 	display: block;
-	font-size: 0.875rem;
-	font-weight: 700;
+	font-size: 1em;
 	height: auto;
 	left: 5px;
 	line-height: normal;
@@ -1670,12 +1665,7 @@ a.icon[href^='tel']::before {
 	text-decoration: none;
 	top: 5px;
 	width: auto;
-	z-index: 100000;
-	/* Above WP toolbar. */
-}
-/* Do not show the outline on the skip link target. */
-#content[tabindex='-1']:focus {
-	outline: 0;
+	z-index: 100000; /* Above WP toolbar. */
 }
 
 /*--------------- Printing ------------------------*/
