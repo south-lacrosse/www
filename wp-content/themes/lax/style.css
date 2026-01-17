@@ -918,11 +918,6 @@ a.btn {
 #semla_toc {
 	background: #fff;
 }
-/* media-text block doesn't have any bottom margin, so if a toc follows it the
-   it butts right against it, so we need a margin */
-.wp-block-media-text + #semla_toc {
-	margin-top: 1em;
-}
 #semla_toc-nav {
 	display: inline-block;
 	background: #fafafa;
@@ -1549,6 +1544,35 @@ mark.tag {
 .wp-block-image figcaption {
 	color: #555;
 	font-size: 0.8125em;
+}
+
+.wp-block-media-text {
+	/* Block has no margin by default. We only add bottom margin as that's how
+	we have styled all other elements, so the previous sibling will have a
+	bottom margin.
+
+	If you remove this be aware that if a table-of-contents (toc) is the
+	following sibling it then it butts right against it, so you should add back
+	in something like
+
+	.wp-block-media-text + #semla_toc { margin-top: 1em; }
+	*/
+	margin-bottom: 1em;
+	grid-row-gap: 1rem;
+}
+.wp-block-media-text__content > :first-child {
+	margin-top: 0;
+}
+.wp-block-media-text__content > :last-child {
+	margin-bottom: 0;
+}
+/* our custom block style so the text os flush to the edge, i.e. no padding  */
+.wp-block-media-text.is-style-flush {
+	grid-column-gap: 2rem;
+}
+.wp-block-media-text.is-style-flush > .wp-block-media-text__content {
+	/* match specificity of WordPress rules */
+	padding: 0;
 }
 
 .wp-block-quote {

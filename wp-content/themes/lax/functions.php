@@ -106,18 +106,19 @@ function lax_admin() {
 	add_action('customize_save_after', 'lax_delete_menu_cache', 10, 0);
 	add_action('semla_clear_menu_cache', 'lax_delete_menu_cache', 10, 0);
 	add_action('admin_head', 'lax_favicons');
-}
 
-add_action('init', function() {
-	remove_post_type_support('page', 'thumbnail');
-	remove_post_type_support('post', 'thumbnail');
+	// Block styles can just be registered in Admin as long as they don't
+	// register a stylesheet or inline styles
 	$block_styles = [
+		'core/gallery' => [
+			'lightbox'      => 'Lightbox',
+		],
+		'core/media-text' => [
+			'flush'     => 'Flush',
+		],
 		'core/table' => [
 			'lined'         => 'Lined',
 			'boxed-striped' => 'Boxed and striped',
-		],
-		'core/gallery' => [
-			'lightbox'         => 'Lightbox',
 		],
 	];
 	foreach ( $block_styles as $block => $styles ) {
@@ -131,11 +132,16 @@ add_action('init', function() {
 			);
 		}
 	}
+}
+
+add_action('init', function() {
+	remove_post_type_support('page', 'thumbnail');
+	remove_post_type_support('post', 'thumbnail');
 });
 
 add_action('wp_enqueue_scripts', function() {
 	wp_enqueue_style('lax-style', get_stylesheet_directory_uri() . '/style' . SEMLA_MIN . '.css'
-		, [], '1.5.8');
+		, [], '1.5.10');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
 		, ['lax-style'], '1.1');
