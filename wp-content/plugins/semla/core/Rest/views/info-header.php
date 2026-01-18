@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title><?= $esc_title ?></title>
-<link href="<?= plugins_url( 'css/rest' . SEMLA_MIN . '.css',dirname(__DIR__,2)) ?>" rel="stylesheet">
+<link href="<?= plugins_url( 'css/rest' . SEMLA_MIN . '.css?ver=1.1',dirname(__DIR__,2)) ?>" rel="stylesheet">
 <?php do_action('semla_favicons'); ?>
 </head>
 <body>
