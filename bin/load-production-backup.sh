@@ -64,4 +64,4 @@ else
 	sed "s/$WWW/$URL/g" "$file" | $MYSQL --defaults-extra-file=.my.cnf
 fi
 # need to purge menu cache in case it's changed in the DB
-wp purge menu
+wp purge menu-cache
