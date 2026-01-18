@@ -81,13 +81,27 @@ add_action('after_setup_theme', function() {
 function lax_favicons() {
 	// different favicons per environment to help stop accidentally changing the wrong site
 	$env = wp_get_environment_type();
-	if ($env === 'production'): ?>
+	if ($env === 'production') { ?>
 <link rel="icon" type="image/png" sizes="96x96" href="/icon-96.png">
 <link rel="icon" type="image/svg+xml" sizes="any" href="/icon.svg">
 <link rel="icon" href="/favicon.ico">
-<?php else: ?>
-<link rel="icon" type="image/svg+xml" href="<?= get_theme_file_uri() ?>/img/favicon-<?= $env ?>.svg">
-<?php endif;
+<?php
+	} else {
+		$icon = get_theme_file_uri() . "/img/favicon-$env.svg";
+		echo '<link rel="icon" type="image/svg+xml" href="', $icon, '">', "\n";
+	}
+	if (is_login()) {
+		add_filter( 'login_headerurl', function() {
+			return home_url();
+		},10,0 );
+		if ($env === 'production') {
+			$icon = get_stylesheet_directory_uri() . '/img/logo.svg';
+			$extra = ';width:135px;height:84px;background-size:135px 84px';
+		} else {
+			$extra = '';
+		}
+		echo "<style>#login h1 a{background-image:url($icon)$extra}</style>\n";
+	}
 }
 
 function lax_admin() {
