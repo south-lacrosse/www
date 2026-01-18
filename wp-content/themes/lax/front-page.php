@@ -9,7 +9,7 @@ if ( 'posts' == get_option( 'show_on_front' ) ) {
 }
 $img = get_theme_file_uri() . '/img/logo.svg';
 require __DIR__ . '/template-parts/header.php'; ?>
-<img class="front-logo" src="<?= $img ?>" width="1024" height="636" alt="SEMLA logo" onerror="this.style.display='none'">
+<img class="front-logo" src="<?= $img ?>" fetchpriority="high" width="1024" height="636" alt="SEMLA logo" onerror="this.style.display='none'">
 <div class="content-with-mini-tables">
 <main id="content" class="with-mini-tables">
 <?php
