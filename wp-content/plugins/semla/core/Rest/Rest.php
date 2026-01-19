@@ -32,7 +32,7 @@ class Rest {
 	const CONTENT_TYPES = [
 		'.gpx' => 'application/gpx+xml',
 		'.ics' => 'text/calendar',
-		'.js' => 'application/javascript',
+		'.js' => 'text/javascript',
 		'.json' => 'application/json',
 	];
 	const SEMLA_BASE = 'semla/v1';
