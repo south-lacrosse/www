@@ -8,8 +8,8 @@ FileETag none
 Require all denied
 </FilesMatch>
 
-# See wwww-dev\README.md section HTTP Header
-Header always set X-Frame-Options "SAMEORIGIN" "expr=%{CONTENT_TYPE} =~ m#^text/html$#i && %{REQUEST_URI} !~ m#^/api/semla/#"
+# See wwww-dev\docs\setting-up-server.md section HTTP Header
+Header always set X-Frame-Options "SAMEORIGIN" "expr=%{CONTENT_TYPE} =~ m#^text/html#"
 Header always set X-Content-Type-Options "nosniff"
 
 RewriteEngine On
@@ -41,9 +41,33 @@ Require all denied
 
 <IfModule mod_expires.c>
 ExpiresActive on
-<If "%{THE_REQUEST} !~ m# /api/#i">
-ExpiresByType application/javascript "access plus 1 year"
+# We need to make sure our REST javascript files are not cached. They are used
+# to embed fixtures/tables so we don't want them to be out of date.
+
+# We serve our REST js as text/javascript (which is the correct type). If the
+# hosts serve .js files as application/x-javascript (as our current ones do), we
+# can just set Expires on that type (and application/javascript just to be
+# safe), and it will all work OK.
+
+# If that changes, and text/javascript has an Expires set, or .js files are
+# served as text/javascript and we want to set Expires, then you should add
+# something like the following.
+
+# Alternatively change the Rest code to send a Expires header for all javascript
+# with a date in the past.
+
+# START
+<If "%{THE_REQUEST} =~ m# /api/semla/#i">
+# THE_REQUEST is the request line e.g. "GET /index.html HTTP/1.1"
+# Can't use REQUEST_URI as that will be /index.php
+ExpiresByType text/javascript A0
 </If>
+<Else>
+ExpiresByType text/javascript "access plus 1 year"
+</Else>
+# END
+ExpiresByType application/x-javascript "access plus 1 year"
+ExpiresByType application/javascript "access plus 1 year"
 ExpiresByType text/css "access plus 1 year"
 ExpiresByType image/jpg "access plus 1 year"
 ExpiresByType image/jpeg "access plus 1 year"
