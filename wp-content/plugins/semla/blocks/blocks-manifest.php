@@ -225,7 +225,7 @@ return array(
 			'title' => array(
 				'type' => 'string',
 				'source' => 'text',
-				'selector' => 'h4',
+				'selector' => 'h2',
 				'default' => 'Contents'
 			),
 			'toc' => array(
