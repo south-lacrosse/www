@@ -52,8 +52,8 @@ class App {
 
 		// Remove rewrite rules we don't need or don't want, namely comment
 		// pages and feeds, author pages, trackbacks, attachment pages, embeds,
-		// post formats. This reduces the number of rewrite rules from ~129 to
-		// ~28.
+		// post formats, date archives. This reduces the number of rewrite rules
+		// from ~129 to ~22.
 
 		// favicon is already handled outside WP
 		// wp-app and wp-register are deprecated and we don't need to handle them
@@ -61,6 +61,13 @@ class App {
 		// The filter must always be added as rewrite rules may be flushed
 		// (regenerated) on both admin and public pages.
 		add_filter( 'rewrite_rules_array', function($rules) {
+			if ( ! defined('SEMLA_KEEP_DATE_ARCHIVES') || ! SEMLA_KEEP_DATE_ARCHIVES) {
+				// remove data related post archive  URLs, e.g. /2025, as we don't use them.
+				// To put back either remove this code, or set SEMLA_KEEP_DATE_ARCHIVES to true
+				global $wp_rewrite;
+				$date_rules = $wp_rewrite->generate_rewrite_rules( $wp_rewrite->get_date_permastruct(), EP_DATE );
+				$rules = array_diff($rules, $date_rules);
+			}
 			// remove all feeds or just legacy feeds
 			$query_remove_regex = '/attachment|embed=true|post_format=|feed=' .
 				(SEMLA_FEEDS ? 'old' : '') . '/';
