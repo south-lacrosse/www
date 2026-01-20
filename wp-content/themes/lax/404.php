@@ -8,7 +8,10 @@ require __DIR__ . '/template-parts/header.php'; ?>
 <section>
 <h1>Oops! That page can&rsquo;t be found.</h1>
 <p>It looks like nothing was found at this location. Try the menu or a search?</p>
-<?php require __DIR__ . '/template-parts/searchform.php'; ?>
+<?php
+$autofocus = true;
+require __DIR__ . '/template-parts/searchform.php';
+?>
 </section>
 </main>
 <?php
