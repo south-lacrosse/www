@@ -71,9 +71,9 @@ sup {
 }
 button,
 input,
-optgroup,
-select,
-textarea {
+/* optgroup, - not used */
+/* textarea - not used */
+select {
 	font-family: inherit;
 	font-size: 100%;
 	line-height: 1.15;
@@ -902,9 +902,6 @@ a.btn {
 }
 .center {
 	text-align: center;
-}
-.center.left {
-	text-align: left;
 }
 .font-semibold {
 	font-weight: 600;
