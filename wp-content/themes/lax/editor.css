@@ -53,17 +53,6 @@ than the CSS added by WP as that gets added right before the
 	width: calc(100% + 2em);
 }
 
-/* WordPress overrides link colours, so override them back */
-.club-card-link,
-.cl-club-link {
-	text-decoration: none !important;
-	color: inherit !important;
-}
-.club-card-link:visited,
-.cl-club-link:visited {
-	color: inherit !important;
-}
-
 /* stops value from shrinking when using the Select tool */
 @media (min-width: 480px) {
 	.avf-same-line > .avf-value {

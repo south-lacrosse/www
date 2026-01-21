@@ -109,7 +109,7 @@ function lax_admin() {
 	add_editor_style('editor-style' . SEMLA_MIN . '.css');
 	add_action ('enqueue_block_assets',  function() {
 		wp_enqueue_style('semla-editor',
-			get_stylesheet_directory_uri() . '/editor' . SEMLA_MIN . '.css', [], '1.3');
+			get_stylesheet_directory_uri() . '/editor' . SEMLA_MIN . '.css', [], '1.4');
 	});
 	// if menu changes get rid of our cached versions
 	add_action('wp_update_nav_menu', 'lax_delete_menu_cache', 10, 0);
