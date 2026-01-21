@@ -68,11 +68,11 @@ than the CSS added by WP as that gets added right before the
 	position: relative;
 }
 
-#semla_toc {
-	float: none !important;
-	padding: 0 !important;
-	margin-top: 1em;
-	margin-bottom: 1em;
+/* stop border from headings displaying inside toc */
+@media (min-width: 720px) {
+	.wp-block-semla-toc {
+		z-index: 1;
+	}
 }
 
 /* Widgets have different styling on the front end, so make sure that's

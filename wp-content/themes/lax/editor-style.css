@@ -85,7 +85,6 @@ button /** [type='button'],[type='reset'],[type='submit'] not used */ {
 /*-------------------- Now all our site specific stuff -----------------*/
 
 html {
-	/* shows at bottom of page if body is not long enough */
 	/* System fonts see https://booking.design/implementing-system-fonts-on-booking-com-a-lesson-learned-bdc984df627f
 		plus added system-ui for browsers that support that */
 	font-family:
@@ -350,16 +349,13 @@ a.btn {
 
 /*--------------- Table of contents ----------------*/
 
-#semla_toc {
-	background: #fff;
-}
-#semla_toc-nav {
+.semla_toc-nav {
 	display: inline-block;
 	background: #fafafa;
 	border: 1px solid #ccc;
 	padding: 0.5em 0.75em 0 1em;
 }
-#semla_toc-nav > h2 {
+.semla_toc-nav > h2 {
 	font-size: 1em;
 	margin-top: 0;
 	margin-bottom: 0.5em;
@@ -371,7 +367,7 @@ a.btn {
 	margin: 0;
 	padding: 0;
 }
-#semla_toc-nav ul {
+.semla_toc-nav ul {
 	list-style-type: none;
 }
 #semla_toc-list ul {
@@ -379,32 +375,34 @@ a.btn {
 	margin-top: 0.5em;
 	padding-left: 0;
 }
-#semla_toc-nav a {
+.semla_toc-nav a {
 	text-decoration: underline;
 }
 #semla_toc-list li {
 	margin-bottom: 0.5em;
 }
-#semla_toc.semla_toc-floatnone:not(:first-child) {
+.wp-block-semla-toc.semla_toc-floatnone:not(:first-child) {
 	margin-top: 1em;
 }
-#semla_toc.semla_toc-floatnone {
+.wp-block-semla-toc.semla_toc-floatnone {
 	padding: 0;
 	float: none;
 	margin-bottom: 1em;
 }
 @media (max-width: 719px) {
-	#semla_toc:not(:first-child) {
+	.wp-block-semla-toc:not(:first-child) {
 		margin-top: 1em;
 	}
-	#semla_toc {
+	.wp-block-semla-toc {
 		margin-bottom: 1em;
 	}
 }
 @media (min-width: 720px) {
-	#semla_toc {
-		padding: 0 0 1em 1em;
+	.wp-block-semla-toc {
 		float: right;
+		padding: 0 0 1em 1em;
+		/* stop border from heading leaching into margin when floating */
+		background: #fff;
 	}
 }
 
@@ -897,7 +895,7 @@ mark.tag {
 	following sibling it then it butts right against it, so you should add back
 	in something like
 
-	.wp-block-media-text + #semla_toc { margin-top: 1em; }
+	.wp-block-media-text + .wp-block-semla-toc { margin-top: 1em; }
 	*/
 	margin-bottom: 1em;
 	grid-row-gap: 1rem;

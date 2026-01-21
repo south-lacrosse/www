@@ -109,7 +109,7 @@ function lax_admin() {
 	add_editor_style('editor-style' . SEMLA_MIN . '.css');
 	add_action ('enqueue_block_assets',  function() {
 		wp_enqueue_style('semla-editor',
-			get_stylesheet_directory_uri() . '/editor' . SEMLA_MIN . '.css', [], '1.4');
+			get_stylesheet_directory_uri() . '/editor' . SEMLA_MIN . '.css', [], '1.5');
 	});
 	// if menu changes get rid of our cached versions
 	add_action('wp_update_nav_menu', 'lax_delete_menu_cache', 10, 0);
@@ -155,7 +155,7 @@ add_action('init', function() {
 
 add_action('wp_enqueue_scripts', function() {
 	wp_enqueue_style('lax-style', get_stylesheet_directory_uri() . '/style' . SEMLA_MIN . '.css'
-		, [], '1.5.10');
+		, [], '1.5.11');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
 		, ['lax-style'], '1.1');
