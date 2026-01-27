@@ -178,6 +178,10 @@ class Fixtures_Sheet_Gateway {
 					$team->points=0; $team->divider=0; $team->form=''; $team->tiebreaker = 0;
 					$table[$team->team] = $team;
 				}
+				if (count($table) < 3) {
+					$this->error->add('fixtures', "Division $competition has < 3 teams");
+					continue;
+				}
 				$tables[$comp_id] = $table;
 				if ($row[self::RELEGATED]) {
 					$relegated_after = count($table) - $row[self::RELEGATED];
@@ -613,7 +617,8 @@ class Fixtures_Sheet_Gateway {
 			$relegated_after = $division[self::DIVISIONS_RELEGATED];
 			if (empty($this->tables[$comp_id])) {
 				$this->error->add('fixtures',
-					"Unknown division comp_id $comp_id. You probably need to 'Update all'.");
+				'Unknown division ' . $this->get_competition_name($comp_id)
+					. ". You probably need to 'Update all'.");
 				continue;
 			}
 			$table = $this->tables[$comp_id];
