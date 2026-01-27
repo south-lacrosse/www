@@ -173,6 +173,10 @@ class Fixtures_Sheet_Gateway {
 						$this->error->add('fixtures', "Team $team->team in division $competition is not on Teams sheet");
 						continue;
 					}
+					if (array_key_exists($team->team, $table)) {
+						$this->error->add('fixtures', "Duplicate team $team->team in division $competition");
+						continue;
+					}
 					$team->won=0; $team->drawn=0; $team->lost=0;
 					$team->goals_for=0; $team->goals_against=0; $team->points_deducted = 0;
 					$team->points=0; $team->divider=0; $team->form=''; $team->tiebreaker = 0;
