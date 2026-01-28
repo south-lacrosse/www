@@ -45,11 +45,11 @@ class Cup_Draw_Gateway {
 			// TODO: optimize?? not that many rows, so do we need to join?
 			$remarks = $wpdb->get_results(
 				'SELECT comp_id, remarks FROM slc_remarks', OBJECT_K);
-				if ($wpdb->last_error) return DB_Util::db_error();
-				$years = false;
-			} else {
-				$years = $wpdb->get_row( $wpdb->prepare(
-					'SELECT year,
+			if ($wpdb->last_error) return DB_Util::db_error();
+			$years = false;
+		} else {
+			$years = $wpdb->get_row( $wpdb->prepare(
+				'SELECT year,
 				(SELECT max(year) FROM slh_cup_year y1
 					WHERE y1.group_id = y.group_id and y1.year < y.year) as prev,
 				(SELECT min(year) FROM slh_cup_year y2
