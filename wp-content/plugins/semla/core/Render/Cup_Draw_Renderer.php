@@ -8,18 +8,50 @@ use Semla\Utils\Util;
 class Cup_Draw_Renderer {
 	const ROUNDS_LONG = ['Last 64', 'Last 32', 'Last 16', 'Quarter Final','Semi Final','Final'];
 	const ROUNDS_SHORT = ['R64', 'R32', 'R16', 'QF','SF'];
+	private static $rounds_offset; // where the root competition rounds start in the above arrays
 
 	/**
 	 * @param int $year year from history, or 0 for current
-	 * @param string $display empty for default, or "rounds"
+	 * @param string $display empty for default bracket (grid) view, or "rounds"
 	 * @param object $years previous and next years for navigation
 	 * @param array $rows rows from database for draw
-	 * @param array $group_rows rows from database for group stages
-	 * @param array  $remarks array of strings keyed by competition id
+	 * @param array $group_rows rows from database for group stages. Will be league
+	 *    tables for default display, or group fixtures for "rounds"
+	 * @param array $remarks array of strings keyed by competition id
 	 * @param string $slug slug for links to previous/next year for history
 	 */
-	public static function cup_draw($year,$display,$years,$rows,$group_rows,$remarks,$slug='') {
-		// split group stage "divisions" by their flags comp_id
+	public static function cup_draws($year, $display, $years, $rows, $group_rows, $remarks, $slug='') {
+		$is_bracket = $display === ''; // only 2 values allowed, so make a boolean
+
+		// the $rows may contain root level competitions (Minor Flags), and also possibly
+		// prelims (Play-In).
+		// split the $rows into 2 arrays which are keyed by competition id, first
+		// is $cups to main cup competitions, second is $prelims for preliminary competitions
+		$cups = $prelims = [];
+		$start = $row_no = $comp_id = $related_comp_id = 0;
+		foreach ($rows as $row) {
+			if ($row->comp_id !== $comp_id) {
+				if ($comp_id) {
+					if ($related_comp_id) {
+						$prelims[$related_comp_id][$comp_id] = array_slice($rows, $start, $row_no - $start);
+					} else {
+						$cups[$comp_id] = array_slice($rows, $start, $row_no - $start);
+					}
+				}
+				$start = $row_no;
+				$comp_id = $row->comp_id;
+				$related_comp_id = $row->related_comp_id;
+			}
+			$row_no++;
+		}
+		if ($comp_id) {
+			if ($related_comp_id) {
+				$prelims[$related_comp_id][$comp_id] = array_slice($rows, $start, $row_no - $start);
+			} else {
+				$cups[$comp_id] = array_slice($rows, $start, $row_no - $start);
+			}
+		}
+		// split group stages by their flags comp_id
 		$groups = [];
 		$start = $row_no = $related_comp_id = 0;
 		foreach ($group_rows as $row) {
@@ -38,7 +70,7 @@ class Cup_Draw_Renderer {
 
 		if ($years && ($years->next || $years->prev)) {
 			$slug .= '-';
-			$query = $display ? '-rounds' : '';
+			$query = $is_bracket ? '' : '-rounds';
 			echo '<nav class="hist-nav prev-center-next" aria-label="Draws">',
 				'<h2 class="screen-reader-text">Draws navigation</h2>',
 				"\n";
@@ -48,7 +80,7 @@ class Cup_Draw_Renderer {
 				echo '<div></div>';
 			}
 			echo '<a class="center" href="', $slug, $year,
-				$display ? '' : '-rounds', '">View ', $display ? 'Bracket' : 'Rounds',
+				$is_bracket ? '-rounds' : '', '">View ', $is_bracket ? 'Rounds' : 'Bracket',
 				'</a>';
 			if ($years->next) {
 				echo '<a href="', $slug, $years->next, $query,
@@ -58,16 +90,16 @@ class Cup_Draw_Renderer {
 		} else {
 			if ($year) {
 				$url = "$slug-$year";
-				if (!$display) $url .= '-rounds';
+				if ($is_bracket) $url .= '-rounds';
 			} else {
 				$url = get_post()->post_name;
-				if (!$display) {
+				if ($is_bracket) {
 					$url .= '-rounds';
 				} else {
 					$url = substr($url, 0, -7);
 				}
 			}
-			echo '<p><a href="', $url, '">View ', $display ? 'Bracket' : 'Rounds', "</a></p>\n";
+			echo '<p><a href="', $url, '">View ', $is_bracket ? 'Rounds' : 'Bracket', "</a></p>\n";
 			if (!$year) {
 				echo '<p><strong>Please note:</strong> dates given are those initially scheduled for the round, however the',
 					' actual fixtures may be rearranged or postponed. Please check the <a href="/fixtures">complete fixtures list</a>',
@@ -75,85 +107,90 @@ class Cup_Draw_Renderer {
 			}
 		}
 
-		if ($display) {
-			echo self::get_draw_tables($year, $rows, $groups, 'after-nav', $remarks);
-		} else {
-			$comp_id = 0;
-			$h2_class = 'after-nav';
-			foreach ( $rows as $row ) {
-				if ($row->comp_id <> $comp_id) {
-					if ($comp_id) {
-						echo self::get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks);
-						$h2_class = 'mt-large';
-					}
-					$comp_id = $row->comp_id;
-					$matches = [];
-				}
-				$matches[] = $row;
+		$section_class = $is_bracket ? ' class="alignwide"' : '';
+		$h2_class = 'after-nav';
+		$rounds_long_count = count(self::ROUNDS_LONG);
+		foreach ($cups as $comp_id => $matches) {
+			$last_match = end($matches);
+			$has_section = !empty($last_match->section_name);
+			if ($has_section) {
+				echo '<section', $section_class, ' id="', Util::make_id($last_match->section_name),
+					'"><h2', $h2_class ? ' class="' . $h2_class . '"' : '', '>',
+					$last_match->section_name, "</h2>\n";
 			}
-			if ($comp_id) {
-				echo self::get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks);
+			$h2_class = 'mt-large';
+
+			self::$rounds_offset = $rounds_long_count - $last_match->round - 1;
+			// limit prelims/groups to this competition before call
+			$comp_prelims = $prelims[$comp_id] ?? [];
+			$comp_groups = $groups[$comp_id] ?? [];
+			if ($is_bracket) {
+				self::render_competition($comp_id, $year, $has_section, $matches,
+					$comp_prelims, $comp_groups, $remarks);
+			} else {
+				self::render_competition_rounds($comp_id, $year, $matches,
+					$comp_prelims, $comp_groups, $remarks);
 			}
+			if ($has_section) echo "</section>\n";
 		}
 	}
 
-	private static function get_draw_tables($year, $matches, $groups, $h2_class, $remarks) {
-		$prev_comp = 0;
-
-		$rounds_long_count = count(self::ROUNDS_LONG);
-		$comp_final_round = [];
-		// figure out final round for each competition
-		foreach ($matches as $match) {
-			$comp_id = $match->comp_id;
-			$comp_final_round[$comp_id] = $match->round;
+	/**
+	 * Rounds view, which is matches listed per round in an HTML table, and all matches for groups
+	 */
+	private static function render_competition_rounds($comp_id, $year, $matches, $prelims, $groups, $remarks) {
+		if ($prelims) {
+			foreach ($prelims as $prelim_id => $prelim_matches) {
+				self::render_draw_rounds(true, false, $year, $prelim_matches, $remarks[$prelim_id]->remarks ?? '');
+			}
 		}
+		if ($groups) {
+			self::render_draw_rounds(true, true, $year, $groups, $remarks);
+		}
+		self::render_draw_rounds(false, false, $year, $matches, $remarks[$comp_id]->remarks ?? '');
+	}
+
+	/**
+	 * @param $remarks string|array for groups will be array keyed by comp_id, otherwise will be string
+	 */
+	private static function render_draw_rounds($is_prelim, $is_groups, $year, $matches, $remarks) {
+		$last_match = end($matches);
+		$final_round = $is_groups ? -1 : $last_match->round;
+		$prev = 0;
 		foreach ($matches as $match) {
-			$comp_id = $match->comp_id;
-			if ($comp_id <> $prev_comp) {
-				if ($prev_comp) {
-					echo '</tbody></table></div>';
-					if (isset($remarks[$prev_comp]))
-						echo '<p>', $remarks[$prev_comp]->remarks, "</p>\n";
-					if ($section) echo "</section>\n";
-				}
-				$section = !empty($match->section_name);
-				if ($section) {
-					echo '<section id="', Util::make_id($match->section_name), '"><h2',
-						$h2_class ? ' class="' . $h2_class . '"' : '',
-						'>', $match->section_name, "</h2>\n";
-				}
-				if (!empty($groups[$comp_id])) {
-					Table_Renderer::tables($groups[$comp_id], 'cup', $year, $remarks);
-				}
-				$h2_class = 'mt-large';
-				$prev_comp = $comp_id;
-				$final_round = $comp_final_round[$comp_id];
-				$offset = $rounds_long_count - $final_round - 1;
-				$prev_round = 0;
-			}
-			$round = $match->round;
-			if ($round <> $prev_round) {
-				if ($prev_round) {
+			$compare = $is_groups ? $match->comp_id : $match->round;
+			$round = $match->round ?? 0;
+			if ($compare <> $prev) {
+				if ($prev) {
 					echo '</tbody></table></div>', "\n";
+					if ($is_groups && isset($remarks[$prev])) {
+						echo '<p>', $remarks[$prev]->remarks, "</p>\n";
+					}
 				}
-				echo '<div class="scrollable"><table class="table-data cup-draw"><caption><span class="caption-text">',
-					self::ROUNDS_LONG[$round + $offset],
-					isset($match->match_date) ? ', ' . date('j M Y', strtotime($match->match_date)) : '',
-					'</span></caption>';
-				if ($round === $final_round) {
-					echo '<colgroup><col class="min-width"><col class="home"><col class="min-width"><col class="away">';
+				echo '<div class="scrollable"><table class="table-data cup-draw"><caption><span class="caption-text">';
+				if ($is_groups) {
+					echo $match->section_name;
+				} elseif ($is_prelim) {
+					echo "$match->section_name Round $round";
 				} else {
-					echo '<thead><tr><th class="min-width"></th><th class="home">Home</th><th class="min-width"></th><th class="away">Away</th></tr></thead>';
+					echo self::ROUNDS_LONG[$round + self::$rounds_offset];
 				}
-				echo "\n<tbody>\n";
-				$prev_round = $round;
+				if (isset($match->match_date)) echo ', ', date('j M Y', strtotime($match->match_date));
+				echo "</span></caption>\n<colgroup>",
+					$year ? '' : '<col class="min-width">',
+					'<col class="home"><col class="min-width"><col class="away">',
+					"\n<tbody>\n";
+				$prev = $compare;
 			}
-			$home_team = $match->home_team;
+			$home_team = $match->home_team ?? 1;
 			if ($home_team > 2) { // neutral home/away
 				$home_team -= 2;
 			}
 			$team1_first = $home_team < 2;
-			if (isset($match->team1_goals) && $match->team1_goals != null) {
+			if (isset($match->result)) {
+				// match has a result only for group fixtures, in which case home_team will be 1
+				$score = $match->result ? $match->result : 'v';
+			} elseif (isset($match->team1_goals)) {
 				if ($team1_first) {
 					$score = $match->team1_goals . ' - ' . $match->team2_goals;
 				} else {
@@ -164,33 +201,53 @@ class Cup_Draw_Renderer {
 			} else {
 				$score = 'v';
 			}
-			$match_num = $match->match_num;
-			echo '<tr><td>', ($round <> $final_round ? $match_num : '&nbsp;'),
-				'</td><td class="home">',
-				self::team_name($team1_first,$team1_first,$match,$round,$offset,$match_num),
+			$match_num = $match->match_num ?? '';
+			echo '<tr>';
+			if (!$year) {
+				echo '<td>', ($round <> $final_round ? $match_num : '&nbsp;'), '</td>';
+			}
+			echo '<td class="home">',
+				self::team_name($team1_first,$team1_first,$match,$round,$is_prelim,$match_num),
 				'</td><td class="result">' . $score . '</td><td class="away">',
-				self::team_name(!$team1_first,$team1_first,$match,$round,$offset,$match_num),
+				self::team_name(!$team1_first,$team1_first,$match,$round,$is_prelim,$match_num),
 				"</td></tr>\n";
 		}
-		if ($prev_comp) {
-			echo "</tbody></table></div>\n";
-			if (isset($remarks[$prev_comp]))
-				echo '<p>', $remarks[$prev_comp]->remarks, "</p>\n";
-			if ($section) echo "</section>\n";
+		echo '</tbody></table></div>', "\n";
+		if ($is_groups) {
+			if (isset($remarks[$prev]))	echo '<p>', $remarks[$prev]->remarks, "</p>\n";
+		} else {
+			if ($remarks) echo '<p>', $remarks, "</p>\n";
 		}
 	}
 
-	private static function team_name($want_team1,$team1_first,$match,$round,$offset,$match_num) {
+	private static function team_name($want_team1,$team1_first,$match,$round,$is_prelim,$match_num) {
 		$team = (string) ($want_team1 ? (empty($match->team1) ? '' : $match->team1)
 				: (empty($match->team2) ? '' : $match->team2));
 		if ($team || $round === '1') return htmlspecialchars($team, ENT_NOQUOTES);
 		$match_offset = ($team1_first && !$want_team1) || (!$team1_first && $want_team1) ? 1 : 0;
 		$win_match = ($match_num * 2) - 1 + $match_offset;
-		return 'Winner ' . self::ROUNDS_SHORT[$round + $offset - 1] . ' match ' . $win_match;
+		$winner_round = $is_prelim ? "R$round" : self::ROUNDS_SHORT[$round + self::$rounds_offset - 1];
+		return "Winner $winner_round match $win_match";
 	}
 
-	private static function get_draw($comp_id, $year, $matches, $groups, $h2_class, $remarks) {
-		$match_count = count($matches);
+	private static function render_competition($comp_id, $year, $has_section, $matches, $prelims, $groups, $remarks) {
+		foreach ($prelims as $related_comp_id => $prelim_matches) {
+			if ($prelim_matches[0]->section_name) {
+				echo '<h3>', $prelim_matches[0]->section_name, "</h3>\n";
+			}
+			self::render_draw_grid(true, $prelim_matches, $has_section,
+				$remarks[$related_comp_id]->remarks ?? '');
+		}
+		if (($groups)) {
+			Table_Renderer::tables($groups, 'cup', $year, $remarks);
+		}
+		if (($prelims || $groups)) {
+			echo "<h3>Knockout Stages</h3>\n";
+		}
+		self::render_draw_grid(false, $matches, $has_section, $remarks[$comp_id]->remarks ?? '');
+	}
+
+	private static function render_draw_grid($is_prelim, $matches, $has_section, $remarks) {
 		// We can shrink round 1 to the same size as round 2 IF all matches in round 2
 		//  don't have 2 matches feeding into it, i.e. we cannot have
 
@@ -209,11 +266,12 @@ class Cup_Draw_Renderer {
 		// used to remove that by adding extra CSS classes, but as it only
 		// happened in 1 year we removed the extra CSS, and simply changed the
 		// history so there is always a match 1. The standard practice from now
-		// on is to put in Byes fort all round 1 matches, so there should always
+		// on is to put in Byes for all round 1 matches, so there should always
 		// be a round 1 match 1 in the future.
 
 		// If you want to put this back it was removed in commit
 		//  "remove flags handling of empty first match"
+		$match_count = count($matches);
 		if ($match_count == 1) {
 			$shrink_round1 = false;
 		} else {
@@ -233,25 +291,10 @@ class Cup_Draw_Renderer {
 				$last_match = $match->match_num;
 			}
 		}
-		// end doesn't work for simplexml data - so use index
 		$final_round = $matches[$match_count - 1]->round;
-		$count = count(self::ROUNDS_LONG);
-		$rounds = array_slice(self::ROUNDS_LONG, $count - $final_round, $final_round);
-
-		$match0 = $matches[0];
-		$section = !empty($match0->section_name);
-		if ($section) {
-			echo '<section class="alignwide" id="', Util::make_id($match0->section_name), '"><h2',
-				$h2_class ? ' class="' . $h2_class . '"' : '', '>',
-				$match0->section_name, "</h2>\n";
-		}
-		if (!empty($groups[$comp_id])) {
-			Table_Renderer::tables($groups[$comp_id], 'cup', $year, $remarks);
-			echo "<h3>Knockout Stages</h3>\n";
-		}
 		// Note: flags MUST be the first class as the single-history template
 		// checks for 'ul class="flags' to enqueue flags.css
-		echo '<ul class="flags', $section ? '' : ' alignwide', "\">\n";
+		echo '<ul class="flags', $has_section ? '' : ' alignwide', "\">\n";
 		$prev_round = 0;
 		$last_match = 0;
 		foreach ($matches as $match) {
@@ -264,7 +307,8 @@ class Cup_Draw_Renderer {
 				if ($shrink_round1 && $match->round > 1) {
 					$rClass--;
 				}
-				echo "<li>\n", '<div class="round-title"><h3>', $rounds[$prev_round],
+				echo "<li>\n", '<div class="round-title"><h3>',
+					$is_prelim ? "Round $round" : self::ROUNDS_LONG[$round + self::$rounds_offset],
 					'</h3>', isset($match->match_date) ? date('j M Y ', strtotime($match->match_date)) : '',
 					'</div>', "\n" , '<ul class="r', $rClass, '">';
 				$prev_round = $round;
@@ -339,8 +383,6 @@ class Cup_Draw_Renderer {
 				'</div></div>', $after, '</li>';
 		}
 		echo "</ul></li></ul>\n";
-		if (isset($remarks[$comp_id]))
-			echo '<p>', $remarks[$comp_id]->remarks, "</p>\n";
-		if ($section) echo "</section>\n";
+		if ($remarks) echo '<p>', $remarks, "</p>\n";
 	}
 }

@@ -151,17 +151,17 @@ class Fixtures_Sheet_Gateway {
 		// groups = flags group stages (which mostly behave like divisions)
 		$divisions = $groups = $tables = $ladders = $ladder_comps = [];
 		foreach ($division_rows as $row) {
-			$competition = $row[self::LEAGUE_DIVISION];
-			if (empty($competition)) continue;
-			if (empty($this->competitions[$competition])) {
-				$this->error->add('fixtures', 'Division does not exist on the competitions table: ' . $competition);
+			$comp_name = $row[self::LEAGUE_DIVISION];
+			if (empty($comp_name)) continue;
+			if (empty($this->competitions[$comp_name])) {
+				$this->error->add('fixtures', 'Division does not exist on the competitions table: ' . $comp_name);
 				continue;
 			}
-			$comp = $this->competitions[$competition];
-			$comp_id = $comp->id;
+			$competition = $this->competitions[$comp_name];
+			$comp_id = $competition->id;
 
-			if ($comp->type === 'ladder') {
-				$ladder_comps[] = $comp;
+			if ($competition->type === 'ladder') {
+				$ladder_comps[] = $competition;
 				$ladders[$comp_id] = [$comp_id, '', 0 ,0, "=$comp_id"];
 			} else { // division or flags group
 				$table = [];
@@ -170,11 +170,11 @@ class Fixtures_Sheet_Gateway {
 					$team->team = $row[$i];
 					if (!array_key_exists($team->team, $this->teams)
 					&& !str_starts_with($team->team, 'TBD')) {
-						$this->error->add('fixtures', "Team $team->team in division $competition is not on Teams sheet");
+						$this->error->add('fixtures', "Team $team->team in division $comp_name is not on Teams sheet");
 						continue;
 					}
 					if (array_key_exists($team->team, $table)) {
-						$this->error->add('fixtures', "Duplicate team $team->team in division $competition");
+						$this->error->add('fixtures', "Duplicate team $team->team in division $comp_name");
 						continue;
 					}
 					$team->won=0; $team->drawn=0; $team->lost=0;
@@ -183,7 +183,7 @@ class Fixtures_Sheet_Gateway {
 					$table[$team->team] = $team;
 				}
 				if (count($table) < 3) {
-					$this->error->add('fixtures', "Division $competition has < 3 teams");
+					$this->error->add('fixtures', "Division $comp_name has < 3 teams");
 					continue;
 				}
 				$tables[$comp_id] = $table;
@@ -197,11 +197,10 @@ class Fixtures_Sheet_Gateway {
 
 				$divisions[$comp_id] = [$comp_id, $sort_order, $promoted,
 					$relegated_after, "=$comp_id"];
-				if ($comp->type === 'cup-group') {
-					$groups[$comp->related_comp_id][] = $comp_id;
+				if ($competition->type === 'cup-group') {
+					$groups[$competition->related_comp_id][] = $comp_id;
 				}
 			}
-
 		}
 
 		foreach ($ladder_comps as $ladder) {
@@ -255,33 +254,51 @@ class Fixtures_Sheet_Gateway {
 		$row_count = count($rows);
 		if ($row_count < 5) return $comps;
 
+		$prelims = []; // ids of prelim cup competitions keyed by parent competition id
 		$row = 0;
 		while ($row < $row_count) {
-			// if H/A or no title the continue
+			// if H/A or no title then continue
 			if (!empty($rows[$row][1]) || empty($rows[$row][2])) {
 				$row++;
 				continue;
 			}
 			// title
-			$comp = $rows[$row][2];
-			if (empty($this->competitions[$comp]) || ($this->competitions[$comp]->type != 'cup')) {
-				$this->error->add('fixtures', "Unknown flags competition $comp");
+			$comp_name = $rows[$row][2];
+			if (empty($this->competitions[$comp_name])
+			|| $this->competitions[$comp_name]->type !== 'cup') {
+				$this->error->add('fixtures', "Unknown flags competition $comp_name");
 				$comp_id = 0;
 				$row += 5;
 				continue;
 			}
-			$comp_id = $this->competitions[$comp]->id;
-			if (!empty($groups[$comp_id])) {
-				$comp_ids = $groups[$comp_id];
-				array_unshift($comp_ids, $comp_id);
-				$where = 'IN(' . implode(',', $comp_ids) . ')';
+			$competition = $this->competitions[$comp_name];
+			$comp_id = $competition->id;
+			if ($competition->related_comp_id) {
+				$prelims[$competition->related_comp_id][] = $comp_id;
+			}
+			$comps[$comp_id] = [$comp_id, '', 0, 0];
+			$row += 5;
+		}
+		foreach ($prelims as $comp_id => $ids) {
+			if (!array_key_exists($comp_id, $comps)) {
+				$this->error->add('fixtures', 'Parent flags competition '
+					. $this->get_competition_name($comp_id)
+					. ' missing for ' . $this->get_competition_name($ids[0]));
+			}
+		}
+		// generate where clauses on the main competition to include prelim
+		// rounds and groups
+		foreach ($comps as $comp_id => &$comp) {
+			$ids = array_merge([$comp_id], $prelims[$comp_id] ?? [], $groups[$comp_id] ?? [] );
+			if (count($ids) > 1) {
+				sort($ids, SORT_NUMERIC);
+				$where = 'IN(' . implode(',', $ids) . ')';
 			} else {
 				$where = "=$comp_id";
 			}
-			$comps[$comp_id] = [$comp_id, '', 0, 0, $where];
-			$row += 5;
+			$comp[] = $where;
 		}
-		$this->status[] = 'Loaded info for ' . count($comps) . ' flags competitions';
+		$this->status[] = 'Loaded info for ' . count($comps) . ' flags competitions/prelims';
 		return $comps;
 	}
 
@@ -296,12 +313,12 @@ class Fixtures_Sheet_Gateway {
 			$rows = $this->get_rows('Deductions');
 			if ($rows !== null) {
 				foreach($rows as $row) {
-					$comp = $row[self::DEDUCT_COMPETITION];
-					if (empty($this->competitions[$comp])) {
-						$this->error->add('fixtures_deduct', "Unknown league/division '$comp' in Deductions");
+					$comp_name = $row[self::DEDUCT_COMPETITION];
+					if (empty($this->competitions[$comp_name])) {
+						$this->error->add('fixtures_deduct', "Unknown league/division '$comp_name' in Deductions");
 						continue;
 					}
-					$comp_id = $this->competitions[$comp]->id;
+					$comp_id = $this->competitions[$comp_name]->id;
 					$points_deducted = trim($row[self::DEDUCT_POINTS]);
 					if (!is_numeric($points_deducted)) {
 						$this->error->add('fixtures_deduct', "Deduction $points_deducted is not numeric");
@@ -371,8 +388,6 @@ class Fixtures_Sheet_Gateway {
 			$division_sort[$division[self::DIVISIONS_COMP_ID]] = $division[self::DIVISIONS_SORT_ORDER];
 		}
 
-		// make sure we have increasing dates, otherwise someone has forgotten to change
-		// the date when copying a row
 		$last_date = '';
 		$fixtures = $division_fixtures = [];
 		foreach ($rows as $row_no => $row) {
@@ -401,7 +416,7 @@ class Fixtures_Sheet_Gateway {
 			if ($away === '') $away = 'TBD';
 
 			$date = substr($date, 0, 10); // cell will have date/time, so need to remove time part
-			$competition = trim($row[$competition_col]);
+			$comp_name = trim($row[$competition_col]);
 
 			$time = $row[$time_col];
 			if (is_int($time)) {
@@ -417,6 +432,8 @@ class Fixtures_Sheet_Gateway {
 				}
 				$time = substr($time, 11); // cell will have date/time
 			}
+			// make sure we have increasing dates, otherwise someone has forgotten to change
+			// the date when copying a row
 			if ($date < $last_date) {
 				$this->error->add('fixtures', "Fixtures row $row_no is out of sequence, date is $date, last date was $last_date");
 				continue;
@@ -424,44 +441,45 @@ class Fixtures_Sheet_Gateway {
 			$last_date = $date;
 
 			$venue = trim($row[$venue_col]);
-			if ($venue === '' || preg_match('/' . $venue . '/', $home)) {
+			if ($venue === '' || str_contains($home, $venue)) {
 				$venue = null;
 			}
 			$multi = empty($row[$x_col]) ? 1 : $row[$x_col];
 			$seq = $unknown_seq;
 			$comp_id = 0;
 			$comp_short = '';
-			$is_league = false;
+			$is_league = $is_cup_prelim = false;
 
-			if (isset($this->competitions[$competition])) {
-				$c = $this->competitions[$competition];
-				$seq = $c->seq;
-				$comp_short = $c->abbrev ?? $c->name;
-				$comp_id = $c->id;
-				if ($c->type === 'ladder') {
-					$related_comp_id = $c->related_comp_id;
-					$related_comp_id2 = $c->related_comp_id2;
+			if (isset($this->competitions[$comp_name])) {
+				$competition = $this->competitions[$comp_name];
+				$seq = $competition->seq;
+				$comp_short = $competition->abbrev ?? $competition->name;
+				$comp_id = $competition->id;
+				if ($competition->type === 'ladder') {
+					$related_comp_id = $competition->related_comp_id;
+					$related_comp_id2 = $competition->related_comp_id2;
 					$is_league = true;
 				} else {
 					$related_comp_id = 0;
-					$is_league = str_starts_with($c->type, 'league') || $c->type === 'cup-group';
+					$is_league = str_starts_with($competition->type, 'league') || $competition->type === 'cup-group';
 				}
 			} else {
-				$temp = explode(' ', $competition);
-				if (count($temp) < 2) {
-					$this->status[] = "Warning: Unknown competition '$competition' in fixtures row $row_no";
-					$comp_short = $competition;
+				$words = explode(' ', $comp_name);
+				if (count($words) < 2) {
+					$this->status[] = "Warning: Unknown competition '$comp_name' in fixtures row $row_no";
+					$comp_short = $comp_name;
 				} else {
-					$round = array_pop($temp); // get rid of flags round
-					$comp_minus_round = implode(' ', $temp);
+					$round = array_pop($words); // get rid of flags round
+					$comp_minus_round = implode(' ', $words);
 					if (empty($this->competitions[$comp_minus_round])) {
-						$this->status[] = "Warning: Unknown competition '$competition' in fixtures row $row_no";
-						$comp_short = $competition;
+						$this->status[] = "Warning: Unknown competition '$comp_name' in fixtures row $row_no";
+						$comp_short = $comp_name;
 					} else {
-						$c = $this->competitions[$comp_minus_round];
-						$seq = $c->seq;
-						$comp_short = ($c->abbrev ?? $c->name) . ' ' . $round;
-						$comp_id = $c->id;
+						$competition = $this->competitions[$comp_minus_round];
+						$seq = $competition->seq;
+						$comp_short = ($competition->abbrev ?? $competition->name) . ' ' . $round;
+						$comp_id = $competition->id;
+						$is_cup_prelim = $competition->related_comp_id != 0;
 					}
 				}
 			}
@@ -483,11 +501,11 @@ class Fixtures_Sheet_Gateway {
 					$a_comp_id = $related_comp_id;
 				}
 				if (!isset($this->tables[$h_comp_id][$home])) {
-					$this->error->add('fixtures', "$date $home v $away, $home is not in division $competition, row $row_no");
+					$this->error->add('fixtures', "$date $home v $away, $home is not in division $comp_name, row $row_no");
 					continue;
 				}
 				if (!isset($this->tables[$a_comp_id][$away])) {
-					$this->error->add('fixtures', "$date $home v $away, $away is not in division $competition,  row $row_no");
+					$this->error->add('fixtures', "$date $home v $away, $away is not in division $comp_name,  row $row_no");
 					continue;
 				}
 			}
@@ -585,6 +603,10 @@ class Fixtures_Sheet_Gateway {
 				$multi,'sort' => $seq];
 			if (isset($division_sort[$comp_id]) && $division_sort[$comp_id] === 'V') { // if we want to sort by venue/time
 				$fixture['sort2'] = ($venue ?? $home) . $time;
+			} else if ($is_cup_prelim) {
+				// for preliminary cup rounds the round should be alphabetic (so P1, P2 etc.),
+				// if matches are on the same day do earlier rounds first
+				$fixture['sort2'] = $round;
 			}
 			$fixtures[] = $fixture;
 		}
@@ -816,9 +838,9 @@ class Fixtures_Sheet_Gateway {
 		$comps = '';
 		$row_count = count($rows);
 		for ($col = count($rows[0]) - 1; $col >= 0; $col--) {
-			$comp = $rows[0][$col];
-			if (empty($this->competitions[$comp])) {
-				$this->error->add('fixtures', "Division Order sheet: Competition $comp does not exist");
+			$comp_name = $rows[0][$col];
+			if (empty($this->competitions[$comp_name])) {
+				$this->error->add('fixtures', "Division Order sheet: Competition $comp_name does not exist");
 				continue;
 			}
 
@@ -831,7 +853,7 @@ class Fixtures_Sheet_Gateway {
 			$division_order[$this->competitions[$rows[0][$col]]->id] = $teams;
 
 			if ($comps !== '') $comps .= ', ';
-			$comps .= $comp;
+			$comps .= $comp_name;
 		}
 		$this->status[] = "Loaded division order for $comps";
 		return $division_order;
@@ -846,31 +868,33 @@ class Fixtures_Sheet_Gateway {
 
 		$ha = ['H'=>1,'A'=>2,'NH'=>3,'NA'=>4];
 		$matches = $round_dates = [];
-		$row = $count = 0;
-		while ($row < $row_count) {
-			// title
-			$comp = $rows[$row][2];
-			if (empty($this->competitions[$comp]) || ($this->competitions[$comp]->type != 'cup')) {
-				$this->error->add('fixtures', "Unknown flags competition $comp");
+		$comp_row = $count = 0;
+		while ($comp_row < $row_count) {
+			// competition name comes first
+			$comp_name = $rows[$comp_row][2];
+			if (empty($this->competitions[$comp_name])
+			|| $this->competitions[$comp_name]->type !== 'cup') {
+				$this->error->add('fixtures', "Unknown flags competition (2) $comp_name");
 				$comp_id = 0;
 			} else {
-				$comp_id = $this->competitions[$comp]->id;
+				$competition = $this->competitions[$comp_name];
+				$comp_id = $competition->id;
 			}
-			$row++;
-			if ($row + 3 > $row_count) {
-				$this->error->add('fixtures', "Too few rows in flags competition $comp");
+			$comp_row++;
+			if ($comp_row + 3 > $row_count) {
+				$this->error->add('fixtures', "Too few rows in flags competition $comp_name");
 				return;
 			}
 			//dates
-			$cur_row = $rows[$row];
+			$cur_row = $rows[$comp_row];
 			$col = 2;
 			$round_cnt = 0;
 			while (!empty($cur_row[$col])) {
 				$date = $cur_row[$col];
 				if (is_int($date)) {
-					$this->error->add('flags', "Date is parsed as an integer. Format issues? Flags row $row col $col: $date");
+					$this->error->add('flags', "Date is parsed as an integer. Format issues? Flags row $comp_row col $col: $date");
 				} elseif (strlen($date) !== 19) {
-					$this->error->add('flags', "Invalid date format on Flags row $row col $col: $date");
+					$this->error->add('flags', "Invalid date format on Flags row $comp_row col $col: $date");
 				} else {
 					$round_cnt++;
 					$round_dates[] = [ $comp_id, $round_cnt, substr($date, 0, 10) ];
@@ -880,22 +904,41 @@ class Fixtures_Sheet_Gateway {
 			if ($round_cnt > $this->max_flags_rounds) {
 				$this->max_flags_rounds = $round_cnt;
 			}
-			$r1_matches = 2**($round_cnt-1);
-			$start_row = $row + 2;
-			$end_row = $start_row + ($r1_matches * 2) - 1;
-			if ($end_row > $row_count) {
-				$this->error->add('fixtures', "Too few rows in flags competition $comp");
-				return;
+
+			$start_row = $comp_row + 2;
+			// normal cup should end in a final match, so can calculate start and end rows based on rounds
+			if ($competition->related_comp_id == 0) {
+				$r1_matches = 2**($round_cnt-1);
+				$end_row = $start_row + ($r1_matches * 2) - 1;
+				if ($end_row > $row_count) {
+					$this->error->add('fixtures', "Too few rows in flags competition $comp_name");
+					return;
+				}
+				$rounds_with_ha = $round_cnt - 1;
+			} else {
+			// prelim can have any number of rounds, must have H/A in 1st col
+				for ($end_row = $start_row;
+					$end_row <= $row_count && !empty($rows[$end_row][1]);
+					$end_row++);
+				$r1_teams = $end_row - $start_row;
+				$end_row--;
+				if ($r1_teams < 2 || $r1_teams % 2 !== 0) {
+					$this->error->add('fixtures', "Invalid flags competition $comp_name, round 1 teams=$r1_teams");
+					return;
+				}
+				$rounds_with_ha = $round_cnt;
 			}
-			$col = 1; // h/a
+			$comp_row = $end_row + 3;
+
+			$col = 1; // H/A column, goes up in 5s
 			$round = 1;
-			while ($round < $round_cnt) {
+			while ($round <= $rounds_with_ha) {
 				$num = $team1_goals = 0;
 				$team1 = false;
 				$home_team = '';
-				for ($row = $start_row; $row<= $end_row; $row++) {
+				for ($row = $start_row; $row <= $end_row; $row++) {
 					if (!empty($rows[$row][$col])) {
-						if ($team1 === false) { // home
+						if ($team1 === false) { // 1st team in match
 							$home_team = $ha[ $rows[$row][$col] ];
 							$team1 = $rows[$row][$col+1];
 							$team1_goals = $rows[$row][$col+2];
@@ -904,8 +947,8 @@ class Fixtures_Sheet_Gateway {
 							$matches[] = [$comp_id, $round, ++$num,
 								$team1, $team2, $team1_goals,
 								$rows[$row][$col+2], $home_team ];
-							$this->validate_flags_team($comp, $team1);
-							$this->validate_flags_team($comp, $team2);
+							$this->validate_flags_team($comp_name, $team1);
+							$this->validate_flags_team($comp_name, $team2);
 							$team1 = false;
 						}
 					}
@@ -913,8 +956,12 @@ class Fixtures_Sheet_Gateway {
 				$col +=5;
 				$round++;
 			}
-			// final round - no h/a
-			$col ++;
+			// cups have final round with no H/A markers, but that doesn't apply
+			// to prelims so short circuit
+			if ($round > $round_cnt) {
+				continue;
+			}
+			$col++;
 			$team1 = $team2 = '';
 			$team1_goals = $team2_goals = null;
 			for ($row = $start_row; $row<= $end_row; $row++) {
@@ -930,9 +977,8 @@ class Fixtures_Sheet_Gateway {
 			}
 			$matches[] = [$comp_id, $round, 1,
 				$team1, $team2, $team1_goals, $team2_goals, 0 ];
-				$this->validate_flags_team($comp, $team1);
-				$this->validate_flags_team($comp, $team2);
-				$row = $end_row + 3;
+				$this->validate_flags_team($comp_name, $team1);
+				$this->validate_flags_team($comp_name, $team2);
 			$count++;
 		}
 		if ($this->error->has_errors()) return;
@@ -943,12 +989,12 @@ class Fixtures_Sheet_Gateway {
 		$this->status[] = "$count Flags competitions updated";
 	}
 
-	private function validate_flags_team($comp, $team) {
+	private function validate_flags_team($comp_name, $team) {
 		if (!$team || $team === 'Bye') return;
 		if (!array_key_exists($team, $this->teams)
 		// slots for teams currently unknown may denote who the team will be
 		&& !preg_match('/^(TBD|Winner|Runner|Loser)/',$team)) {
-			$this->error->add('fixtures', "Team $team in competition $comp is not on Teams sheet");
+			$this->error->add('fixtures', "Team $team in competition $comp_name is not on Teams sheet");
 		}
 	}
 

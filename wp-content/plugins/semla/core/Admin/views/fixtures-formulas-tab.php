@@ -6,9 +6,12 @@
 			Copy the rows you need, and in the Fixtures Sheet insert as many rows as you need, and then in the Competition
 			column right click->Paste Special->Paste Values Only, and repeat until you have copied all the Flags games into the
 			correct position on the sheet.</p>
+		<p><strong>Important:</strong> The flags competitions must be in the correct order which matches the sequence specified in the database.
+			This is basically Senior, Intermediate, then Minor, with any prelims/play-ins before the relevant main competition. If they are not
+			you will should quickly see when you try and paste the formulas.</p>
 		<p>Note: Google Sheets can be a bit flaky when pasting formulas, so if you end up with cells like "=Flags!$D$4"
-			then create a blank sheet and paste all rows into into there, and then copy those rows into the Fixtures sheet.
-			Or also pasting into Notepad++, and then copy and pasting from there works.</p>
+			then try pasting with <kbd>Ctrl+Shift+v</kbd> or <kbd>Ctrl+v</kbd>, or create a blank sheet and paste all rows into into
+			there, and then copy those rows into the Fixtures sheet. Or also pasting into Notepad++, and then copy and pasting from there works.</p>
 	</div>
 </div>
 <?php if ($rows) : ?>
@@ -23,10 +26,13 @@ $output = [];
 while ($comp_start < $row_count) {
 	$comp_id = $rows[$comp_start]->comp_id;
 	for ($comp_end = $comp_start+1; $comp_end < $row_count && $rows[$comp_end]->comp_id == $comp_id;
-			$comp_end++);
+		$comp_end++) {
+		if ($rows[$comp_end]->round === '1') {
+			$r1_matches = $rows[$comp_end]->match_num;
+		}
+	}
 	$rounds = $rows[$comp_end-1]->round;
 	$round_offset = count($rounds_short) - $rounds - 1;
-	$col = 3;
 	for ($i = $comp_start; $i < $comp_end; $i++) {
 		$row = $rows[$i];
 		$date = explode('-', $row->match_date);
@@ -40,7 +46,8 @@ while ($comp_start < $row_count) {
 		$row_no++;
 		$team2 = $col_letter . '$' . $row_no;
 		$team2_goals = $goal_col_letter. '$' . $row_no;
-		$result = $row->name . ' ' . $rounds_short[$row->round + $round_offset]
+		$result = $row->name . ' '
+			. ($row->prelim === '1' ? 'P' . $row->round : $rounds_short[$row->round + $round_offset])
 			. "\t\t$date[2]/$date[1]/$date[0]\t";
 		if ($row->home_team = 1) {
 			$result .= "\t=Flags!$$team1\t=Flags!$$team1_goals\tv\t=Flags!$$team2_goals\t=Flags!$$team2";
@@ -49,7 +56,7 @@ while ($comp_start < $row_count) {
 		}
 		$output[$row->match_date][] = $result;
 	}
-	$comp_offset = $comp_offset + 6 + $comp_end - $comp_start;
+	$comp_offset = $comp_offset + 5 + ($r1_matches * 2);
 	$comp_start = $comp_end;
 }
 ksort($output, SORT_STRING);

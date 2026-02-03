@@ -15,32 +15,53 @@ class Cup_Draw_Gateway {
 	public static function get_draws($year, $group_id, $display = '', $slug='') {
 		global $wpdb;
 
+		// display "rounds" does not need team name abbreviations
+		if ($display) {
+			$select_clause = $join_clause = '';
+			// only used in history query to ignore byes
+			$where_clause = ' AND cd.team1 <> "Bye" AND cd.team2 <> "Bye"';
+		} else {
+			$select_clause = ' ta1.abbrev AS alias1, ta2.abbrev AS alias2,';
+			$join_clause = 'LEFT OUTER JOIN sl_team_abbrev ta1 ON ta1.team = cd.team1
+				LEFT OUTER JOIN sl_team_abbrev ta2 ON ta2.team = cd.team2';
+			$where_clause = '';
+		}
 		if (!$year) {
 			$rows = $wpdb->get_results( $wpdb->prepare(
-				'SELECT c.section_name, cd.comp_id, cd.round, cd.match_num,
-					crd.match_date, cd.team1, cd.team2, ta1.abbrev AS alias1,
-					ta2.abbrev AS alias2, cd.team1_goals, cd.team2_goals,
+				"SELECT c.section_name, c.related_comp_id, cd.comp_id, cd.round, cd.match_num,
+					crd.match_date, cd.team1, cd.team2,$select_clause cd.team1_goals, cd.team2_goals,
 					cd.result_extra, cd.home_team
 				FROM slc_cup_draw AS cd
 				LEFT JOIN sl_competition AS c
 				ON c.id = cd.comp_id
 				LEFT JOIN slc_cup_round_date AS crd
 				ON crd.comp_id = cd.comp_id AND crd.round = cd.round
-				LEFT OUTER JOIN sl_team_abbrev ta1
-				ON ta1.team = cd.team1
-				LEFT OUTER JOIN sl_team_abbrev ta2
-				ON ta2.team = cd.team2
+				$join_clause
 				WHERE c.group_id = %d
-				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num', $group_id ));
+				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num", $group_id ));
 			if ($wpdb->last_error) return DB_Util::db_error();
-			// group stages
-			$group_rows = $wpdb->get_results( $wpdb->prepare(
-				'SELECT c.related_comp_id, c.section_name as name, t.comp_id, t.position, t.team,
-					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
-					t.points_deducted, t.points, t.divider, t.form, t.tiebreaker
-				FROM slc_table AS t, sl_competition AS c
-				WHERE c.id = t.comp_id AND c.group_id = %d
-				ORDER BY c.related_comp_id, c.seq, c.id, t.position', $group_id));
+			// group stages - either the tables for normal display, or fixtures in rounds
+			// Note: Could include slc_competition in next 2 queries to limit results
+			// from slc_competition to the current year, but that doesn't seem to make
+			// a noticeable difference to performance
+			if (!$display) {
+				$group_rows = $wpdb->get_results( $wpdb->prepare(
+					'SELECT c.related_comp_id, c.section_name as name, t.comp_id, t.position, t.team,
+						t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
+						t.points_deducted, t.points, t.divider, t.form, t.tiebreaker
+					FROM slc_table AS t, sl_competition AS c
+					WHERE c.group_id = %d AND c.type = "cup-group"
+					AND t.comp_id = c.id
+					ORDER BY c.related_comp_id, c.seq, c.id, t.position', $group_id));
+			} else {
+				$group_rows = $wpdb->get_results( $wpdb->prepare(
+					'SELECT c.related_comp_id, f.comp_id, c.section_name,
+						f.home as team1, f.away as team2, f.result
+					FROM sl_competition AS c, slc_fixture AS f
+					WHERE c.group_id = %d AND c.type = "cup-group"
+					AND f.comp_id = c.id AND f.result <> "R - R"
+					ORDER BY c.related_comp_id, c.seq, c.id, f.id;', $group_id));
+			}
 			if ($wpdb->last_error) return DB_Util::db_error();
 			// TODO: optimize?? not that many rows, so do we need to join?
 			$remarks = $wpdb->get_results(
@@ -57,14 +78,39 @@ class Cup_Draw_Gateway {
 				FROM slh_cup_year y
 				WHERE y.group_id = %d AND y.year = %d', $group_id, $year));
 			if ($wpdb->last_error) return false;
-			// group stages
-			$group_rows = $wpdb->get_results( $wpdb->prepare(
-				'SELECT c.related_comp_id, c.section_name as name, t.comp_id, t.position, t.team,
-					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
-					t.points_deducted, t.points, t.points_avg, t.divider, t.tiebreaker
-				FROM slh_table AS t, sl_competition AS c
-				WHERE c.id = t.comp_id AND t.year = %d AND c.group_id = %d
-				ORDER BY c.related_comp_id, c.seq, c.id, t.position', $year, $group_id));
+			$rows = $wpdb->get_results( $wpdb->prepare(
+				"SELECT c.section_name, c.related_comp_id, cd.comp_id, cd.round, cd.match_num,
+					cd.team1, cd.team2,$select_clause
+					cd.team1_goals, cd.team2_goals, cd.result_extra, cd.home_team
+				FROM slh_cup_draw AS cd
+				LEFT JOIN sl_competition AS c
+				ON c.id = cd.comp_id
+				$join_clause
+				WHERE cd.year = %d AND c.group_id = %d $where_clause
+				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num", $year, $group_id ));
+			if ($wpdb->last_error) return false;
+			// group stages - either the tables for normal display, or fixtures in rounds
+			// First time groups used is 2025, so don't run query before then
+			if ($year < 2025) {
+				$group_rows = [];
+			} elseif (!$display) {
+				$group_rows = $wpdb->get_results( $wpdb->prepare(
+					'SELECT c.related_comp_id, c.section_name as name, t.comp_id, t.position, t.team,
+						t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
+						t.points_deducted, t.points, t.points_avg, t.divider, t.tiebreaker
+					FROM slh_table AS t, sl_competition AS c
+					WHERE c.group_id = %d AND c.type = "cup-group"
+					AND t.comp_id = c.id AND t.year = %d
+					ORDER BY c.related_comp_id, c.seq, c.id, t.position', $group_id, $year));
+			} else {
+				$group_rows = $wpdb->get_results( $wpdb->prepare(
+					'SELECT c.related_comp_id, r.comp_id, c.section_name,
+						r.home as team1, r.away as team2, r.result
+					FROM sl_competition AS c, slh_result AS r
+					WHERE c.group_id = %d AND c.type = "cup-group"
+					AND r.year = %d AND r.comp_id = c.id AND r.result <> "R - R"
+					ORDER BY c.related_comp_id, c.seq, c.id, r.id', $group_id, $year));
+			}
 			if ($wpdb->last_error) return false;
 
 			// TODO: optimize?? not that many rows, so do we need to join?
@@ -73,24 +119,10 @@ class Cup_Draw_Gateway {
 				FROM slh_remarks
 				WHERE year = %d', $year), OBJECT_K);
 			if ($wpdb->last_error) return false;
-			$rows = $wpdb->get_results( $wpdb->prepare(
-				'SELECT c.section_name, cd.comp_id, cd.round, cd.match_num,
-					cd.team1, cd.team2, ta1.abbrev AS alias1, ta2.abbrev AS alias2,
-					cd.team1_goals, cd.team2_goals, cd.result_extra, cd.home_team
-				FROM slh_cup_draw AS cd
-				LEFT JOIN sl_competition AS c
-				ON c.id = cd.comp_id
-				LEFT OUTER JOIN sl_team_abbrev ta1
-				ON ta1.team = cd.team1
-				LEFT OUTER JOIN sl_team_abbrev ta2
-				ON ta2.team = cd.team2
-				WHERE cd.year = %d AND c.group_id = %d
-				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num', $year, $group_id ));
-			if ($wpdb->last_error) return false;
 		}
 		if (count($rows) === 0) return '';
 		ob_start();
-		Cup_Draw_Renderer::cup_draw($year,$display,$years,$rows,$group_rows,$remarks,$slug);
+		Cup_Draw_Renderer::cup_draws($year,$display,$years,$rows,$group_rows,$remarks,$slug);
 		return ob_get_clean();
 	}
 
@@ -108,8 +140,9 @@ class Cup_Draw_Gateway {
 
 	public static function get_cup_fixtures_for_sheet() {
 		global $wpdb;
-		return $wpdb->get_results('SELECT c.name, cd.comp_id, cd.round, cd.match_num,
-			crd.match_date, cd.home_team
+		return $wpdb->get_results(
+			'SELECT c.name, cd.comp_id, cd.round, cd.match_num,
+			crd.match_date, cd.home_team, IF (c.related_comp_id = 0,0,1) AS prelim
 			FROM slc_cup_draw AS cd
 			LEFT JOIN sl_competition AS c
 			ON c.id = cd.comp_id

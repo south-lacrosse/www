@@ -14,20 +14,20 @@ foreach ( $rows as $row ) {
 	} else {
 		echo '<br>';
 	}
-	$result = $row->result ? $row->result : 'v';
 	$home = $row->home;
-	if (is_numeric(substr($home, -1))) {
+	if (!str_starts_with($home, 'TBD') && is_numeric(substr($home, -1))) {
 		$home .= 's';
 	}
 	$home = htmlspecialchars($home, ENT_NOQUOTES);
 	$away = $row->away;
-	if (is_numeric(substr($away, -1))) {
+	if (!str_starts_with($away, 'TBD') && is_numeric(substr($away, -1))) {
 		$away .= 's';
 	}
 	$away = htmlspecialchars($away, ENT_NOQUOTES);
 	if ($row->result && $row->result !== 'R - R' && !ctype_digit($row->result[0])) {
 		echo "$row->competition $home v $away $row->result";
 	} else {
+		$result = $row->result ? $row->result : 'v';
 		echo "$row->competition $home $result $away";
 	}
 	if (!$row->result) {
