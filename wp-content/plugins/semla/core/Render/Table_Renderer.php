@@ -162,7 +162,7 @@ class Table_Renderer {
 			echo '<tr', !empty($team->divider) ? ' class="divider"' : '',
 				'><td>', $team->position, '</td><td class="left">';
 			$esc_team = htmlspecialchars($team->team, ENT_NOQUOTES);
-			if ($format === 'rest') {
+			if ($format === 'rest' || str_starts_with($team->team, 'TBD')) {
 				echo $esc_team;
 			} elseif ($year == 0) {
 				echo '<a class="no-ul font-semibold" href="/fixtures?team=',
