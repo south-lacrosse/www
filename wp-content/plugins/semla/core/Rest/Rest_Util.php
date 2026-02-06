@@ -19,16 +19,18 @@ class Rest_Util {
 			$html = strtr($html ,[
 				'"left"' => '"sl-team"',
 				'hide-sml' => 'sl-hide-small',
+				'"points"' => '"sl-points"'
 			]);
 		} else {
 			$html = strtr($html ,[
 				' class="left"' => '',
 				' class="hide-sml"' => '',
+				' class="points"' => '',
 			]);
 		}
 		return $html;
 	}
-	
+
 	public static function json_encode($value) {
 		$str = json_encode($value);
 		// PHP mysql interface always returns strings, so convert numeric
