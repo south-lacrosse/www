@@ -17,13 +17,16 @@ class Rest_Util {
 		if ($extra_classes) {
 			// hide-small classes etc. are changed to add prefix
 			$html = strtr($html ,[
+				// left in header, with font-semibold in body
 				'"left"' => '"sl-team"',
+				'left font-semibold' => 'sl-team',
 				'hide-sml' => 'sl-hide-small',
 				'"points"' => '"sl-points"'
 			]);
 		} else {
 			$html = strtr($html ,[
 				' class="left"' => '',
+				' class="left font-semibold"' => '',
 				' class="hide-sml"' => '',
 				' class="points"' => '',
 			]);

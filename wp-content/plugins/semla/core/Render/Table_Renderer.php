@@ -160,15 +160,15 @@ class Table_Renderer {
 		echo "</tr></thead>\n<tbody>\n";
 		foreach ($teams as $team) {
 			echo '<tr', !empty($team->divider) ? ' class="divider"' : '',
-				'><td>', $team->position, '</td><td class="left">';
+				'><td>', $team->position, '</td><td class="left font-semibold">';
 			$esc_team = htmlspecialchars($team->team, ENT_NOQUOTES);
 			if ($format === 'rest' || str_starts_with($team->team, 'TBD')) {
 				echo $esc_team;
 			} elseif ($year == 0) {
-				echo '<a class="no-ul font-semibold" href="/fixtures?team=',
+				echo '<a class="no-ul" href="/fixtures?team=',
 					urlencode($team->team), '">', $esc_team, '</a>';
 			} elseif ($year >= 2003) {
-				echo '<a class="no-ul font-semibold" href="results-', $year, '?team=',
+				echo '<a class="no-ul" href="results-', $year, '?team=',
 					urlencode($team->team), '">', $esc_team, '</a>';
 			} else {
 				echo $esc_team;
