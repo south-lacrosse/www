@@ -95,7 +95,6 @@ return array(
 		'version' => '1.0.0',
 		'title' => 'Contact',
 		'category' => 'text',
-		'icon' => 'admin-users',
 		'description' => 'Contact with role and name, email, and telephone',
 		'attributes' => array(
 			'role' => array(
@@ -146,7 +145,6 @@ return array(
 		'version' => '1.0.0',
 		'title' => 'SEMLA Data',
 		'category' => 'widgets',
-		'icon' => 'editor-table',
 		'description' => 'Add SEMLA data such as league tables or fixtures',
 		'attributes' => array(
 			'src' => array(
