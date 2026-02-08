@@ -48,7 +48,6 @@ return array(
 		'version' => '1.0.0',
 		'title' => 'Google Calendar',
 		'category' => 'widgets',
-		'icon' => 'calendar-alt',
 		'description' => 'Embed a Google Calendar',
 		'attributes' => array(
 			'cid' => array(
