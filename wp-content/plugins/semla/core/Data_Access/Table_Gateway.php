@@ -182,7 +182,7 @@ class Table_Gateway {
 			`team` VARCHAR(50) NOT NULL,
 			`penalty` DECIMAL (4,1) NOT NULL,
 			`deduct_date` DATE,
-			`reason` VARCHAR(50) NOT NULL,
+			`reason` text NOT NULL,
 			PRIMARY KEY (`id`),
 			KEY `comp_team_idx` (`comp_id`, `team`)');
 		if ($result === false) return false;

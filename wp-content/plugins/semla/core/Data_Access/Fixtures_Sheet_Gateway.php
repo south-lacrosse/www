@@ -325,9 +325,9 @@ class Fixtures_Sheet_Gateway {
 						continue;
 					}
 					$points_deducted = (float)$points_deducted;
-					if ($points_deducted <= 0 || $points_deducted > 10
+					if ($points_deducted <= 0 || $points_deducted > 50
 					|| $points_deducted !== round($points_deducted,1)) {
-						$this->error->add('fixtures_deduct', "Deduction $points_deducted is invalid (must be > 0, <= 10, max 1 decimal place)");
+						$this->error->add('fixtures_deduct', "Deduction $points_deducted is invalid (must be > 0, <= 50, max 1 decimal place)");
 						continue;
 					}
 					$deductions[] = [$comp_id,$row[1],$points_deducted,$row[3],$row[4]];
