@@ -314,6 +314,7 @@ class Fixtures_Sheet_Gateway {
 			if ($rows !== null) {
 				foreach($rows as $row) {
 					$comp_name = $row[self::DEDUCT_COMPETITION];
+					if (!$comp_name) continue;
 					if (empty($this->competitions[$comp_name])) {
 						$this->error->add('fixtures_deduct', "Unknown league/division '$comp_name' in Deductions");
 						continue;
