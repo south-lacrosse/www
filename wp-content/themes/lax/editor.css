@@ -2,55 +2,54 @@
 
 IMPORTANT: Bump the version in functions.php if you make changes.
 
-Note: don't put in editor-styles.css as WordPress modifies that so it only
-applies inside editor-styles-wrapper
+The editor centers the content (in up to 6.9 at least), however that doesn't
+match our theme so we need to fix that here. Also include anything else editor
+specific.
 
-The editor centres the content (in up to 6.2 at least), however that doesn't
-match our theme. To fix that we alter the .editor-styles-wrapper to have max
-wide width, and then the content inside will be set to our content width by WP,
-and alignwide will work. However we can't use the theme's trick to get full
-width as that uses vw which doesn't work here, so we fudge it here to just give
-1em extra. Obviously we need a better way to do this!!
+This file assumes the page will be loaded in an iframe, which it should always
+be as of WP 6.3 and all blocks are >= apiVersion 3 . If not, you may need to add
+an extra .editor-styles-wrapper selector in front of some styles below to make
+them more specific than whatever WordPress does.
 
-The editor can either be loaded in an iframe (all blocks >= apiVersion 3) in
-which case the editor-styles-wrapper class will be on the body, otherwise it
-will be on a div.
-
-Anything overriding styles on .editor-styles-wrapper must be higher specificity
-than the CSS added by WP as that gets added right before the
-.editor-styles-wrapper element, so we use
-.editor-styles-wrapper.editor-styles-wrapper instead.
+Note: Now everything is in an iframe, this CSS could go in editor-styles.css or
+be loaded in add_editor_style(array), however we have kept it separate for now.
 */
-
-.editor-styles-wrapper.editor-styles-wrapper {
+.editor-styles-wrapper {
 	padding-left: 1em;
 	padding-right: 1em;
+}
+
+/* heading is already centred, just need to set the width to wide */
+.editor-visual-editor__post-title-wrapper > h1 {
 	max-width: var(--wp--style--global--wide-size);
 }
-.editor-styles-wrapper .edit-post-visual-editor__post-title-wrapper > h1 {
+
+/* Change root container to match .inner in our styles */
+.is-root-container {
 	max-width: var(--wp--style--global--wide-size);
+	margin-left: auto;
+	margin-right: auto;
 }
-/* first selector is for the title, the 2nd for the content */
-.editor-styles-wrapper.editor-styles-wrapper
-	.edit-post-visual-editor__post-title-wrapper
-	> :where(:not(.alignleft):not(.alignright):not(.aligncenter):not(.alignfull)),
-.editor-styles-wrapper.editor-styles-wrapper
-	.block-editor-block-list__layout.is-root-container
-	> :where(:not(.alignleft):not(.alignright):not(.aligncenter):not(.alignfull)) {
+
+/* Note: WordPress styles with the following 2 rules (but minus "div") which get
+last thing on the page (including after our editor-styles.css), so we add "div"
+to make our rules more specific. */
+div.block-editor-block-list__layout.is-root-container
+	> :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
 	margin-left: 0 !important;
 	margin-right: 0 !important;
 }
-.editor-styles-wrapper.editor-styles-wrapper
-	.block-editor-block-list__layout.is-root-container
-	> .alignfull {
-	/* margin-left: calc(50% - 50vw + 1em);
+div.block-editor-block-list__layout.is-root-container > .alignfull {
+	margin-left: calc(50% - 50vw + 1em);
 	margin-right: calc(50% - 50vw + 1em);
 	max-width: calc(100vw - 2em);
-	width: 100vw; */
-	margin-left: -1em;
-	margin-right: -1em;
-	max-width: calc(100% + 2em);
-	width: calc(100% + 2em);
+	width: 100vw;
+}
+
+/* from #content in main styles */
+.wp-block-post-content {
+	overflow-wrap: break-word;
+	word-wrap: break-word;
 }
 
 /* stops value from shrinking when using the Select tool */
@@ -68,7 +67,7 @@ than the CSS added by WP as that gets added right before the
 	position: relative;
 }
 
-/* stop border from headings displaying inside toc */
+/* stop border from headings displaying inside toc if it's floating */
 @media (min-width: 720px) {
 	.wp-block-semla-toc {
 		z-index: 1;
