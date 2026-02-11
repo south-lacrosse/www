@@ -33,7 +33,7 @@ class DB_Util {
 	public static function add_table_to_rename($table) {
 		self::$tables_to_rename[] = $table;
 	}
-	
+
 	public static function add_sql_on_success($sql) {
 		self::$sql[] = $sql;
 	}
@@ -41,7 +41,7 @@ class DB_Util {
 	/**
 	 * run the renames as specified with add_table_to_rename(), and any sql
 	 * from add_sql_on_success().
- 	 * 
+ 	 *
 	 * Renames: The current table will be renamed to backup_<table>
 	 * (if it exists), new_ will be renamed to slc_<table>
 	 */
@@ -50,7 +50,7 @@ class DB_Util {
 
 		// get a list of slc_ tables to we can decide if they need to be renamed to backup_
 		$rows = $wpdb->get_results(
-            'SELECT TABLE_NAME FROM information_schema.TABLES 
+            'SELECT TABLE_NAME FROM information_schema.TABLES
 			WHERE TABLE_CATALOG = "def" AND TABLE_SCHEMA = "' . DB_NAME . '"
 				AND TABLE_TYPE = "BASE TABLE"
 				AND TABLE_NAME LIKE "slc_%"');
@@ -61,7 +61,7 @@ class DB_Util {
 			$slc_tables[$row->TABLE_NAME] = 1;
 		}
 
-		$result = $wpdb->query('DROP TABLE IF EXISTS backup_' 
+		$result = $wpdb->query('DROP TABLE IF EXISTS backup_'
 			. implode(', backup_', self::$tables_to_rename));
 		if ($result === false)
 			return new \WP_Error('sql', 'Failed to drop backup tables : SQL error: ' . $wpdb->last_error);

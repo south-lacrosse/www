@@ -77,7 +77,7 @@ class Remarks_List_Table extends Inline_Edit_List_Table {
 	public function prepare_items() {
 		$this->_column_headers = [ $this->get_columns(), [], // no hidden columns
 			$this->get_sortable_columns(), 'name' ];
-		$this->items = Competition_Gateway::get_remarks();
+		$this->items = Competition_Gateway::get_current_remarks();
 	}
 
 	/**

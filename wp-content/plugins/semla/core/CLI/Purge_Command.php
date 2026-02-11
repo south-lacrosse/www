@@ -65,8 +65,8 @@ class Purge_Command {
 
 	/**
 	 * Delete revisions
-	 * @param $sql SQL which returns a list of IDs to delete
-	 * @param $name singular name
+	 * @param string $sql SQL which returns a list of IDs to delete
+	 * @param string $name singular name
 	 */
 	private function delete_revisions($sql, $name) {
 		global $wpdb;

@@ -17,7 +17,7 @@ class Util {
 	/**
 	 * Format the time nicely. Seconds removed, minutes removed if
 	 * zero, 24-hour to 12-hour with am/pm added
-	 * @param $time time HH:MM:SS
+	 * @param string $time time HH:MM:SS
 	 * @return string formatted time
 	 */
 	public static function format_time($time) {

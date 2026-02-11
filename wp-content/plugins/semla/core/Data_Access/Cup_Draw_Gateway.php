@@ -40,6 +40,7 @@ class Cup_Draw_Gateway {
 				WHERE c.group_id = %d
 				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num", $group_id ));
 			if ($wpdb->last_error) return DB_Util::db_error();
+			if (count($rows) === 0) return '';
 			// group stages - either the tables for normal display, or fixtures in rounds
 			// Note: Could include slc_competition in next 2 queries to limit results
 			// from slc_competition to the current year, but that doesn't seem to make
@@ -63,10 +64,6 @@ class Cup_Draw_Gateway {
 					ORDER BY c.related_comp_id, c.seq, c.id, f.id;', $group_id));
 			}
 			if ($wpdb->last_error) return DB_Util::db_error();
-			// TODO: optimize?? not that many rows, so do we need to join?
-			$remarks = $wpdb->get_results(
-				'SELECT comp_id, remarks FROM slc_remarks', OBJECT_K);
-			if ($wpdb->last_error) return DB_Util::db_error();
 			$years = false;
 		} else {
 			$years = $wpdb->get_row( $wpdb->prepare(
@@ -89,6 +86,7 @@ class Cup_Draw_Gateway {
 				WHERE cd.year = %d AND c.group_id = %d $where_clause
 				ORDER BY c.seq, cd.comp_id, cd.round, cd.match_num", $year, $group_id ));
 			if ($wpdb->last_error) return false;
+			if (count($rows) === 0) return '';
 			// group stages - either the tables for normal display, or fixtures in rounds
 			// First time groups used is 2025, so don't run query before then
 			if ($year < 2025) {
@@ -112,15 +110,16 @@ class Cup_Draw_Gateway {
 					ORDER BY c.related_comp_id, c.seq, c.id, r.id', $group_id, $year));
 			}
 			if ($wpdb->last_error) return false;
-
-			// TODO: optimize?? not that many rows, so do we need to join?
-			$remarks = $wpdb->get_results( $wpdb->prepare(
-				'SELECT comp_id, remarks
-				FROM slh_remarks
-				WHERE year = %d', $year), OBJECT_K);
-			if ($wpdb->last_error) return false;
 		}
-		if (count($rows) === 0) return '';
+
+		// need to get remarks for the flags and also group stages
+		$comp_ids = array_merge(
+			array_unique(array_column($rows, 'comp_id')),
+			array_unique(array_column($group_rows, 'comp_id'))
+		);
+		$remarks = Competition_Gateway::get_remarks($year,$comp_ids);
+		if ($wpdb->last_error) return DB_Util::db_error();
+
 		ob_start();
 		Cup_Draw_Renderer::cup_draws($year,$display,$years,$rows,$group_rows,$remarks,$slug);
 		return ob_get_clean();

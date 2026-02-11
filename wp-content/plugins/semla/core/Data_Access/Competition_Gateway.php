@@ -120,7 +120,7 @@ class Competition_Gateway {
 		return $result;
 	}
 
-	public static function get_remarks() {
+	public static function get_current_remarks() {
 		global $wpdb;
 		return $wpdb->get_results(
 			'SELECT id, CASE WHEN c.group_id = 1 THEN c.section_name
@@ -131,6 +131,25 @@ class Competition_Gateway {
 			LEFT JOIN slc_remarks AS r
 			ON r.comp_id = cc.comp_id
 			ORDER BY c.seq');
+	}
+
+	/**
+	 * Get array of remarks for a year (including current) and competitions, keyed by comp_id
+	 * @param int $year year, or 0 for current season
+	 * @param array $comp_ids array of competition ids to retrieve
+	 */
+	public static function get_remarks($year, $comp_ids) {
+		global $wpdb;
+
+		$where = ' comp_id IN (' . implode( ',', $comp_ids ) . ')';
+		if ($year) {
+			$prefix = 'slh';
+			$where = "year = $year AND$where";
+		} else {
+			$prefix = 'slc';
+		}
+		return $wpdb->get_results(
+			"SELECT comp_id, remarks FROM {$prefix}_remarks	WHERE $where", OBJECT_K);
 	}
 
 	/**

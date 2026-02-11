@@ -28,10 +28,6 @@ class Table_Gateway {
 				WHERE c.id = t.comp_id AND c.group_id = %d
 				ORDER BY c.seq, c.id, t.position', $league_id));
 			if ($wpdb->last_error) return DB_Util::db_error();
-			// TODO: optimize?? not that many rows anyway
-			$remarks = $wpdb->get_results(
-				'SELECT comp_id, remarks FROM slc_remarks', OBJECT_K);
-			if ($wpdb->last_error) return false;
 		} else {
 			$years = $wpdb->get_row( $wpdb->prepare(
 				'SELECT year,
@@ -42,12 +38,6 @@ class Table_Gateway {
 				FROM slh_league_year y
 				WHERE y.league_id = %d AND y.year = %d', $league_id, $year));
 			if ($wpdb->last_error) return false;
-			// TODO: optimize?? not that many rows anyway
-			$remarks = $wpdb->get_results( $wpdb->prepare(
-				'SELECT comp_id, remarks
-				FROM slh_remarks
-				WHERE year = %d',$year), OBJECT_K);
-			if ($wpdb->last_error) return false;
 			$rows = $wpdb->get_results( $wpdb->prepare(
 				'SELECT c.section_name as name, t.comp_id, t.position, t.team,
 					t.played, t.won, t.drawn, t.lost, t.goals_for, t.goals_against, t.goal_avg,
@@ -57,6 +47,11 @@ class Table_Gateway {
 				ORDER BY c.seq, c.id, t.position', $year, $league_id));
 			if ($wpdb->last_error) return false;
 		}
+
+		$comp_ids = array_unique( array_column($rows, 'comp_id') );
+		$remarks = Competition_Gateway::get_remarks($year,$comp_ids);
+		if ($wpdb->last_error) return DB_Util::db_error();
+
 		ob_start();
 		if ($year) {
 			Table_Renderer::year_navigation($page, $grid_page, $year, $years);
