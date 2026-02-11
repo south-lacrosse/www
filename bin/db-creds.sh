@@ -29,6 +29,7 @@ database = $DBNAME
 [mysqldump]
 no-tablespaces
 skip-comments
+skip-disable-keys
 single-transaction"
 	# touch and chmod BEFORE we write sensitive information to the file
 	touch $BIN/.my.cnf
