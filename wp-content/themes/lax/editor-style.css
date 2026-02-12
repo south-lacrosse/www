@@ -248,7 +248,8 @@ a:visited {
 
 /* browsers may set figure left/right, and p should be 0 anyway */
 p,
-figure {
+figure,
+details {
 	margin: 0 0 1em 0;
 }
 figure > table:last-child {
@@ -651,7 +652,7 @@ li > ol {
 	}
 }
 
-/*--------------- Accordion/tabs ----------*/
+/*--------------- Accordion/tabs/details ----------*/
 
 .acrd-btn {
 	position: relative;
@@ -696,6 +697,28 @@ li > ol {
 	display: block;
 }
 
+summary {
+	cursor: pointer;
+	list-style-position: inside;
+}
+details.is-style-outline {
+	border: 0.0625rem solid #dbdbdb;
+	border-radius: 0.5rem;
+}
+details.is-style-outline > * {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+details.is-style-outline > summary {
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+}
+details.is-style-outline[open] > summary {
+	margin-bottom: 1em;
+	background-color: #f6f6f6;
+	border-bottom: 0.0625rem solid #dbdbdb;
+}
+
 /*--------------- Definition list defaults ----------*/
 
 dl {
@@ -714,6 +737,9 @@ dt {
 }
 dd {
 	margin: 0 0 0.5em 2em;
+}
+dd:last-child {
+	margin-bottom: 0;
 }
 
 /*--------------- Callouts -------------------*/

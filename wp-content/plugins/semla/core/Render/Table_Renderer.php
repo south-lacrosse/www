@@ -59,8 +59,9 @@ class Table_Renderer {
 	 *               league, cup, or rest
 	 * @param int    $year
 	 * @param array  $remarks array of strings keyed by competition id
+	 * @param array  $deductions array of array of deductions keyed by competition id
 	 */
-	public static function tables($rows, $format, $year = 0, $remarks = null) {
+	public static function tables($rows, $format, $year = 0, $remarks = null, $deductions = null) {
 		if (count($rows) === 0) {
 			echo '<p>No League data</p>';
 			return;
@@ -73,8 +74,11 @@ class Table_Renderer {
 				if ($comp_id) {
 					echo self::table($teams[0]->name, $teams, $year, $format);
 				}
+				if (isset($deductions[$comp_id])) {
+					self::deductions($deductions[$comp_id]);
+				}
 				if (isset($remarks[$comp_id])) {
-					echo '<p>', $remarks[$comp_id]->remarks, '</p>';
+					echo '<p>', $remarks[$comp_id]->remarks, "</p>\n";
 				}
 				$comp_id = $row->comp_id;
 				$teams = [];
@@ -86,8 +90,11 @@ class Table_Renderer {
 		}
 		if ($comp_id) {
 			echo self::table($teams[0]->name, $teams, $year, $format);
+			if (isset($deductions[$comp_id])) {
+				self::deductions($deductions[$comp_id]);
+			}
 			if (isset($remarks[$comp_id])) {
-				echo '<p>', $remarks[$comp_id]->remarks, '</p>';
+				echo '<p>', $remarks[$comp_id]->remarks, "</p>\n";
 			}
 		}
 		if ($has_tiebreaker) {
@@ -203,5 +210,20 @@ class Table_Renderer {
 			echo "</tr>\n";
 		}
 		echo '</tbody></table></div>', $format !== 'cup' ? '</div>' : '', "\n";
+	}
+
+	private static function deductions($rows) {
+		echo '<details class="is-style-outline"><summary>Deductions</summary><dl>', "\n";
+		$last_team = '';
+		foreach ($rows as $row) {
+			if ($row->team !== $last_team) {
+				echo "<dt>$row->team</dt>\n";
+				$last_team = $row->team;
+			}
+			echo '<dd><strong>', floatval($row->penalty), 'pts</strong> ',
+				date('j M Y', strtotime($row->deduct_date)), ': ', $row->reason,
+				"</dd>\n";
+		}
+		echo "</dl></details>\n";
 	}
 }

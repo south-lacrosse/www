@@ -124,12 +124,9 @@ function lax_admin() {
 	// Block styles can just be registered in Admin as long as they don't
 	// register a stylesheet or inline styles
 	$block_styles = [
-		'core/gallery' => [
-			'lightbox'      => 'Lightbox',
-		],
-		'core/media-text' => [
-			'flush'     => 'Flush',
-		],
+		'core/details' => [ 'outline' => 'Outline' ],
+		'core/gallery' => [ 'lightbox' => 'Lightbox' ],
+		'core/media-text' => [ 'flush' => 'Flush' ],
 		'core/table' => [
 			'lined'         => 'Lined',
 			'boxed-striped' => 'Boxed and striped',
@@ -155,7 +152,7 @@ add_action('init', function() {
 
 add_action('wp_enqueue_scripts', function() {
 	wp_enqueue_style('lax-style', get_stylesheet_directory_uri() . '/style' . SEMLA_MIN . '.css'
-		, [], '1.5.11');
+		, [], '1.5.12');
 	if (is_admin_bar_showing()) {
 		wp_enqueue_style('lax-admin-bar', get_stylesheet_directory_uri() . '/admin-bar' . SEMLA_MIN . '.css'
 		, ['lax-style'], '1.1');

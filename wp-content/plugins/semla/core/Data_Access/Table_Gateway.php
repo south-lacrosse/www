@@ -52,11 +52,21 @@ class Table_Gateway {
 		$remarks = Competition_Gateway::get_remarks($year,$comp_ids);
 		if ($wpdb->last_error) return DB_Util::db_error();
 
+		$rows_with_deductions = array_filter($rows, function($row) {
+   			return $row->points_deducted <> 0;
+		});
+		if ($rows_with_deductions) {
+			$comp_ids = array_unique( array_column($rows_with_deductions, 'comp_id') );
+			$deductions = self::get_deductions($year,$comp_ids);
+		} else {
+			$deductions = [];
+		}
+
 		ob_start();
 		if ($year) {
 			Table_Renderer::year_navigation($page, $grid_page, $year, $years);
 		}
-		Table_Renderer::tables($rows, 'league', $year, $remarks);
+		Table_Renderer::tables($rows, 'league', $year, $remarks, $deductions);
 		return ob_get_clean();
 	}
 
@@ -167,6 +177,33 @@ class Table_Gateway {
 		ob_start();
 		require __DIR__ . '/views/mini-tables.php';
 		return ob_get_clean();
+	}
+
+	/**
+	 * Get array of deductions for a year (including current) and competitions, keyed by comp_id
+	 * @param int $year year, or 0 for current season
+	 * @param array $comp_ids array of competition ids to retrieve
+	 */
+	public static function get_deductions($year, $comp_ids) {
+		global $wpdb;
+
+		$where = ' comp_id IN (' . implode( ',', $comp_ids ) . ')';
+		if ($year) {
+			$prefix = 'slh';
+			$where = "year = $year AND$where";
+		} else {
+			$prefix = 'slc';
+		}
+		$rows =  $wpdb->get_results(
+			"SELECT comp_id, team, penalty, deduct_date, reason
+			FROM {$prefix}_deduction WHERE $where
+			ORDER BY comp_id, team, deduct_date");
+		if ($wpdb->last_error) return false;
+		$result = [];
+		foreach ($rows as $row) {
+			$result[$row->comp_id][] = $row;
+		}
+		return $result;
 	}
 
 	public static function save_deductions($rows) {
