@@ -91,7 +91,7 @@ class Fixtures_Renderer {
 
 		if (!empty($keys)) {
 			ksort($keys);
-			echo '<p><b>Key:</b> ', implode(', ', $keys), "</p>\n";
+			echo '<p class="pad-grey"><b>Key:</b> ', implode(', ', $keys), "</p>\n";
 		}
 		if ($year == 0) {
 			if ($type === 'team') {

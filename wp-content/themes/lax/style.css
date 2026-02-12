@@ -1491,6 +1491,10 @@ abbr[title] {
 .no-bottom-margin {
 	margin-bottom: 0;
 }
+.pad-grey {
+	padding: 0.5em;
+	background-color: #f8f8f8;
+}
 /* If javascript isn't active then they can't display the map anyway! */
 .no-js .gmap {
 	display: none;
