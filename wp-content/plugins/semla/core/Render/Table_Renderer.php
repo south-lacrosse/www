@@ -220,9 +220,12 @@ class Table_Renderer {
 				echo "<dt>$row->team</dt>\n";
 				$last_team = $row->team;
 			}
-			echo '<dd><strong>', floatval($row->penalty), 'pts</strong> ',
-				date('j M Y', strtotime($row->deduct_date)), ': ', $row->reason,
-				"</dd>\n";
+			echo '<dd><strong>', floatval($row->penalty), 'pt',
+				 ($row->penalty <> 1 ? 's' : ''), '</strong>';
+			if ($row->deduct_date) {
+				echo ' ', date('j M Y', strtotime($row->deduct_date));
+			}
+			echo ': ', $row->reason, "</dd>\n";
 		}
 		echo "</dl></details>\n";
 	}
