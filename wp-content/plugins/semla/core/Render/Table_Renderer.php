@@ -98,7 +98,7 @@ class Table_Renderer {
 			}
 		}
 		if ($has_tiebreaker) {
-			echo "\n<p><i>*</i> = position changed because of tie-break rules</p>";
+			echo "\n", '<p class="pad-grey"><em>*</em> = position changed because of tie-break rules</p>';
 		}
 	}
 
@@ -106,6 +106,7 @@ class Table_Renderer {
 	 * Render a single league table
 	 */
 	private static function table($division_name, $teams, $year, $format) {
+		$is_rest = $format === 'rest';
 		$team0 = $teams[0];
 		$wdl_cols = $team0->won > 0 || !$year;
 		$fa_cols = $team0->goals_for > 0;
@@ -120,7 +121,7 @@ class Table_Renderer {
 				break;
 			}
 		}
-		if ($format === 'rest') {
+		if ($is_rest) {
 			$class = '';
 		} elseif ($format === 'cup') {
 			$class = ' league-table';
@@ -141,7 +142,7 @@ class Table_Renderer {
 			// Also we can't put scrollable on that div as the style for scrollable also makes the
 			// offset for the sticky menu not work.
 			echo '<div id="', Util::make_id($division_name), '"',
-				$format === 'rest' ? '' : ' class="alignwide"', '>';
+				$is_rest ? '' : ' class="alignwide"', '>';
 		}
 		echo '<div class="scrollable"><table class="table-data', $class,
 			'"><caption><span class="caption-text">',
@@ -169,7 +170,7 @@ class Table_Renderer {
 			echo '<tr', !empty($team->divider) ? ' class="divider"' : '',
 				'><td>', $team->position, '</td><td class="left font-semibold">';
 			$esc_team = htmlspecialchars($team->team, ENT_NOQUOTES);
-			if ($format === 'rest' || str_starts_with($team->team, 'TBD')) {
+			if ($is_rest || str_starts_with($team->team, 'TBD')) {
 				echo $esc_team;
 			} elseif ($year == 0) {
 				echo '<a class="no-ul" href="/fixtures?team=',
@@ -205,7 +206,20 @@ class Table_Renderer {
 			if ($points_avg_col)
 				echo '<td class="hide-sml">', number_format($team->points_avg, 2), '</td>';
 			if ($form_col) {
-				echo '<td class="hide-sml">', isset($team->form) ? substr($team->form,-5) : '', '</td>';
+				echo '<td class="hide-sml va-middle">';
+				$form = isset($team->form) ? substr($team->form,-5) : '';
+				if ($form) {
+					if ($is_rest) {
+						echo $form;
+					} else {
+						echo '<ul class="league-form-wrapper mono">';
+						foreach (str_split($form) as $result) {
+							echo "<li class=\"league-form league-form-$result\">$result</li>";
+						}
+						echo '</ul>';
+					}
+				}
+				echo '</td>';
 			}
 			echo "</tr>\n";
 		}

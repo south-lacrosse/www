@@ -49,7 +49,7 @@ strong {
 }
 code,
 pre {
-	font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+	/* font-family is later */
 	font-size: 1em;
 }
 
@@ -111,6 +111,11 @@ html {
 		'Helvetica Neue',
 		sans-serif;
 	font-size: 16px;
+}
+code,
+pre,
+.mono {
+	font-family: ui-monospace, SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
 }
 
 /*--------------------- Page areas -------------------*/
@@ -904,6 +909,9 @@ a.btn {
 .center {
 	text-align: center;
 }
+.va-middle {
+	vertical-align: middle;
+}
 .font-semibold {
 	font-weight: 600;
 }
@@ -1153,6 +1161,33 @@ th > a:visited,
 }
 .cup-draw {
 	max-width: 35rem;
+}
+
+/* league tables - form column */
+.league-form-wrapper {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	text-align: center;
+	line-height: 1.5;
+	display: inline-flex;
+	color: #fff;
+	font-size: 0.75rem;
+}
+.league-form {
+	border-radius: 0.0625rem;
+	height: 1.125rem;
+	width: 1.125rem;
+	margin-right: 0.1875rem;
+}
+.league-form-W {
+	background-color: #148a00;
+}
+.league-form-D {
+	background-color: #606060;
+}
+.league-form-L {
+	background-color: #e51854;
 }
 
 /*--------------- Lists ------------------------*/
@@ -1700,12 +1735,13 @@ a.icon[href^='tel']::before {
 @media print {
 	html {
 		font-family: Georgia, 'Times New Roman', Times, serif;
+		background-color: white;
 	}
 	body > header,
 	nav,
 	body > footer,
 	#sidebar,
-	.callout,
+	.callout-alert,
 	.wp-block-semla-toc,
 	.no-print {
 		display: none;
@@ -1727,6 +1763,16 @@ a.icon[href^='tel']::before {
 	.table-data th.hide-sml,
 	.table-data td.hide-sml {
 		display: table-cell;
+	}
+	/* form is green.grey/red background, white text, but we print in black and white */
+	.league-form-wrapper {
+		color: black;
+	}
+	.league-form {
+		font-size: 1rem;
+		height: auto;
+		width: auto;
+		background-color: white;
 	}
 	/* Display background images for things like phone, email */
 	.acrd-btn::after,

@@ -91,7 +91,7 @@ class Fixtures_Renderer {
 
 		if (!empty($keys)) {
 			ksort($keys);
-			echo '<p class="pad-grey"><b>Key:</b> ', implode(', ', $keys), "</p>\n";
+			echo '<p class="pad-grey"><strong>Key:</strong> ', implode(', ', $keys), "</p>\n";
 		}
 		if ($year == 0) {
 			if ($type === 'team') {
@@ -100,7 +100,7 @@ class Fixtures_Renderer {
 				if (!empty($options['team_club'][$arg])) {
 					echo 'Go to <a href="clubs/', $options['team_club'][$arg], '">club page</a> or ';
 				}
-				echo '<b>Subscribe:</b> <a href="', $cal_url, '">iCalendar link</a>',
+				echo '<strong>Subscribe:</strong> <a href="', $cal_url, '">iCalendar link</a>',
 					' | <a rel="nofollow" href="https://calendar.google.com/calendar/render?cid=',
 					str_replace('https://', 'webcal://', $cal_url), '">add to Google Calendar</a></p>'."\n";
 			} elseif ($type === 'club' && !empty($options['club'][$arg]->club_page)) {

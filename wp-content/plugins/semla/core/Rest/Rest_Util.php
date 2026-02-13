@@ -12,12 +12,13 @@ class Rest_Util {
 		$html = strtr($html, [
 			'scrollable' => 'sl-wrapper',
 			'table-data'=> 'sl-league-table',
-			'divider' => 'sl-divider'
-			]);
+			'divider' => 'sl-divider',
+			' va-middle"' => '"',
+		]);
 		if ($extra_classes) {
 			// hide-small classes etc. are changed to add prefix
 			$html = strtr($html ,[
-				// left in header, with font-semibold in body
+				// team cells have left in header, with font-semibold in body
 				'"left"' => '"sl-team"',
 				'left font-semibold' => 'sl-team',
 				'hide-sml' => 'sl-hide-small',
