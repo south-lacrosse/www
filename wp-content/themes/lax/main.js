@@ -1,11 +1,21 @@
 /**
  * IMPORTANT: Bump the version number in footer.php if you change this file.
  *
- * Main javascript for our theme. Handles dropdown menu, pullout menu for small screens,
- * tabs, and toggling collapses.
+ * Main javascript for our theme. Handles dropdown menu, pullout menu for small
+ * screens, tabs, and toggling collapses.
  *
- * This code tries to use older javascript syntax so it will run on anything which has
- * addEventListener (so IE9+ and everything else).
+ * This code tries to use older javascript syntax so it will run on anything
+ * which has addEventListener (so IE9+ and everything else).
+ *
+ * Note: We close the dropdown menu if a user clicks outside the menu area. This
+ * works fine on desktop but some older mobile browsers only dispatch click
+ * events on elements like anchors.
+ *
+ * We could implement the close on touch, but then we have to be careful not to
+ * close it if the user is dragging to view the bottom of the menu, when we'd
+ * want to leave it open. That becomes quite fiddly, so we've just left it as is
+ * as the effort doesn't seem worthwhile as it's a minor feature, and the user
+ * can click the dropdown element again to close.
  */
 (function () {
 	'use strict';
@@ -72,8 +82,21 @@
 		false
 	);
 
-	win.addEventListener('resize', onResize, false);
-	win.addEventListener('orientationchange', onResize, false);
+	// We really just want to close any open menus when we pass the CSS media
+	// query breakpoint that changes from pullout to dropdown menu, however if
+	// the matchMedia function isn't available (very old browsers) then just
+	// close whenever the browser is resized.
+	if (typeof matchMedia === 'function') {
+		// Important: this media query must match the break point in style.css
+		matchMedia('(min-width: 680px)').addEventListener('change', closeMenus);
+	} else {
+		// Not all older browsers fire resize when the orientation changes, so
+		// be safe and close menus on both. closeMenus will only close open
+		// menus anyway, so no harm doing both, and we should be using
+		// matchMedia above anyway
+		win.addEventListener('resize', closeMenus, false);
+		win.addEventListener('orientationchange', closeMenus, false);
+	}
 
 	function showDropdown(target) {
 		if (shownDropdown) {
@@ -103,17 +126,12 @@
 				// works on mobile can mean switching dropdowns will remove then add
 				// the listeners, so we just leave them listening.
 
+				mainMenu = doc.getElementById('main-menu');
 				// Once a dropdown is open, other dropdowns will open on mouseover
 				// until the dropdown is closed by clicking it again, or clicking outside
 				// the menu - basically the same as how menus on browsers work.
-				doc.getElementById('main-menu').addEventListener(
-					'mouseover',
-					mouseOverMainMenu,
-					false
-				);
-				// some mobile browsers only dispatch click events on elements like anchors,
-				// so we also need to detect touch events outside the menu to close it
-				doc.addEventListener('touchstart', docTouchStart, passive);
+				mainMenu.addEventListener('mouseover', mouseOverMainMenu, false);
+				mainMenu.addEventListener('touchstart', touchStartMainMenu, passive);
 				doc.addEventListener('focus', docFocus, true);
 				doc.getElementById('menu').addEventListener('keyup', closeNavOnEsc, false);
 				addedListeners = true;
@@ -134,15 +152,27 @@
 		}
 	}
 
-	function docTouchStart(event) {
-		// We close the dropdown here for touches outside the current dropdown,
-		// and not if touched outside the entire menu as with click. That's
-		// because if we did that the events would be touch (ignored), then
+	function touchStartMainMenu(event) {
+		// We close the dropdown here for touches on another dropdown. That's
+		// because a touch event generates touch, mouseover, click, so if we
+		// didn't close the sequence of events would be touch (ignored), then
 		// mouseover which would switch the dropdown, then click which would
 		// close it. By doing it this way the touch closes the current dropdown,
 		// the mouseover is ignored as there's no shownDropdown, then the click
 		// opens the new dropdown.
-		if (shownDropdown && !dropdownUl.parentNode.contains(event.target)) {
+
+		// One alternative would be to use preventDefault (which would be
+		// better in touchend as otherwise touchstart can't be passive which
+		// causes scroll delays), but that can have funny side effects.
+
+		// Another would be to change the way we do things, and have users click
+		// a dropdown to open and close, and not use mouseover to change
+		// dropdowns if one is already open
+		if (
+			shownDropdown &&
+			event.target.getAttribute('data-toggle') === 'dropdown' &&
+			event.target !== shownDropdown
+		) {
 			hideDropdown();
 		}
 	}
@@ -313,11 +343,7 @@
 		menu.className = menu.className.replace(/ visible/g, '');
 	}
 
-	function onResize() {
-		// if the user resizes then the menu could flip from dropdown to pullout,
-		// or vice-versa, based on a media query, which could result in weird
-		// situations if either menu is open, so to be on the safe side we just
-		// close everything and remove any listeners which change behaviour
+	function closeMenus() {
 		if (shownDropdown) hideDropdown();
 		if (isPulloutMenuOpen) hidePulloutMenu();
 		if (lastMenuLink) {

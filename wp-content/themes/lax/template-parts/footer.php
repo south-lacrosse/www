@@ -4,7 +4,7 @@
  * Contains the closing of the #content div and all content after.
  */
 $url = get_theme_file_uri();
-$js = $url . '/main' . SEMLA_MIN . '.js?ver=1.0';
+$js = $url . '/main' . SEMLA_MIN . '.js?ver=1.1';
 ?>
 </div>
 <footer id="page-footer">

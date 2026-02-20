@@ -332,7 +332,8 @@ ml0-1 = menu li tag with depth */
 	height: 1.15em;
 	content: ''; /* need content or it won't display */
 }
-
+/* IMPORTANT: if you change this min-width make sure you change the related
+value in main.js, and don't forget to change the next media query too! */
 @media screen and (min-width: 680px) {
 	.logo {
 		background-image: url(img/logo-45.png);
@@ -425,8 +426,13 @@ ml0-1 = menu li tag with depth */
 	.ma[rel]::after {
 		background-image: url(img/external-link.svg);
 	}
-	/* No javascript so display menu on hover */
+	/* No javascript, so display menu on hover and on focus for keyboard. Rules
+	are separate as browsers throw out entire selectors they don't understand,
+	and some really old browsers don't understand focus-within. */
 	.no-js .ml0:hover > ul {
+		display: block;
+	}
+	.no-js .ml0:focus-within > ul {
 		display: block;
 	}
 	/* level 3 if needed
