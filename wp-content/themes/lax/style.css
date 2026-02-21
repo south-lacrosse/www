@@ -367,7 +367,7 @@ value in main.js, and don't forget to change the next media query too! */
 	}
 	.ma {
 		display: block;
-		padding: 0.5em 0.6em;
+		padding: 0.5em;
 	}
 	.ma,
 	.ma:visited {
@@ -380,14 +380,27 @@ value in main.js, and don't forget to change the next media query too! */
 		top: 1px;
 	}
 	.mp {
-		padding-right: 1.6em;
-		background-image: url(img/chevron-down.png);
-		background-position: right 0.5em center;
+		/* Need room for the chevron and whatever padding we want.
+		Assuming 16px font we have 6px pad left, 12px icon, 8px pad right
+		(matches .ma padding) */
+		padding-right: 1.625em;
+	}
+	.mp::after {
+		position: absolute;
+		content: '';
+		top: 0;
+		right: 0.5em;
+		width: 0.75em;
+		height: 100%;
+		background-image: url(img/chevron-dn.png);
+		background-position: center;
 		background-repeat: no-repeat;
 	}
-	.svg .mp {
-		background-image: url(img/chevron-down.svg);
-		background-size: auto 0.8em;
+	.svg .mp::after {
+		background-image: url(img/chevron-dn.svg);
+	}
+	.mp.open::after {
+		transform: rotate(180deg);
 	}
 	.ml0 {
 		display: inline-block;
