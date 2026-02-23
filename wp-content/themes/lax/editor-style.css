@@ -706,18 +706,19 @@ li > ol {
 /* Icon */
 .acrd-btn::after {
 	position: absolute;
-	right: 5px;
+	right: 0.3125em;
 	width: 1.5em;
 	height: 1.5em;
-	background-repeat: no-repeat;
-	background-position: center;
-	transition: all 0.35s;
-	background-image: url(img/plus.png);
-	content: ''; /* won't display if there's no content! */
-}
-.svg .acrd-btn::after {
 	background-image: url(img/plus.svg);
 	background-size: 1em 1em;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition: all 0.35s;
+	content: ''; /* won't display if there's no content! */
+}
+.no-svg .acrd-btn::after {
+	background-image: url(img/plus.png);
+	background-size: auto;
 }
 .acrd-btn.open::after {
 	transform: rotate(315deg);

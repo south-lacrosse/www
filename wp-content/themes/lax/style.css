@@ -264,16 +264,21 @@ footer {
 	color: #092a56;
 }
 #search {
-	width: 2.5rem;
-	height: 2.5rem;
-	background-image: url(img/search.png);
-	background-position: 50% 50%;
-	background-repeat: no-repeat;
-	text-indent: -9999px;
-}
-.svg #search {
 	background-image: url(img/search.svg);
 	background-size: 1.5rem 1.5rem;
+}
+.no-svg #search {
+	background-image: url(img/search.png);
+	background-size: auto;
+}
+#search,
+#show-menu,
+#close-menu {
+	background-position: center;
+	background-repeat: no-repeat;
+	text-indent: -9999px;
+	width: 2.5rem;
+	height: 2.5rem;
 }
 #overlay,
 #close-menu {
@@ -348,15 +353,16 @@ value in main.js, and don't forget to change the next media query too! */
 	}
 	/* leave media query in as stops downloading the image for mobile */
 	.house {
-		background-image: url(img/home.png);
+		background-image: url(img/home.svg);
+		background-size: 1.5em;
 		background-position: center;
 		background-repeat: no-repeat;
 		width: 2.5em;
 		text-indent: -9999px;
 	}
-	.svg .house {
-		background-image: url(img/home.svg);
-		background-size: 1.5em;
+	.no-svg .house {
+		background-image: url(img/home.png);
+		background-size: auto;
 	}
 	#menu {
 		display: flex;
@@ -392,12 +398,12 @@ value in main.js, and don't forget to change the next media query too! */
 		right: 0.5em;
 		width: 0.75em;
 		height: 100%;
-		background-image: url(img/chevron-dn.png);
+		background-image: url(img/chevron-dn.svg);
 		background-position: center;
 		background-repeat: no-repeat;
 	}
-	.svg .mp::after {
-		background-image: url(img/chevron-dn.svg);
+	.no-svg .mp::after {
+		background-image: url(img/chevron-dn.png);
 	}
 	.mp.open::after {
 		transform: rotate(180deg);
@@ -524,24 +530,17 @@ value in main.js, and don't forget to change the next media query too! */
 	.banner {
 		background-color: #a91717;
 	}
-	#show-menu,
-	#close-menu {
-		background-position: 50% 50%;
-		background-repeat: no-repeat;
-	}
 	#show-menu {
 		position: absolute;
 		top: 3px;
 		left: 5px;
-		width: 40px;
-		height: 40px;
-		background-image: url(img/menu.png);
-		z-index: 1;
-		text-indent: -9999px;
-	}
-	.svg #show-menu {
 		background-image: url(img/menu.svg);
-		background-size: 30px 30px;
+		background-size: 1.875rem 1.875rem;
+		z-index: 1;
+	}
+	.no-svg #show-menu {
+		background-image: url(img/menu.png);
+		background-size: auto;
 	}
 	#search {
 		position: fixed;
@@ -551,17 +550,16 @@ value in main.js, and don't forget to change the next media query too! */
 	}
 	.js #close-menu {
 		display: inline-block;
-		margin: 3px 0 0 7px;
-	}
-	.svg.js #close-menu {
+		margin: 3px 0 0 5px; /* margins should put the c;ose icon in the same place as the show one */
 		background-color: #fff;
 		cursor: pointer;
 		border: 0;
-		text-indent: -9999px;
-		width: 40px;
-		height: 40px;
 		background-image: url(img/close.svg);
-		background-size: 24px 24px;
+		background-size: 1.5rem 1.5rem;
+	}
+	.no-svg.js #close-menu {
+		background-image: url(img/close.png);
+		background-size: auto;
 	}
 	#overlay {
 		display: block;
@@ -1291,18 +1289,19 @@ li > ol {
 /* Icon */
 .acrd-btn::after {
 	position: absolute;
-	right: 5px;
+	right: 0.3125em;
 	width: 1.5em;
 	height: 1.5em;
-	background-repeat: no-repeat;
-	background-position: center;
-	transition: all 0.35s;
-	background-image: url(img/plus.png);
-	content: ''; /* won't display if there's no content! */
-}
-.svg .acrd-btn::after {
 	background-image: url(img/plus.svg);
 	background-size: 1em 1em;
+	background-position: center;
+	background-repeat: no-repeat;
+	transition: all 0.35s;
+	content: ''; /* won't display if there's no content! */
+}
+.no-svg .acrd-btn::after {
+	background-image: url(img/plus.png);
+	background-size: auto;
 }
 .acrd-btn.open::after {
 	transform: rotate(315deg);

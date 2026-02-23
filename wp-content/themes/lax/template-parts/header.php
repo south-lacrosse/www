@@ -5,8 +5,6 @@
  *
  * Note: quite a bit of info is hardcoded. Since this is a custom theme
  * for only this site, and hardcoding stops database lookups
- *
- * If the CSS changes then update the version in ?ver=1.0
  */
 ?><!DOCTYPE html>
 <html class="no-js" lang="en">
@@ -18,7 +16,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?= SEMLA_ANALYTICS ?>"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','<?= SEMLA_ANALYTICS ?>');</script>
 <?php endif; ?>
-<script>var d=document.documentElement;"addEventListener"in window&&(d.className="js"),"undefined"!=typeof SVGRect&&(d.className+=" svg");</script>
+<script>var d=document.documentElement;"addEventListener"in window&&(d.className="js"),"undefined"==typeof SVGRect&&(d.className+=" no-svg");</script>
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 </head>
 <body <?php body_class(); ?>>
