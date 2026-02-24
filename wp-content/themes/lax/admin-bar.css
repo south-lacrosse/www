@@ -8,7 +8,7 @@
 .js .menu-wrapper {
 	height: calc(100% - var(--wp-admin--admin-bar--height));
 }
-/* For some reason WordPress doesn't reset this when they don't used a fixed */
+/* For some reason WordPress doesn't reset this when they don't have a fixed menu */
 @media screen and (max-width: 600px) {
 	html {
 		scroll-padding-top: 0;

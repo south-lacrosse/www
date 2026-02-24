@@ -284,38 +284,7 @@ footer {
 #close-menu {
 	display: none;
 }
-/* When the screen is tall enough have a sticky menu */
-@media screen and (min-height: 500px) and (min-width: 680px) {
-	.menu-nav {
-		position: sticky;
-		z-index: 1; /* keep on top of any relative positioned elements in page */
-		top: 0;
-	}
-	/* Make sure link targets are not obscured by the sticky menu i.e. when we have
-	   internal links such at #Referees */
-	html {
-		scroll-padding-top: 40px;
-	}
-	.sidebar-content {
-		top: 40px;
-	}
-}
-@media screen and (min-height: 500px) and (max-width: 679px) {
-	body > header {
-		width: 100%;
-		position: fixed;
-		z-index: 1;
-		top: 0;
-	}
-	.middle {
-		margin-top: 46px; /* for the fixed header */
-	}
-	/* Make sure link targets are not obscured by the fixed menu i.e. when we have
-	   internal links such at #Referees */
-	html {
-		scroll-padding-top: 46px;
-	}
-}
+
 /* class names are short
 mu = menu ul tag, mu0-1 = depth
 ma = menu a tag
@@ -338,7 +307,9 @@ ml0-1 = menu li tag with depth */
 	content: ''; /* need content or it won't display */
 }
 /* IMPORTANT: if you change this min-width make sure you change the related
-value in main.js, and don't forget to change the next media query too! */
+value in main.js, and don't forget to change the next 3(ish) media queries
+(down to the next section break), and check if you need to change admin-bar.css
+*/
 @media screen and (min-width: 680px) {
 	.logo {
 		background-image: url(img/logo-45.png);
@@ -543,7 +514,7 @@ value in main.js, and don't forget to change the next media query too! */
 		background-size: auto;
 	}
 	#search {
-		position: fixed;
+		position: absolute;
 		top: 3px;
 		right: 5px;
 		z-index: 1;
@@ -609,6 +580,42 @@ value in main.js, and don't forget to change the next media query too! */
 	.ma[rel]::after {
 		background-image: url(img/external-link-black.svg);
 		margin-bottom: 3px;
+	}
+}
+/* Next 2 media queries are for when the screen is tall enough have a sticky
+   menu, or fixed for mobile */
+@media screen and (min-height: 500px) and (min-width: 680px) {
+	.menu-nav {
+		position: sticky;
+		z-index: 1; /* keep on top of any relative positioned elements in page */
+		top: 0;
+	}
+	/* Make sure link targets are not obscured by the sticky menu i.e. when we have
+	   internal links such at #Referees */
+	html {
+		scroll-padding-top: 40px;
+	}
+	.sidebar-content {
+		top: 40px;
+	}
+}
+@media screen and (min-height: 500px) and (max-width: 679px) {
+	body > header {
+		width: 100%;
+		position: fixed;
+		z-index: 1;
+		top: 0;
+	}
+	#search {
+		position: fixed;
+	}
+	.middle {
+		margin-top: 46px; /* for the fixed header */
+	}
+	/* Make sure link targets are not obscured by the fixed menu i.e. when we have
+	   internal links such at #Referees */
+	html {
+		scroll-padding-top: 46px;
 	}
 }
 
