@@ -97,7 +97,7 @@ class Fixtures_Grid_Renderer {
 		}
 		if (self::$keys) {
 			ksort(self::$keys);
-			echo '<p><b>Key:</b> ', implode(', ', self::$keys), "</p>\n";
+			echo '<p class="pad-grey"><b>Key:</b> ', implode(', ', self::$keys), "</p>\n";
 		}
 	}
 
