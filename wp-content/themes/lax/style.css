@@ -166,7 +166,7 @@ button {
 }
 .with-mini-tables {
 	flex: 1;
-	min-width: 24rem;
+	min-width: min(24rem, 100%);
 }
 #sidebar-mini-tables {
 	flex: none;
