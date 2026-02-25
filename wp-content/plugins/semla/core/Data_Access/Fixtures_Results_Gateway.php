@@ -154,7 +154,7 @@ class Fixtures_Results_Gateway {
 		}
 		$sql .= ' AS f';
 		$order_by = ' ORDER BY f.id';
-		$is_cup = $has_ladders = false;
+		$is_cup = $has_related = false;
 		switch ($type) {
 			case 'team':
 				$query = $wpdb->prepare($sql
@@ -181,8 +181,7 @@ class Fixtures_Results_Gateway {
 			case 'comp':
 				list ($is_cup, $where) = $this->options['comp'][$arg];
 				if (!$is_cup && $where[0] !== '=') {
-					$has_ladders = true;
-					$where = ' ' . $where;
+					$has_related = true;
 				}
 				$query =  "$sql WHERE {$yr_and}f.comp_id $where$order_by";
 				break;
@@ -205,7 +204,7 @@ class Fixtures_Results_Gateway {
 		if ($wpdb->last_error) return DB_Util::db_error();
 		if (count($rows) === 0) return '';
 		ob_start();
-		(new Fixtures_Renderer())->fixtures($year, $rows, $type, $arg, $is_cup, $has_ladders, $this->options);
+		(new Fixtures_Renderer())->fixtures($year, $rows, $type, $arg, $is_cup, $has_related, $this->options);
 		return ob_get_clean();
 	}
 
