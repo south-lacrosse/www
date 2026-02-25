@@ -149,7 +149,9 @@ class Fixtures_Sheet_Gateway {
 			$team_rows[$key] = array_splice($row,0,4);
 		}
 		// groups = flags group stages (which mostly behave like divisions)
-		$divisions = $groups = $tables = $ladders = $ladder_comps = [];
+		// related_comps are ladders/playoffs which need to be added to the main
+		//  competition where clause so they are included on the fixtures for that competition
+		$divisions = $groups = $tables = $ladders = $related_comps = [];
 		foreach ($division_rows as $row) {
 			$comp_name = $row[self::LEAGUE_DIVISION];
 			if (empty($comp_name)) continue;
@@ -161,9 +163,15 @@ class Fixtures_Sheet_Gateway {
 			$comp_id = $competition->id;
 
 			if ($competition->type === 'ladder') {
-				$ladder_comps[] = $competition;
+				$related_comps[] = $competition;
 				$ladders[$comp_id] = [$comp_id, '', 0 ,0, "=$comp_id"];
+			} elseif ($competition->type === 'playoff') {
+				$related_comps[] = $competition;
 			} else { // division or flags group
+				if (! self::is_league_competition($competition)) {
+					$this->error->add('fixtures', 'Competition on Division sheet is an invalid type: ' . $comp_name);
+					continue;
+				}
 				$table = [];
 				for ($i = self::TEAMS; !empty($row[$i]); $i++) {
 					$team = new \stdClass();
@@ -203,8 +211,11 @@ class Fixtures_Sheet_Gateway {
 			}
 		}
 
-		foreach ($ladder_comps as $ladder) {
+		foreach ($related_comps as $ladder) {
 			foreach ([$ladder->related_comp_id, $ladder->related_comp_id2] as $ladder_comp_id) {
+				if (!$ladder_comp_id) { // playoffs will only have 1 related comp_id
+					continue;
+				}
 				/** Add ladder to where clause for division so ladder fixtures will appear on
 				 *  fixtures for main divisions */
 				$where = $divisions[$ladder_comp_id][self::DIVISIONS_WHERE];
@@ -449,7 +460,7 @@ class Fixtures_Sheet_Gateway {
 			$seq = $unknown_seq;
 			$comp_id = 0;
 			$comp_short = '';
-			$is_league = $is_cup_prelim = false;
+			$is_league = $is_prelim_or_playoff = false;
 
 			if (isset($this->competitions[$comp_name])) {
 				$competition = $this->competitions[$comp_name];
@@ -462,7 +473,7 @@ class Fixtures_Sheet_Gateway {
 					$is_league = true;
 				} else {
 					$related_comp_id = 0;
-					$is_league = str_starts_with($competition->type, 'league') || $competition->type === 'cup-group';
+					$is_league = self::is_league_competition($competition);
 				}
 			} else {
 				$words = explode(' ', $comp_name);
@@ -480,7 +491,7 @@ class Fixtures_Sheet_Gateway {
 						$seq = $competition->seq;
 						$comp_short = ($competition->abbrev ?? $competition->name) . ' ' . $round;
 						$comp_id = $competition->id;
-						$is_cup_prelim = $competition->related_comp_id != 0;
+						$is_prelim_or_playoff = $competition->related_comp_id != 0;
 					}
 				}
 			}
@@ -604,10 +615,12 @@ class Fixtures_Sheet_Gateway {
 				$multi,'sort' => $seq];
 			if (isset($division_sort[$comp_id]) && $division_sort[$comp_id] === 'V') { // if we want to sort by venue/time
 				$fixture['sort2'] = ($venue ?? $home) . $time;
-			} else if ($is_cup_prelim) {
-				// for preliminary cup rounds the round should be alphabetic (so P1, P2 etc.),
-				// if matches are on the same day do earlier rounds first
-				$fixture['sort2'] = $round;
+			} else if ($is_prelim_or_playoff) {
+				// For cup prelims and playoffs keep the order in the sheet as that's the best order.
+				// We left pad zeros as the sort function does a string compare on sort2.
+				// Note:  preliminary cup rounds should be alphabetic (so P1, P2 etc.), so we could
+				// sort those so if matches are on the same day do earlier rounds are first.
+				$fixture['sort2'] = str_pad($row_no, 4, '0', STR_PAD_LEFT);
 			}
 			$fixtures[] = $fixture;
 		}
@@ -828,6 +841,10 @@ class Fixtures_Sheet_Gateway {
 			$this->competition_by_id = array_column($this->competitions, 'name', 'id');
 		}
 		return $this->competition_by_id[$comp_id];
+	}
+
+	private function is_league_competition($competition) {
+		return str_starts_with($competition->type, 'league') || $competition->type === 'cup-group';
 	}
 
 	private function get_division_order() {
