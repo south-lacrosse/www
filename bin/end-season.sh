@@ -32,7 +32,7 @@ if [[ $NO_RESULT != "0" ]] ; then
 		exit 0
 	fi
 fi
-echo -e '\e[93mBefore continuing make sure you have read the instuctions at'
+echo -e '\e[93mBefore continuing make sure you have read the instructions at'
 echo -e 'https://github.com/south-lacrosse/www-dev/blob/main/docs/end-season.md\e[0m'
 echo
 read -p "Run end of season processing? <y/N> " prompt
