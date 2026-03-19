@@ -98,8 +98,10 @@ SELECT comp_id, @end_year,
 		WHEN team1_goals > team2_goals THEN CONCAT(team1_goals, ' - ', team2_goals)
 		ELSE CONCAT(team2_goals, ' - ', team1_goals) END,
 	1
-FROM slc_cup_draw cd, sl_competition c
-WHERE home_team = 0 -- FIXME: works so long as the final is the only round without home or away
+FROM (SELECT comp_id, team1, team2, team1_goals, team2_goals,
+		ROW_NUMBER() OVER (PARTITION BY comp_id ORDER BY round DESC) ranked_order
+		FROM slc_cup_draw WHERE match_num = 1) cd, sl_competition c
+WHERE cd.ranked_order = 1
 AND c.id = cd.comp_id AND c.related_comp_id = 0 -- no play-in competitions
 ORDER BY comp_id;
 
