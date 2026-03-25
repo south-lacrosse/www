@@ -79,6 +79,11 @@ define('WP_DEVELOPMENT_MODE', 'theme');
 
 // if SEMLA .css & .js files should be served minimized. Defaults to '.min' to minimize, '' otherwise
 // define('SEMLA_MIN', '');
+
+// Stop core updates. Set to false when testing Beta/RC versions, as WordPress
+// will try and auto install nightly builds otherwise. Comment out for normal
+// usage, and don't set in production.
+// define( 'WP_AUTO_UPDATE_CORE', false );
 // End Local Server  -----------------------------------------
 
 // Live Server ---------------------------------------------
