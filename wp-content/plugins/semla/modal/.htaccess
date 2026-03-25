@@ -1,0 +1,1 @@
+Header always set Document-Isolation-Policy "isolate-and-credentialless" "expr=%{QUERY_STRING} = 'isolated'"
