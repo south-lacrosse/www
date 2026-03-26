@@ -62,7 +62,7 @@ class App {
 		// (regenerated) on both admin and public pages.
 		add_filter( 'rewrite_rules_array', function($rules) {
 			if ( ! defined('SEMLA_KEEP_DATE_ARCHIVES') || ! SEMLA_KEEP_DATE_ARCHIVES) {
-				// remove data related post archive  URLs, e.g. /2025, as we don't use them.
+				// remove date related post archive  URLs, e.g. /2025, as we don't use them.
 				// To put back either remove this code, or set SEMLA_KEEP_DATE_ARCHIVES to true
 				global $wp_rewrite;
 				$date_rules = $wp_rewrite->generate_rewrite_rules( $wp_rewrite->get_date_permastruct(), EP_DATE );
