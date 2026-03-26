@@ -74,7 +74,7 @@ class Rest_Fixtures_Gateway {
 			LEFT JOIN slc_team AS t
 			ON t.name = COALESCE(f.venue,f.home)
 			WHERE (f.home$where OR f.away$where) AND (f.result = '' OR f.home_goals IS NOT NULL)
-			ORDER BY f.id");
+			ORDER BY f.match_date, f.match_time, f.id");
 		if ($wpdb->last_error) return false;
 		ob_start();
 		require __DIR__ . '/views/rest-fixtures.ics.php';

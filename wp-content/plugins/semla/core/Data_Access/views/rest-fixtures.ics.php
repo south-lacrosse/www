@@ -32,7 +32,17 @@ if ($rows) {
 		$date[0]--;
 	}
 	$dtstamp = $date[0] . '0901T120000Z';
+
+	$last_datetime = '';
+	$seq = 0;
 	foreach ($rows as $row) {
+		$datetime = $row->match_date . $row->match_time;
+		if ($datetime !== $last_datetime) {
+			$last_datetime = $datetime;
+			$seq = 0;
+		} else {
+			$seq++;
+		}
 		$summary = $row->home ? $row->home : '?';
 		$summary .= ' v ';
 		$summary .= $row->away ? $row->away : '?';
@@ -44,10 +54,10 @@ if ($rows) {
 			$summary .= $row->pitch_type . ', ';
 		}
 		$summary .= "$row->competition)";
-		$uuid = UUID::v5(UUID::NS_URL, "$team$row->match_date$row->match_time");
+		$uuid = UUID::v5(UUID::NS_URL, "$team$datetime" . ($seq ? $seq : ''));
+		$date = str_replace('-','',$row->match_date);
 		$start = strtotime($row->match_time);
 		$end = $start + 7200; // +2 hours
-		$date = str_replace('-','',$row->match_date);
 // Note: PHP removes line feeds after a closing short tag, therefore
 // we need extra line feeds to work properly
 ?>
