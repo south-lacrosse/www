@@ -863,10 +863,10 @@ class Fixtures_Sheet_Gateway {
 			}
 
 			$teams = [];
-			$pos = 1;
+			$order = 0;
 			for ($row = 1; $row < $row_count; $row++) {
 				if (empty($rows[$row][$col])) break;
-				$teams[$rows[$row][$col]] = $pos++;
+				$teams[$rows[$row][$col]] = $order++;
 			}
 			$division_order[$this->competitions[$rows[0][$col]]->id] = $teams;
 
