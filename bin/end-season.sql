@@ -26,6 +26,7 @@ INSERT INTO `slh_league_year`
 	FROM (SELECT DISTINCT comp_id FROM slc_table) AS t,
 		sl_competition AS c
 	WHERE c.id = t.comp_id
+	AND c.type = 'league' -- don't add cup groups
 	ORDER BY c.group_id;
 
 SELECT 'Inserting results' as '';
