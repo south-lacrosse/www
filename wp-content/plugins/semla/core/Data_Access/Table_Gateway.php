@@ -90,6 +90,7 @@ class Table_Gateway {
 				WHERE t2.team = %s
 				AND t.comp_id = t2.comp_id
 				AND c.id = t.comp_id
+				AND c.type like "league%"
 				ORDER BY c.seq, c.id, t.position', $name));
 		} else {
 			$rows = $wpdb->get_results( $wpdb->prepare(
@@ -104,6 +105,7 @@ class Table_Gateway {
 				, sl_competition AS c
 				WHERE t.comp_id = comps.comp_id
 				AND c.id = t.comp_id
+				AND c.type like "league%"
 				ORDER BY c.seq, c.id, t.position', $name));
 		}
 		if ($wpdb->last_error) return false;
