@@ -6,7 +6,6 @@
  * then sent to a REST endpoint passed in the semlaEdit global.
  */
 /* global semlaEdit, wp */
-/* eslint-env es6 */
 (function () {
 	const theList = document.getElementById('the-list');
 

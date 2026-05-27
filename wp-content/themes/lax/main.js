@@ -119,7 +119,7 @@
 					});
 					win.addEventListener('testPassive', null, opts);
 					win.removeEventListener('testPassive', null, opts);
-					// eslint-disable-next-line no-empty
+					// eslint-disable-next-line no-empty, no-unused-vars
 				} catch (e) {}
 				// Note: we just add the following listeners. It might seem better to
 				// add/remove them when the dropdown is shown/hidden, but the way touch

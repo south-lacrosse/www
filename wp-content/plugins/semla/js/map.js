@@ -6,7 +6,7 @@
  * IMPORTANT: If you change this remember to bump the version number in the
  * plugin. Just search for "js/map" to find the reference.
  */
-/* eslint-env es2017 */
+/* global google, SemlaClubs */
 (function () {
 	'use strict';
 	let mapDiv,

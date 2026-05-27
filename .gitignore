@@ -41,6 +41,8 @@
 /wp-includes/*
 !/wp-includes/.htaccess
 
+!/eslint.config.mjs
+
 .my.cnf
 *.log
 *.secret.php
