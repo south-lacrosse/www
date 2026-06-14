@@ -34,7 +34,7 @@ fi
 eval "$COMMAND"
 
 if [[ $(git status --porcelain) ]]; then
-	echo 'Local repository changed, commiting to git and pushing to remote'
+	echo 'Local repository changed, committing to git and pushing to remote'
 	git add . || exit 1
 	git commit -m "Automated commit on $(date +%F-%H%M%S)" || exit 1
 	git push || exit 1

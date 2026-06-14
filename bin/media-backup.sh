@@ -16,7 +16,7 @@ if [[ -z $(git remote -v|grep git@github.com:south-lacrosse/media.git) ]]; then
 fi
 
 if [[ $(git status --porcelain) ]]; then
-	echo 'Media dir changed, commiting to git and pushing to remote'
+	echo 'Media dir changed, committing to git and pushing to remote'
 	git add . || exit
 	git commit -m "Automated commit $(date +%F-%H%M%S)" || exit
 	git push || exit

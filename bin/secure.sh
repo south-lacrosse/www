@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Setup all file permisions on a WordPress install
+# Setup all file permissions on a WordPress install
 
 cd $(dirname "$0")/..
 
