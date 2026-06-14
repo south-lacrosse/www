@@ -6,7 +6,7 @@ namespace Semla\Data_Access;
 class Club_Gateway {
 	/**
 	 * Return an array of all club posts
-	 * @return WP_Post[]
+	 * @return \WP_Post[]
 	 */
 	public static function get_clubs() {
 		return get_posts([

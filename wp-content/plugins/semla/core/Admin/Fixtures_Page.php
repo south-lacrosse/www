@@ -2,6 +2,7 @@
 namespace Semla\Admin;
 
 use Semla\Data_Access\Cup_Draw_Gateway;
+use Semla\Data_Access\Fixtures_Results_Gateway;
 use Semla\Data_Access\Fixtures_Sheet_Gateway;
 use Semla\Data_Access\Tiebreaker_Gateway;
 
@@ -41,6 +42,7 @@ class Fixtures_Page {
 				require __DIR__ . '/views/fixtures-formulas-tab.php';
 				break;
 			case 'settings':
+				$last_result_date = Fixtures_Results_Gateway::get_last_result_date();
 				require __DIR__ . '/views/fixtures-settings-tab.php';
 				break;
 		}

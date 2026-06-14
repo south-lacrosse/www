@@ -132,7 +132,7 @@ class Fixtures_Results_Gateway {
 	}
 
 	/**
-	 * @param int year year, or 0 for current
+	 * @param int $year year, or 0 for current
 	 */
 	public function get_fixtures($year, $type, $arg) {
 		global $wpdb;
@@ -167,6 +167,7 @@ class Fixtures_Results_Gateway {
 					$query = $wpdb->prepare("$sql WHERE (f.home = %s OR f.away = %s)$order_by",
 						 $teams[0], $teams[0]);
 				} else {
+					$s = [];
 					foreach ($teams as $team) {
 						$s[] = '%s';
 					}
@@ -285,5 +286,13 @@ class Fixtures_Results_Gateway {
 			}
 		}
 		return "WHERE {$prefix}match_date BETWEEN '$compare_date' AND '$compare_date2'";
+	}
+
+	public static function get_last_result_date() {
+		global $wpdb;
+
+		$res = $wpdb->get_var('SELECT MAX(match_date) FROM slh_result');
+		if ($wpdb->last_error) return "Unknown";
+		return $res;
 	}
 }

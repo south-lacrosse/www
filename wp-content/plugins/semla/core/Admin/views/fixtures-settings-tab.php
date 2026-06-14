@@ -11,6 +11,7 @@ $TIEBREAK_OPTIONS = ['P' => 'Points', 'GAvg' => 'Points and Goal Average'];
 <div class="notice notice-warning inline">
 <p><b>Important:</b> If you are changing the Fixtures Google Sheet ID for a new season make sure that the previous
 season's data has been archived by running the <a href="https://github.com/south-lacrosse/www-dev/blob/main/docs/end-season.md">End of Season processing</a>.</p>
+<p>Last archived result date is: <?=  $last_result_date ?>.</p>
 </div>
 <?php
 
